@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MindShelf_PL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9be17148985b5d8e796a576d51e3bbcf23713c9a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e602127294f565628f277164d23868de2fbae45c")]
 [assembly: System.Reflection.AssemblyProductAttribute("MindShelf_PL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MindShelf_PL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj": {}
+    "H:\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj": {}
   },
   "projects": {
-    "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj": {
+    "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj",
+        "projectUniqueName": "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj",
         "projectName": "MindShelf_BL",
-        "projectPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj",
-        "packagesPath": "C:\\Users\\Officemax\\.nuget\\packages\\",
-        "outputPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\obj\\",
+        "projectPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj",
+        "packagesPath": "C:\\Users\\Hossam\\.nuget\\packages\\",
+        "outputPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Officemax\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hossam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj": {
-                "projectPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj"
+              "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj": {
+                "projectPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj"
               }
             }
           }
@@ -48,7 +48,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -69,24 +69,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj": {
+    "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj",
+        "projectUniqueName": "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj",
         "projectName": "MindShelf_DAL",
-        "projectPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj",
-        "packagesPath": "C:\\Users\\Officemax\\.nuget\\packages\\",
-        "outputPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\obj\\",
+        "projectPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\MindShelf_DAL.csproj",
+        "packagesPath": "C:\\Users\\Hossam\\.nuget\\packages\\",
+        "outputPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Officemax\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hossam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -113,7 +113,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -160,24 +160,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj": {
+    "H:\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj",
+        "projectUniqueName": "H:\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj",
         "projectName": "MindShelf_PL",
-        "projectPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj",
-        "packagesPath": "C:\\Users\\Officemax\\.nuget\\packages\\",
-        "outputPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_PL\\obj\\",
+        "projectPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_PL\\MindShelf_PL.csproj",
+        "packagesPath": "C:\\Users\\Hossam\\.nuget\\packages\\",
+        "outputPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_PL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Officemax\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hossam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -192,8 +192,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj": {
-                "projectPath": "D:\\c .net\\MVC Projects and Days\\DigitalLibraryMVC\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj"
+              "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj": {
+                "projectPath": "H:\\MindShelf\\MindShelf_PL\\MindShelf_BL\\MindShelf_BL.csproj"
               }
             }
           }
@@ -208,11 +208,19 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.7, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -232,7 +240,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
