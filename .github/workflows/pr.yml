@@ -1,0 +1,57 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - '**'
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_dotnet: ${{ steps.filter.outputs.dotnet }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Paths filter
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            dotnet:
+              - '**/*.sln'
+              - '**/*.csproj'
+              - '**/*.fsproj'
+              - 'global.json'
+
+  dotnet:
+    name: .NET checks
+    needs: changes
+    if: needs.changes.outputs.has_dotnet == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: |
+          if dotnet test --list-tests >/dev/null 2>&1; then \
+            dotnet test --configuration Release --no-build; \
+          else \
+            echo "No tests found"; \
+          fi
+
