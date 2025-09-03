@@ -28,15 +28,15 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore MindShelf_PL/MindShelf.sln
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build MindShelf_PL/MindShelf.sln --configuration Release --no-restore
 
       - name: Test (if any)
         run: |
-          if dotnet test --list-tests >/dev/null 2>&1; then \
-            dotnet test --configuration Release --no-build; \
+          if dotnet test MindShelf_PL/MindShelf.sln --list-tests >/dev/null 2>&1; then \
+            dotnet test MindShelf_PL/MindShelf.sln --configuration Release --no-build; \
           else \
             echo "No tests found"; \
           fi
