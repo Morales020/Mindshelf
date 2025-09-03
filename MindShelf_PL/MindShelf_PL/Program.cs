@@ -22,7 +22,7 @@ namespace MindShelf_PL
             builder.Services.AddScoped<UnitOfWork>();
             // add services here
             builder.Services.AddScoped<IBookServies,BookServies>();
-
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 
