@@ -36,7 +36,7 @@ namespace MindShelf_PL.Controllers
                 ViewBag.Error = Category.Message;
                 return View("Error");
             }
-            return View(Category);
+            return View(Category.Data);
         }
 
         [HttpGet]
