@@ -6,6 +6,7 @@ using MindShelf_BL.Services;
 using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace MindShelf_PL
@@ -18,7 +19,17 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<MindShelfDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("Cs")));
+            builder.Services.AddDbContext<MindShelfDbContext>(options =>
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("Cs"),
+         sqlOptions => sqlOptions.EnableRetryOnFailure(
+             maxRetryCount: 5, // ??? ??? ????? ??? ?? ????
+             maxRetryDelay: TimeSpan.FromSeconds(10), // ??? ???????? ??? ?????????
+             errorNumbersToAdd: null
+         )
+     )
+ );
+
             builder.Services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<MindShelfDbContext>();
 
             builder.Services.AddScoped<UnitOfWork>();
@@ -46,6 +57,7 @@ namespace MindShelf_PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
