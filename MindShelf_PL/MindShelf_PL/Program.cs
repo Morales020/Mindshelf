@@ -36,6 +36,7 @@ namespace MindShelf_PL
             // add services here
             builder.Services.AddScoped<IBookServies,BookServies>();
             builder.Services.AddScoped<ICartServices,CartServices>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 
