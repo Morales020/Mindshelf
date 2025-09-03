@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\IServices\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MindShelf_DAL\MindShelf_DAL.csproj" />
   </ItemGroup>
 

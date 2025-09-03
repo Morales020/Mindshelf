@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MindShelf_BL.Interfaces.IServices;
+using MindShelf_BL.Services;
+using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 
@@ -15,6 +18,16 @@ namespace MindShelf_PL
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<MindShelfDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("Cs")));
             builder.Services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<MindShelfDbContext>();
+
+            builder.Services.AddScoped<UnitOfWork>();
+            // add services here
+            builder.Services.AddScoped<IBookServies,BookServies>();
+
+
+
+
+
+
 
             var app = builder.Build();
 
