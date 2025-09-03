@@ -150,44 +150,364 @@ namespace MindShelf_BL.Services
         }
         #endregion
 
-        public Task<ResponseMVC<OrderResponseDto>> GetOrderByIdAsync(int orderId)
+        #region GetOrderById
+        public async Task<ResponseMVC<OrderResponseDto>> GetOrderByIdAsync(int orderId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var order = await _unitOfWork.OrderRepo.Query()
+                    .AsNoTracking()
+                    .Where(o => o.OrderId == orderId)
+                    .Select(o => new OrderResponseDto
+                    {
+                        Id = o.OrderId,
+                        UserId = o.UserId,
+                        UserName = o.UserName,
+                        ShippingAddress = o.Address,
+                        OrderDate = o.OrderDate,
+                        OrderStatus = o.State,
+                        TotalAmount = o.TotalAmount,
+                        OrderItems = o.OrderItems.Select(item => new OrderItemResponseDto
+                        {
+                            OrderItemId = item.OrderItemId,
+                            BookId = item.BookId,
+                            Quantity = item.Quantity,
+                            TotalPrice = item.TotalPrice
+                        }).ToList()
+                    }).FirstOrDefaultAsync();
+
+                if (order == null)
+                {
+                    return new ResponseMVC<OrderResponseDto>
+                    {
+                        StatusCode = 404,
+                        Message = "Order not found.",
+                        Data = default
+                    };
+                }
+
+                return new ResponseMVC<OrderResponseDto>
+                {
+                    StatusCode = 200,
+                    Message = "Order retrieved successfully.",
+                    Data = order
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<OrderResponseDto>
+                {
+                    StatusCode = 500,
+                    Message = ex.Message,
+                    Data = default
+                };
+            }
+        }
+        #endregion
+
+        #region GetAllOrder
+        public async Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var totalOrders = await _unitOfWork.OrderRepo.Query().CountAsync();
+
+            var orders = await _unitOfWork.OrderRepo.Query()
+                .Include(o => o.OrderItems)
+                .AsNoTracking()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(o => new OrderResponseDto
+                {
+                    Id = o.OrderId,
+                    OrderStatus = o.State,
+                    TotalAmount = o.TotalAmount,
+                    UserId = o.UserId,
+                    UserName = o.UserName,
+                    ShippingAddress = o.Address,
+                    OrderDate = o.OrderDate,
+                    OrderItems = o.OrderItems.Select(oi => new OrderItemResponseDto
+                    {
+                        OrderItemId = oi.OrderItemId,
+                        BookId = oi.BookId,
+                        Quantity = oi.Quantity,
+                        TotalPrice = oi.TotalPrice
+                    }).ToList()
+                }).ToListAsync();
+
+            return new ResponseMVC<IEnumerable<OrderResponseDto>>
+            {
+                StatusCode = 200,
+                Message = orders.Any() ? "Orders retrieved successfully." : "No orders found.",
+                Data = orders,
+                TotalPages = (int)Math.Ceiling((double)totalOrders / pageSize)
+            };
+        }
+        #endregion
+
+        #region UpdateOrderStauts
+        public async Task<ResponseMVC<bool>> UpdateOrderStatusAsync(int orderId, OrderState status)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderRepo.Query().FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    return new ResponseMVC<bool>
+                    {
+                        StatusCode = 404,
+                        Message = "Order not found.",
+                        Data = false
+                    };
+                }
+                order.State = status;
+                _unitOfWork.OrderRepo.Update(order);
+                await _unitOfWork.SaveChangesAsync();
+                return new ResponseMVC<bool>
+                {
+                    StatusCode = 200,
+                    Message = "Order status updated successfully.",
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<bool>
+                {
+                    StatusCode = 500,
+                    Message = $"An error occurred while updating the order status.{ex.Message}",
+                    Data = false
+                };
+            }
         }
 
-        public Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(int PageNumber, int PageSize)
+        #endregion
+
+        #region DeleteOrder
+        public async Task<ResponseMVC<bool>> DeleteOrderAsync(int orderId)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var order = await _unitOfWork.OrderRepo.Query().FirstOrDefaultAsync(c => c.OrderId == orderId);
+                if (order == null)
+                {
+                    return new ResponseMVC<bool>
+                    {
+                        StatusCode = 404,
+                        Message = " order not found",
+                        Data = false
+                    };
+                }
+                await _unitOfWork.OrderRepo.Delete(order.OrderId).ConfigureAwait(false);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                return new ResponseMVC<bool>
+                {
+                    StatusCode = 200,
+                    Message = " order Deleted",
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<bool>
+                {
+                    StatusCode = 500,
+                    Message = ex.Message,
+                    Data = false
+                };
+            }
+        }
+        #endregion
+
+        #region GetOrderByStatus
+        public async Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetOrdersByStatusAsync(OrderState status, int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var totalNumber = await _unitOfWork.OrderRepo.Query()
+                .Where(o => o.State == status)
+                .CountAsync();
+
+            var orders = await _unitOfWork.OrderRepo.Query()
+                .Include(o => o.OrderItems)
+                .AsNoTracking()
+                .Where(o => o.State == status)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(o => new OrderResponseDto
+                {
+                    Id = o.OrderId,
+                    OrderStatus = o.State,
+                    TotalAmount = o.TotalAmount,
+                    UserId = o.UserId,
+                    UserName = o.UserName,
+                    ShippingAddress = o.Address,
+                    OrderDate = o.OrderDate,
+                    OrderItems = o.OrderItems.Select(oi => new OrderItemResponseDto
+                    {
+                        OrderItemId = oi.OrderItemId,
+                        BookId = oi.BookId,
+                        Quantity = oi.Quantity,
+                        BookName = oi.Book.Title,
+                        TotalPrice = oi.TotalPrice
+                    }).ToList()
+                }).ToListAsync();
+
+            return new ResponseMVC<IEnumerable<OrderResponseDto>>
+            {
+                StatusCode = 200,
+                Message = orders.Any() ? "Orders retrieved successfully." : "No orders found with the specified status.",
+                Data = orders,
+                TotalPages = (int)Math.Ceiling((double)totalNumber / pageSize)
+            };
         }
 
-        public Task<ResponseMVC<bool>> UpdateOrderStatusAsync(int orderId, OrderState status)
+        #endregion
+
+        #region GetOrderBYuserName
+        public async Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetOrdersByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _userManager.FindByNameAsync(userName);
+                if (user == null)
+                {
+                    return new ResponseMVC<IEnumerable<OrderResponseDto>>
+                    {
+                        StatusCode = 404,
+                        Message = "User not found.",
+                        Data = new List<OrderResponseDto>()
+                    };
+                }
+
+                var orders = await _unitOfWork.OrderRepo.Query()
+                    .Include(o => o.OrderItems)
+                    .AsNoTracking()
+                    .Where(o => o.UserId == user.Id)
+                    .Select(o => new OrderResponseDto
+                    {
+                        OrderStatus = o.State,
+                        TotalAmount = o.TotalAmount,
+                        UserId = o.UserId,
+                        UserName = o.UserName,
+                        ShippingAddress = o.Address,
+                        OrderDate = o.OrderDate,
+                        OrderItems = o.OrderItems.Select(oi => new OrderItemResponseDto
+                        {
+                            OrderItemId = oi.OrderItemId,
+                            BookName = oi.Book.Title, 
+                            TotalPrice = oi.TotalPrice
+                        }).ToList()
+                    }).ToListAsync();
+
+                return new ResponseMVC<IEnumerable<OrderResponseDto>>
+                {
+                    StatusCode = 200,
+                    Message = orders.Any() ? "Orders retrieved successfully." : "No orders found for this user.",
+                    Data = orders
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<IEnumerable<OrderResponseDto>>
+                {
+                    StatusCode = 500,
+                    Message = $"An error occurred while retrieving orders: {ex.Message}",
+                    Data = new List<OrderResponseDto>() 
+                };
+            }
+        }
+        #endregion
+
+        #region CalcultateTotalAmount
+        public async Task<ResponseMVC<decimal>> CalculateTotalAmountAsync(int orderId)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderRepo.Query()
+                    .Include(o => o.OrderItems)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+                if (order == null)
+                {
+                    return new ResponseMVC<decimal>
+                    {
+                        StatusCode = 404,
+                        Message = "Order not found.",
+                        Data = 0
+                    };
+                }
+
+                var totalAmount = order.OrderItems?.Sum(oi => oi.TotalPrice) ?? 0;
+
+                if (order.TotalAmount != totalAmount)
+                {
+                    order.TotalAmount = totalAmount;
+                    await _unitOfWork.SaveChangesAsync();
+                }
+
+                return new ResponseMVC<decimal>
+                {
+                    StatusCode = 200,
+                    Message = "Total amount retrieved successfully.",
+                    Data = totalAmount
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<decimal>
+                {
+                    StatusCode = 500,
+                    Message = $"An error occurred: {ex.Message}",
+                    Data = 0
+                };
+            }
         }
 
-        public Task<ResponseMVC<bool>> DeleteOrderAsync(int orderId)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetOrdersByStatusAsync(OrderState status, int pageNumber, int pageSize)
+        #region CancelOrder
+        public async Task<ResponseMVC<OrderResponseDto>> CancelOrder(int orderId)
         {
-            throw new NotImplementedException();
-        }
+            var order = await _unitOfWork.OrderRepo.Query()
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Book)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
-        public Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetOrdersByUserNameAsync(string userId)
-        {
-            throw new NotImplementedException();
-        }
+            if (order == null)
+            {
+                return new ResponseMVC<OrderResponseDto>(404, "Order not found");
+            }
 
-        public Task<ResponseMVC<decimal>> CalculateTotalAmountAsync(int orderId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<ResponseMVC<OrderResponseDto>> CancelOrder(int orderId)
-        {
-            throw new NotImplementedException();
+            if (!(order.State == OrderState.Pending || order.State == OrderState.Processing))
+            {
+                return new ResponseMVC<OrderResponseDto>(400, "Order cannot be cancelled at this stage");
+            }
+
+
+            foreach (var item in order.OrderItems)
+            {
+                item.Book.Stock += item.Quantity;
+                _unitOfWork.BookRepo.Update(item.Book);
+            }
+
+
+            order.State = OrderState.Cancelled;
+            _unitOfWork.OrderRepo.Update(order);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ResponseMVC<OrderResponseDto>(200, "Order cancelled successfully and stock restored",
+                new OrderResponseDto
+                {
+                    Id = order.OrderId,
+                    OrderStatus = order.State
+                });
         }
+        #endregion
     }
 }
