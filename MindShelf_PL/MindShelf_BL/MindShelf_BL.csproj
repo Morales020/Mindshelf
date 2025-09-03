@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Stripe.net" Version="48.5.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\MindShelf_DAL\MindShelf_DAL.csproj" />
   </ItemGroup>
 </Project>
