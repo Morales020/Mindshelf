@@ -1,78 +1,65 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title></title>
     <link href="~/css/StyleSheet.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-
-
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="~/Images/Mind.png" alt="شعار المكتبة" />
-            </div>
+    <!--heaader -->
 
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="logo-book"></div>
+                    <div class="mr-3">
+                        <h1 class="text-xl font-bold text-dark-blue font-amiri">مكتبة رقمية</h1>
+                        <p class="text-sm text-wood">بوابتك إلى المعرفة</p>
+                    </div>
+                </div>
 
-            <nav class="nav">
-                <a href="#home">الرئيسية</a>
-                <a href="#books">الكتب</a>
-                <a href="#authors">المؤلفين</a>
-                <a href="#events">الفعاليات</a>
-                <a href="#blog">المدونة</a>
-                <a href="#about">عنا</a>
-            </nav>
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-reverse space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-wood transition-colors font-medium">الرئيسية</a>
+                    <a href="#books" class="text-gray-700 hover:text-wood transition-colors font-medium">الكتب</a>
+                    <a href="#authors" class="text-gray-700 hover:text-wood transition-colors font-medium">المؤلفين</a>
+                    <a href="#events" class="text-gray-700 hover:text-wood transition-colors font-medium">الفعاليات</a>
+                    <a href="#blog" class="text-gray-700 hover:text-wood transition-colors font-medium">المدونة</a>
+                    <a href="#about" class="text-gray-700 hover:text-wood transition-colors font-medium">عنا</a>
+                </nav>
 
-            <div class="actions">
-                <button id="darkModeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="relative">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </button>
-                <a class="relative" asp-controller="Shopping" asp-action="Index">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="notification-badge">2</span>
-                </a>
-                <a asp-controller="Account" asp-action="Login" class="login-btn">
-                    تسجيل الدخول
-                </a>
+                <!-- Right Side Icons -->
+                <div class="flex items-center space-x-reverse space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-shopping-cart text-gray-600"></i>
+                        <span class="notification-badge">2</span>
+                    </button>
+                    <button class="bg-wood text-white px-4 py-2 rounded-lg hover:bg-dark-brown transition-colors">
+                        تسجيل الدخول
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-
-
+    <!-- Home Section -->
     <section id="home" class="py-8">
-
+        <!-- Hero Slider -->
         <div class="container mx-auto px-4 mb-12">
             <div class="hero-gradient rounded-2xl p-12 text-white text-center animate-fade-up">
                 <h2 class="text-4xl font-bold mb-4 font-amiri">اكتشف عالماً من المعرفة</h2>
                 <p class="text-xl mb-8">أكثر من 50,000 كتاب في جميع المجالات</p>
 
-
+                <!-- Smart Search -->
                 <div class="max-w-2xl mx-auto">
                     <div class="relative">
                         <input type="text" id="smartSearch" placeholder="ابحث عن كتاب، مؤلف، أو موضوع..."
@@ -95,15 +82,15 @@
             </div>
         </div>
 
-
+        <!-- Featured Sections -->
         <div class="container mx-auto px-4">
-
+            <!-- Most Popular Books -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">الأكثر قراءة</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="book-card p-6 text-center">
                         <div class="w-32 h-40 bg-gradient-to-b from-red-800 to-red-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                          <img src="~/Images/BlackSuitsU.jpeg" class="w-full h-full object-cover" />
+                            <span class="text-white text-xs font-bold">الأسود يليق بك</span>
                         </div>
                         <h4 class="font-bold text-lg mb-2">الأسود يليق بك</h4>
                         <p class="text-gray-600 mb-2">أحلام مستغانمي</p>
@@ -147,7 +134,7 @@
 
                     <div class="book-card p-6 text-center">
                         <div class="w-32 h-40 bg-gradient-to-b from-green-800 to-green-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                            <img src="~/Images/alchemist.jpg" alt="الخيميائي" class="w-full h-full object-cover" />
+                            <span class="text-white text-xs font-bold">الخيميائي</span>
                         </div>
                         <h4 class="font-bold text-lg mb-2">الخيميائي</h4>
                         <p class="text-gray-600 mb-2">باولو كويلو</p>
@@ -191,7 +178,7 @@
                 </div>
             </div>
 
-
+            <!-- Latest Books -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">جديد المكتبة</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -228,7 +215,7 @@
                 </div>
             </div>
 
-
+            <!-- Recommended Books -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">مقترحة لك</h3>
                 <div class="section-bg rounded-2xl p-8">
@@ -302,7 +289,7 @@
                 </div>
             </div>
 
-
+            <!-- Free eBooks Section -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">كتب مجانية للتحميل</h3>
                 <div class="bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-8">
@@ -355,18 +342,18 @@
         </div>
     </section>
 
-
+    <!-- Books Section -->
     <section id="books" class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-dark-blue mb-12 text-center font-amiri">مكتبة الكتب</h2>
 
             <div class="flex flex-col lg:flex-row gap-8">
-
+                <!-- Sidebar Filters -->
                 <div class="lg:w-1/4">
                     <div class="bg-white rounded-xl p-6 shadow-lg sticky top-24">
                         <h3 class="text-xl font-bold mb-6 text-dark-blue">فلترة النتائج</h3>
 
-
+                        <!-- Category Filter -->
                         <div class="mb-6">
                             <h4 class="font-bold mb-3">التصنيف</h4>
                             <div class="space-y-2">
@@ -398,14 +385,14 @@
                             </div>
                         </div>
 
-
+                        <!-- Author Filter -->
                         <div class="mb-6">
                             <h4 class="font-bold mb-3">المؤلف</h4>
                             <input type="text" placeholder="ابحث عن مؤلف..."
                                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood">
                         </div>
 
-
+                        <!-- Language Filter -->
                         <div class="mb-6">
                             <h4 class="font-bold mb-3">اللغة</h4>
                             <div class="space-y-2">
@@ -424,7 +411,7 @@
                             </div>
                         </div>
 
-
+                        <!-- Year Filter -->
                         <div class="mb-6">
                             <h4 class="font-bold mb-3">سنة النشر</h4>
                             <div class="flex gap-2">
@@ -433,7 +420,7 @@
                             </div>
                         </div>
 
-
+                        <!-- Availability Filter -->
                         <div class="mb-6">
                             <h4 class="font-bold mb-3">التوفر</h4>
                             <div class="space-y-2">
@@ -458,9 +445,9 @@
                     </div>
                 </div>
 
-
+                <!-- Books Grid -->
                 <div class="lg:w-3/4">
-
+                    <!-- Sort Options -->
                     <div class="flex justify-between items-center mb-8">
                         <div class="flex items-center gap-4">
                             <span class="text-gray-700">ترتيب حسب:</span>
@@ -548,9 +535,9 @@
                                 <span class="text-blue-600 font-bold text-sm">إلكتروني</span>
                             </div>
                             <div class="flex gap-2">
-                                <a asp-controller="Payment" asp-action="Index" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                                <button class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
                                     <i class="fas fa-download ml-1"></i> تحميل مجاني
-                                </a>
+                                </button>
                                 <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
                                     <i class="fas fa-heart"></i>
                                 </button>
@@ -1728,5 +1715,5 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Main Blog Posts -->
 
-                </body>
+
 </html>
