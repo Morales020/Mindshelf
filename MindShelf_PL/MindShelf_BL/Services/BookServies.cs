@@ -51,7 +51,7 @@ namespace MindShelf_BL.Services
                 Price = book.Price,
                 AvrageRating = book.Rating 
             }).ToList();
-
+           
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", bookDtos);
         }
 
