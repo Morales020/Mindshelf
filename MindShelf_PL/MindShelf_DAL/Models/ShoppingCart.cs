@@ -20,6 +20,10 @@ namespace MindShelf_DAL.Models
         public string UserId { get; set; }
 
         [Required]
+        [MaxLength(100)]
+        public string UserName { get; set; }
+
+        [Required]
         public User User { get; set; }
 
         public ICollection<CartItem> ShoppingCartItems { get; set; } = new List<CartItem>();
