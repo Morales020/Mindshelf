@@ -46,14 +46,13 @@ jobs:
         uses: anothrNick/github-tag-action@1.67.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_branches: main
-          tag_prefix: v
-          default_bump: patch
-          initial_version: 1.0.0
-          dry_run: false
-          create_annotated_tag: true
-          verbose: true
+          RELEASE_BRANCHES: main
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          INITIAL_VERSION: 1.0.0
+          DRY_RUN: false
+          CREATE_ANNOTATED_TAG: true
+          VERBOSE: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
