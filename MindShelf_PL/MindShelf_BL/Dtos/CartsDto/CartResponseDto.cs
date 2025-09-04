@@ -2,6 +2,7 @@ namespace MindShelf_BL.Dtos.CartsDto;
 
 public class CartResponseDto
 {
+    public int ShoppingCartId { get; set; }
     public string UserName { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsCheckedOut { get; set; }
