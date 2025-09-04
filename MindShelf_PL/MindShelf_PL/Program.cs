@@ -38,7 +38,7 @@ namespace MindShelf_PL
             builder.Services.AddScoped<ICartServices,CartServices>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOrderServices, OrderServices>();
-
+            builder.Services.AddScoped<IEventServices, EventServices>();
 
 
 

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MindShelf_BL.Services
 {
-    internal class EventServices : IEventServices
+    public class EventServices : IEventServices
     {
         private readonly UnitOfWork _unitofwork;
         public EventServices(UnitOfWork _unitofwork)
@@ -24,7 +24,9 @@ namespace MindShelf_BL.Services
         {
             try
             {
-                // Map DTO → Entity
+                if (string.IsNullOrWhiteSpace(createDto.Title))
+                    return ResponseMVC<CreateEventDto>.ErrorResponse("Title is required", 400);
+
                 var newEvent = new Event
                 {
                     Title = createDto.Title.Trim(),
