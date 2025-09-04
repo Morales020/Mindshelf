@@ -1,0 +1,229 @@
+﻿@using MindShelf_DAL.Models.Stripe;
+@inject Microsoft.Extensions.Options.IOptions<StripeSettings> Stripe
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Stripe Checkout</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+          box-sizing: border-box;
+          font-family: 'Open Sans', sans-serif;
+          font-size: 18px;
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          margin: 0;
+          padding: 5% 0;
+          position: relative;
+          min-height: 100vh;
+          background: #34495e;
+          display: flex;
+          justify-content: center;
+          animation: fadein 2s;
+          animation-fill-mode: forwards;
+        }
+
+        @@keyframes fadein {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .model {
+          width: 900px;
+          height: 700px;
+          background: white;
+          color: white;
+          position: relative;
+          display: flex;
+          flex-direction: row;
+        }
+
+        .model:after {
+            width: 30px;
+            content: 'X';
+            height: 30px;
+            color: black;
+            position: absolute;
+            text-align: center;
+            padding-top: 3px;
+            top: 0;
+            right: -30px;
+            background-color: #bdc3c7;
+        }
+
+        .room {
+          width: 50%;
+          height: 100%;
+          background: url(https://images.unsplash.com/photo-1470274038469-958113db2384?auto=format&fit=crop&w=1875&q=80) no-repeat center center;
+          background-size: cover;
+          position: relative;
+        }
+
+        .text-cover {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          background: rgba(0, 0, 0, 0.7);
+          padding: 20px;
+        }
+
+        .text-cover > * {
+          margin: 10px 0;
+        }
+
+        .text-cover h1 {
+          font-size: 1.8rem;
+        }
+
+        .text-cover .price {
+          color: #e67e22;
+        }
+
+        .text-cover .price span {
+          font-size: 1.4rem;
+          font-weight: 700;
+        }
+
+        .payment {
+          width: 50%;
+          height: 100%;
+          color: #34495e;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .receipt-box {
+          padding: 20px;
+          border-bottom: 1px solid #34495e;
+        }
+
+        .receipt-box h3,
+        .payment-info h3 {
+          margin-bottom: 1rem;
+        }
+
+        .payment-info {
+          padding: 20px;
+        }
+
+        input[type=text]{
+            width: 100%;
+            padding: 8px 10px;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #checkout-button {
+          padding: 15px 25px;
+          border: none;
+          color: white;
+          width: 100%;
+          background: #9b59b6;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        #checkout-button:hover {
+            background: #8e44ad;
+        }
+
+        .table {
+          width: 100%;
+          max-width: 100%;
+          margin-bottom: 1rem;
+          background-color: transparent;
+        }
+
+        .table td {
+          font-size: 0.9rem;
+          padding: .4rem;
+          vertical-align: top;
+        }
+
+        .table td:nth-child(2) {
+          text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="model">
+        <!-- Left side -->
+        <div class="room">
+            <div class="text-cover">
+                <h1>Danny's House</h1>
+                <p class="price">120.00 <span>USD</span> / Night</p>
+                <hr>
+                <p>Entire Home for 1 guest</p>
+                <p>Tue, Oct 2, 2017 to Fri, Oct 5, 2017</p>
+            </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="payment">
+            <div class="receipt-box">
+                <h3>Receipt Summary</h3>
+                <table class="table">
+                    <tr>
+                        <td>120 x 2 nights</td>
+                        <td>240.00 USD</td>
+                    </tr>
+                    <tr>
+                        <td>Discount</td>
+                        <td>0 USD</td>
+                    </tr>
+                    <tr>
+                        <td>Subtotal</td>
+                        <td>240 USD</td>
+                    </tr>
+                    <tr>
+                        <td>Tax</td>
+                        <td>10 USD</td>
+                    </tr>
+                    <tfoot>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td><b>$250</b></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="payment-info">
+                <h3>Payment Info</h3>
+                <label>Name on Credit Card</label>
+                <input type="text" name="cardname" placeholder="John Doe" />
+                <label>Email</label>
+                <input type="text" name="email" placeholder="example@mail.com" />
+                <br />
+                <button  id="checkout-button">Book Securely</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var stripe = Stripe("@Stripe.Value.PublishableKey");
+
+        document.getElementById("checkout-button").addEventListener("click", function (e) {
+            e.preventDefault(); // عشان ميعملش Submit عادي
+            fetch("/Payment/CreateCheckoutSession", {
+                method: "POST"
+            })
+            .then(response => response.json())
+            .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+            .catch(err => console.error("Stripe Checkout Error:", err));
+        });
+    </script>
+</body>
+</html>
