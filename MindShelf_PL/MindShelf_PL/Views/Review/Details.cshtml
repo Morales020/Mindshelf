@@ -1,0 +1,92 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model ReviewResponseDto
+
+@{
+    ViewData["Title"] = "تفاصيل المراجعة";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">📖 تفاصيل المراجعة</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>📚 الكتاب</h5>
+                            <p class="text-muted">@Model.BookName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>👤 المستخدم</h5>
+                            <p class="text-muted">@Model.UserName</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5>⭐ التقييم</h5>
+                            <div class="text-warning h4">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Model.Rating)
+                                    {
+                                        <span>⭐</span>
+                                    }
+                                    else
+                                    {
+                                        <span>☆</span>
+                                    }
+                                }
+                                <span class="text-dark ms-2">(@Model.Rating/5)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>📅 تاريخ المراجعة</h5>
+                            <p class="text-muted">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Comment))
+                    {
+                        <div class="mb-4">
+                            <h5>💬 التعليق</h5>
+                            <div class="bg-light p-3 rounded">
+                                <p class="mb-0">@Model.Comment</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.ReviewId" 
+                           class="btn btn-warning">
+                            ✏️ تعديل المراجعة
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.ReviewId" 
+                           class="btn btn-danger">
+                            🗑️ حذف المراجعة
+                        </a>
+                        <a asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
+                           class="btn btn-secondary">
+                            ← العودة لمراجعات الكتاب
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+</style>
