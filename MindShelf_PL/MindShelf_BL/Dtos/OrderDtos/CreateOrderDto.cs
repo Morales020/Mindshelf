@@ -13,10 +13,6 @@ namespace MindShelf_BL.Dtos.OrderDtos
         [StringLength(100, ErrorMessage = "UserName cannot be longer than 100 characters.")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "ShippingAddress is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "ShippingAddressId must be a positive integer.")]
-        public int ShippingAddressId { get; set; }
-
 
         [Required(ErrorMessage = "OrderItems are required.")]
         [MinLength(1, ErrorMessage = "At least one order item is required.")]

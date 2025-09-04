@@ -38,17 +38,6 @@ namespace MindShelf_BL.Services
                     };
                 }
 
-                var shippingAddress = await _unitOfWork.OrderRepo.GetById(orderDto.ShippingAddressId);
-                if (shippingAddress == null)
-                {
-                    return new ResponseMVC<OrderResponseDto>
-                    {
-                        StatusCode = 400,
-                        Message = "Shipping address is invalid.",
-                        Data = null
-                    };
-                }
-
                 var bookIds = orderDto.OrderItems.Select(i => i.BookId).ToList();
                 var books = await _unitOfWork.BookRepo.Query()
                     .Where(b => bookIds.Contains(b.BookId))
