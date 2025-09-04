@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MindShelf_BL.Dtos.ReviewDto
 {
-    public class UpdateReview
+    public class UpdateReviewDto
     {
         [Required(ErrorMessage ="Review ID Is Required")]
         public int  ReviewId { get; set; }

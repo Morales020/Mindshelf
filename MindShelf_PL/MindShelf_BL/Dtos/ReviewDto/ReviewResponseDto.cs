@@ -11,9 +11,9 @@ namespace MindShelf_BL.Dtos.ReviewDto
     {
         public string Comment { get; set; } = string.Empty;
         public double Rating { get; set; }
-        public string ReviewId { get; set; }
+        public int ReviewId { get; set; }
         public string UserName { get; set; } = string.Empty;
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public int BookId { get; set; }
         public string BookName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
