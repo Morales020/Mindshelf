@@ -1,0 +1,28 @@
+﻿@model IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>
+
+@{
+    ViewBag.Title = "Events";
+    Layout = "_Layout";
+}
+
+<h2>Events</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var eventDto in Model)
+        {
+            <tr>
+                <td>@eventDto.EventId</td>
+                <td>@eventDto.Title</td>
+                <td>@eventDto.StartingDate.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
