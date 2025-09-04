@@ -1,0 +1,109 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model GetBookReviewsDto
+
+@{
+    ViewData["Title"] = $"مراجعات {Model.BookName}";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">📚 @Model.BookName</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <span class="h3 text-warning">⭐ @Model.AverageRating</span>
+                                </div>
+                                <div>
+                                    <p class="mb-0 text-muted">متوسط التقييم</p>
+                                    <p class="mb-0">@Model.ReviewCount مراجعة</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
+                               class="btn btn-success">
+                                ✍️ أضف مراجعة
+                            </a>
+                        </div>
+                    </div>
+
+                    @if (Model.Reviews.Any())
+                    {
+                        <div class="reviews-container">
+                            @foreach (var review in Model.Reviews)
+                            {
+                                <div class="card mb-3 review-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="card-title mb-1">👤 @review.UserName</h6>
+                                                <small class="text-muted">@review.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                            </div>
+                                            <div class="text-warning">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= review.Rating)
+                                                    {
+                                                        <span>⭐</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>☆</span>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        
+                                        @if (!string.IsNullOrEmpty(review.Comment))
+                                        {
+                                            <p class="card-text">@review.Comment</p>
+                                        }
+                                        
+                                        <div class="mt-2">
+                                            <a asp-action="Details" asp-route-id="@review.ReviewId" 
+                                               class="btn btn-sm btn-outline-primary">عرض التفاصيل</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="text-muted">
+                                <h4>📝 لا توجد مراجعات بعد</h4>
+                                <p>كن أول من يضيف مراجعة لهذا الكتاب!</p>
+                                <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
+                                   class="btn btn-primary">أضف أول مراجعة</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .review-card {
+        transition: transform 0.2s ease-in-out;
+        border-left: 4px solid #0d6efd;
+    }
+    
+    .review-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .reviews-container {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>

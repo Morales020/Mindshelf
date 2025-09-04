@@ -9,7 +9,7 @@ namespace MindShelf_BL.Interfaces.IServices
 {
     public interface IReviewServices
     {
-        Task<ResponseMVC<IEnumerable<ReviewResponseDto>>> GetBookReviews(GetBookReviewsDto getBookReviews);
+        Task<ResponseMVC<GetBookReviewsDto>> GetBookReviews(GetBookReviewsDto getBookReviews);
         Task<ResponseMVC<ReviewResponseDto>> GetReviewById(int reviewId);
         Task<ResponseMVC<ReviewResponseDto>> CreateReviewAsync(CreateReviewDto review);
         Task<ResponseMVC<ReviewResponseDto>> UpdateReviewAsync(UpdateReviewDto review);

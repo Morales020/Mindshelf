@@ -1,0 +1,94 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model ReviewResponseDto
+
+@{
+    ViewData["Title"] = "حذف المراجعة";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">⚠️ تأكيد حذف المراجعة</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">⚠️ تحذير!</h4>
+                        <p>هل أنت متأكد من أنك تريد حذف هذه المراجعة؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+                    </div>
+
+                    <div class="review-details mb-4">
+                        <h5>📖 تفاصيل المراجعة:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>📚 الكتاب:</strong> @Model.BookName</p>
+                                <p><strong>👤 المستخدم:</strong> @Model.UserName</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>⭐ التقييم:</strong> 
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Model.Rating)
+                                        {
+                                            <span class="text-warning">⭐</span>
+                                        }
+                                        else
+                                        {
+                                            <span>☆</span>
+                                        }
+                                    }
+                                    (@Model.Rating/5)
+                                </p>
+                                <p><strong>📅 التاريخ:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Comment))
+                        {
+                            <div class="mt-3">
+                                <p><strong>💬 التعليق:</strong></p>
+                                <div class="bg-light p-3 rounded">
+                                    <p class="mb-0">@Model.Comment</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <form asp-action="DeleteConfirmed" method="post">
+                        <input type="hidden" name="reviewId" value="@Model.ReviewId" />
+                        <input type="hidden" name="userName" value="@Model.UserName" />
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                🗑️ تأكيد الحذف
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.ReviewId" 
+                               class="btn btn-secondary">
+                                ← إلغاء
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    
+    .review-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #dc3545;
+    }
+</style>
