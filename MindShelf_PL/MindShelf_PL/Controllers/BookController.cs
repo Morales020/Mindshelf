@@ -5,19 +5,29 @@ using MindShelf_PL.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MindShelf_BL.Services;
+using MindShelf_BL.Dtos.AuthorDto;
+using MindShelf_BL.Dtos.CategoryDto;
 
 namespace MindShelf_MVC.Controllers
 {
     public class BooksController : Controller
     {
         private readonly IBookServies _bookService;
-
+        private readonly IAuthorServies _authorService;
+        private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _env;
 
-        public BooksController(IBookServies bookService, IWebHostEnvironment env)
+        public BooksController(
+            IBookServies bookService
+            , IWebHostEnvironment env
+            , IAuthorServies authorService
+            , ICategoryService categoryService
+            )
         {
             _bookService = bookService;
             _env = env;
+            _authorService = authorService;
+            _categoryService = categoryService;
         }
 
         private async Task<string?> SaveImageAsync(IFormFile? imageFile)
@@ -66,10 +76,17 @@ namespace MindShelf_MVC.Controllers
             return View(response.Data);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = new SelectList(_categoryService.GetAll(), "CategoryId", "Name");
-            ViewBag.Authors = new SelectList(_authorService.GetAll(), "AuthorId", "Name");
+            var authorsResponse = await _authorService.GetAllAuthor(1, 100);
+            var authorsList = authorsResponse.Data ?? new List<AuthorResponseDto>();
+         
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            var categoriesList = categoriesResponse.Data ?? new List<CategoryResponseDto>();
+           
+            ViewBag.Authors = new SelectList(authorsList, "AuthorId", "Name").Prepend(new SelectListItem { Text = "-- اختر المؤلف --", Value = "" });
+            ViewBag.Categories = new SelectList(categoriesList, "CategoryId", "Name").Prepend(new SelectListItem { Text = "-- اختر الفئة --", Value = "" });
+
 
             var dto = new CreateBookDto
             {
@@ -78,6 +95,7 @@ namespace MindShelf_MVC.Controllers
 
             return View(dto);
         }
+
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookDto dto, IFormFile? imageFile)
