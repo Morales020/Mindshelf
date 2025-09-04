@@ -25,6 +25,7 @@ namespace MindShelf_DAL.Models
         public string ImageUrl { get; set; }
         public int ReviewCount { get; set; }
         public double Rating { get; set; }
+        public int Stock {  get; set; }
         public BookState State { get; set; } = BookState.Available;
 
         public int CategoryId { get; set; }
