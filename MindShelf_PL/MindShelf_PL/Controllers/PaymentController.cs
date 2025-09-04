@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MindShelf_BL.Interfaces.IServices;
+using MindShelf_DAL.Models;
 
 namespace MindShelf_PL.Controllers
 {
@@ -21,8 +23,8 @@ namespace MindShelf_PL.Controllers
         [Route("Payment/CreateCheckoutSession")]
         public async Task<JsonResult> CreateCheckoutSession()
         {
-
-            decimal amount = 250;
+            
+            decimal amount = 200;
             int orderId = 123;
 
             var sessionId = await _paymentService.CreateCheckoutSessionAsync(amount, orderId);
