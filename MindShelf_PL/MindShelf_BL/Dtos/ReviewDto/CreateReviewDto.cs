@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MindShelf_BL.Dtos.ReviewDto
 {
-    public class CreateReview
+    public class CreateReviewDto
     {
        [Required(ErrorMessage = "User Name is required.")]
         public string UserName{ get; set; }=string.Empty;

@@ -10,7 +10,7 @@ namespace MindShelf_BL.Services
 {
     public class ReviewServices : IReviewServices
     {
-        public Task<ResponseMVC<IEnumerable<ReviewResponseDto>>> GetBookReviews(GetBookReviews getBookReviews)
+        public Task<ResponseMVC<IEnumerable<ReviewResponseDto>>> GetBookReviews(GetBookReviewsDto getBookReviews)
         {
             throw new NotImplementedException();
         }
@@ -20,17 +20,17 @@ namespace MindShelf_BL.Services
             throw new NotImplementedException();
         }   
 
-        public Task<ResponseMVC<ReviewResponseDto>> CreateReviewAsync(CreateReview review)
+        public Task<ResponseMVC<ReviewResponseDto>> CreateReviewAsync(CreateReviewDto review)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResponseMVC<ReviewResponseDto>> UpdateReviewAsync(UpdateReview review)
+        public Task<ResponseMVC<ReviewResponseDto>> UpdateReviewAsync(UpdateReviewDto review)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResponseMVC<bool>> DeleteReviewAsync(DeleteReview deleteReview)
+        public Task<ResponseMVC<bool>> DeleteReviewAsync(DeleteReviewDto deleteReview)
         {
             throw new NotImplementedException();
         }
