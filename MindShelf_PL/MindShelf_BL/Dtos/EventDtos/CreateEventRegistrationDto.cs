@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MindShelf_BL.Dtos.Event;
+namespace MindShelf_BL.Dtos.EventDtos;
 
 public class CreateEventRegistrationDto
 {

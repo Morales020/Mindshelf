@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MindShelf_BL.Dtos.EventDtos;
 
-namespace MindShelf_BL.Dtos.Event
+namespace MindShelf_BL.Dtos.EventDtos
 {
     internal class EventDetailsDto
     {

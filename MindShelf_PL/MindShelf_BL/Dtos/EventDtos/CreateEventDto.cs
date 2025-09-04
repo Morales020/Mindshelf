@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MindShelf_BL.Dtos.Event
+namespace MindShelf_BL.Dtos.EventDtos
 {
     internal class CreateEventDto
     {
