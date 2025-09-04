@@ -19,6 +19,6 @@ namespace MindShelf_BL.Dtos.Event
         public bool IsActive { get; set; }
 
         // Include registrations if needed
-        //public List<EventRegistrationResponseDto> Registrations { get; set; }
+        public List<EventRegistrationResponseDto> Registrations { get; set; }
     }
 }
