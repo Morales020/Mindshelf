@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MindShelf_BL.Dtos.EventDtos
 {
-    internal class EventResponseDto
+    public class EventResponseDto
     {
         public int EventId { get; set; }
         public string Title { get; set; }

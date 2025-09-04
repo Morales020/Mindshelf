@@ -8,7 +8,7 @@ using MindShelf_BL.Dtos.EventDtos;
 
 namespace MindShelf_BL.Dtos.EventDtos
 {
-    internal class EventDetailsDto
+    public class EventDetailsDto
     {
         public int EventId { get; set; }
         public string Title { get; set; }

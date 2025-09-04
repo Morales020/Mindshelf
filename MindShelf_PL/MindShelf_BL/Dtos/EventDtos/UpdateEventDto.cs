@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MindShelf_BL.Dtos.EventDtos
 {
-    internal class UpdateEventDto
+    public class UpdateEventDto
     {
         [Required(ErrorMessage = "Title is required")]
         [MaxLength(100)]
