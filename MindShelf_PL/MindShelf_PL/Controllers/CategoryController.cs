@@ -107,7 +107,7 @@ namespace MindShelf_PL.Controllers
             {
                 return NotFound();
             }
-            return View(Category);
+            return View(Category.Data);
         }
 
         [HttpPost]

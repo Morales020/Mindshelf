@@ -20,12 +20,12 @@ namespace MindShelf_PL
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
-     options.UseSqlServer(
-         builder.Configuration.GetConnectionString("Cs"),
-         sqlOptions => sqlOptions.EnableRetryOnFailure(
-             maxRetryCount: 5, 
-             maxRetryDelay: TimeSpan.FromSeconds(10), 
-             errorNumbersToAdd: null
+            options.UseSqlServer(
+             builder.Configuration.GetConnectionString("Cs"),
+             sqlOptions => sqlOptions.EnableRetryOnFailure(
+              maxRetryCount: 5, // ??? ??? ????? ??? ?? ????
+              maxRetryDelay: TimeSpan.FromSeconds(10), // ??? ???????? ??? ?????????
+              errorNumbersToAdd: null
          )
      )
  );
@@ -36,6 +36,7 @@ namespace MindShelf_PL
             // add services here
             builder.Services.AddScoped<IBookServies,BookServies>();
             builder.Services.AddScoped<ICartServices,CartServices>();
+            builder.Services.AddScoped<IAuthorServies, AuthorServies>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOrderServices, OrderServices>();
             builder.Services.AddScoped<IEventServices, EventServices>();

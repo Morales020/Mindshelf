@@ -11,10 +11,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Views\Event\" />
-    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\Images\Book\" />
   </ItemGroup>
 </Project>
-
