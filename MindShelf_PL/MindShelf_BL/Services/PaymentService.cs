@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MindShelf_BL.Services
 {
-    internal class PaymentService
+    public class PaymentService
     {
     }
 }
