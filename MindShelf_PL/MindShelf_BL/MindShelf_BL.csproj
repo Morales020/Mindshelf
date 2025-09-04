@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,5 +14,4 @@
   <ItemGroup>
     <ProjectReference Include="..\MindShelf_DAL\MindShelf_DAL.csproj" />
   </ItemGroup>
-	
 </Project>
