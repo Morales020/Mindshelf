@@ -270,7 +270,7 @@ namespace MindShelf_MVC.Controllers
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-            return View("Index", response.Data);
+             return PartialView("_Search",response.Data);
         }
 
         public async Task<IActionResult> ByCategory(int categoryId)
