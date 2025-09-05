@@ -94,6 +94,22 @@ namespace MindShelf_PL
 
             StripeConfiguration.ApiKey = stripeSecretKey;
 
+            //Google Settings
+            builder.Services.AddAuthentication()
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")
+                           ?? builder.Configuration["Authentication:Google:ClientId"];
+
+        options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")
+                               ?? builder.Configuration["Authentication:Google:ClientSecret"];
+
+        options.CallbackPath = "/signin-google";
+    });
 
 
             var app = builder.Build();
