@@ -28,8 +28,8 @@ namespace MindShelf_BL.Services
            {
                order = new MindShelf_DAL.Models.Order
                {
-                   UserId = "null",         
-                   UserName = "null",
+                   UserId = "51a01f86-e12c-448b-bc56-645092269389",
+                   UserName = "admin",
                    OrderDate = DateTime.UtcNow,
                    State = OrderState.Pending,
                    Address = "N/A",
