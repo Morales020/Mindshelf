@@ -42,6 +42,7 @@ namespace MindShelf_BL.Services
 
             var AuthorDtos = Authors.Select(Author => new AuthorResponseDto
             {
+                AuthorId=Author.AuthorId,
                 Name = Author.Name,
                 Bio = Author.Bio,
                 DateOfBirth = Author.DateOfBirth,
@@ -78,6 +79,7 @@ namespace MindShelf_BL.Services
 
             var authorDto = new AuthorResponseDto
             {
+                AuthorId =author.AuthorId,
                 Name = author.Name,
                 Bio = author.Bio,
                 DateOfBirth = author.DateOfBirth,

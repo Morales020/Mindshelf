@@ -1,3 +1,4 @@
+
 ﻿using MindShelf_DAL.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,8 @@ namespace MindShelf_BL.Dtos.BookDto
         [Range(0, double.MaxValue)]
         public decimal Price { get; set; }
 
-        public string ImageUrl { get; set; }
+        public double Rating { get; set; }
+        public string? ImageUrl { get; set; }
         public IFormFile? ImageFile { get; set; }
 
         [DataType(DataType.Date)]

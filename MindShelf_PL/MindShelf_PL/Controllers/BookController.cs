@@ -1,3 +1,4 @@
+
 ﻿using Microsoft.AspNetCore.Mvc;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Dtos.BookDto;
@@ -78,16 +79,39 @@ namespace MindShelf_MVC.Controllers
 
         public async Task<IActionResult> Create()
         {
+            // جلب المؤلفين
             var authorsResponse = await _authorService.GetAllAuthor(1, 100);
             var authorsList = authorsResponse.Data ?? new List<AuthorResponseDto>();
-         
+
+            // تحويل المؤلفين إلى SelectListItem وإضافة عنصر افتراضي
+            var authorsListItems = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "-- اختر المؤلف --", Value = "" }
+    };
+            authorsListItems.AddRange(authorsList.Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.AuthorId.ToString()
+            }));
+            ViewBag.Authors = authorsListItems;
+
+            // جلب الفئات
             var categoriesResponse = await _categoryService.GetAllCategories();
             var categoriesList = categoriesResponse.Data ?? new List<CategoryResponseDto>();
-           
-            ViewBag.Authors = new SelectList(authorsList, "AuthorId", "Name").Prepend(new SelectListItem { Text = "-- اختر المؤلف --", Value = "" });
-            ViewBag.Categories = new SelectList(categoriesList, "CategoryId", "Name").Prepend(new SelectListItem { Text = "-- اختر الفئة --", Value = "" });
 
+            // تحويل الفئات إلى SelectListItem وإضافة عنصر افتراضي
+            var categoriesListItems = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "-- اختر الفئة --", Value = "" }
+    };
+            categoriesListItems.AddRange(categoriesList.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.CategoryId.ToString()
+            }));
+            ViewBag.Categories = categoriesListItems;
 
+            // تهيئة DTO مع تاريخ النشر الافتراضي
             var dto = new CreateBookDto
             {
                 PublishedDate = DateTime.Today
@@ -96,14 +120,57 @@ namespace MindShelf_MVC.Controllers
             return View(dto);
         }
 
-
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookDto dto, IFormFile? imageFile)
         {
+            // إعادة تحميل الـ ViewBag في حال وجود خطأ في الـ ModelState
+            var authorsResponse = await _authorService.GetAllAuthor(1, 10);
+            var authorsList = authorsResponse.Data ?? new List<AuthorResponseDto>();
+            var authorsListItems = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "-- اختر المؤلف --", Value = "" }
+    };
+            authorsListItems.AddRange(authorsList.Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.AuthorId.ToString()
+            }));
+            ViewBag.Authors = authorsListItems;
+
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            var categoriesList = categoriesResponse.Data ?? new List<CategoryResponseDto>();
+            var categoriesListItems = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "-- اختر الفئة --", Value = "" }
+    };
+            categoriesListItems.AddRange(categoriesList.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.CategoryId.ToString()
+            }));
+            ViewBag.Categories = categoriesListItems;
+
+            // التحقق من صلاحية البيانات
             if (!ModelState.IsValid) return View(dto);
 
+            // التحقق من وجود المؤلف
+            if (!authorsList.Any(a => a.AuthorId == dto.AuthorId))
+            {
+                ModelState.AddModelError("", "المؤلف المحدد غير موجود");
+                return View(dto);
+            }
+
+            // التحقق من وجود الفئة
+            if (!categoriesList.Any(c => c.CategoryId == dto.CategoryId))
+            {
+                ModelState.AddModelError("", "الفئة المحددة غير موجودة");
+                return View(dto);
+            }
+
+            // حفظ الصورة
             dto.ImageUrl = await SaveImageAsync(imageFile);
 
+            // إنشاء الكتاب
             var response = await _bookService.CreateBookAsync(dto);
             if (response.StatusCode != 201 || response.Data == null)
             {
@@ -115,24 +182,47 @@ namespace MindShelf_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [HttpGet]
+      
+        
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _bookService.GetBookByIdAsync(id);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
-
-            var book = response.Data;
-            return View(new UpdateBookDto
+            var dto = new UpdateBookDto
             {
-                BookId = book.BookId,
-                Title = book.Title,
-                Description = book.Description,
-                Price = book.Price,
-                ImageUrl = book.ImageUrl,
-                State = book.State,
-                PublishedDate = book.PublishedDate
-            });
+                BookId= id,
+                PublishedDate= response.Data.PublishedDate,
+                ImageUrl= response.Data.ImageUrl,
+                Price = response.Data.Price,
+                State = response.Data.State,
+                Title = response.Data.Title,
+                Description = response.Data.Description,
+               Rating =response.Data.Rating,
+               
+
+            };
+
+            // Load dropdowns
+            var authorsResponse = await _authorService.GetAllAuthor(1, 100);
+            ViewBag.Authors = authorsResponse.Data?.Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.AuthorId.ToString()
+            }).ToList() ?? new List<SelectListItem>();
+
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            ViewBag.Categories = categoriesResponse.Data?.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.CategoryId.ToString()
+            }).ToList() ?? new List<SelectListItem>();
+
+            return View(dto);
         }
+
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateBookDto dto, IFormFile? imageFile)

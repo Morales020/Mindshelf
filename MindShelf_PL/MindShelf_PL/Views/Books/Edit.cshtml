@@ -1,14 +1,16 @@
-﻿@model MindShelf_BL.Dtos.BookDto.CreateBookDto
+﻿@model MindShelf_BL.Dtos.BookDto.UpdateBookDto
 
 @{
-    ViewData["Titlle"] = "إضافة كتاب جديد";
+    ViewData["Title"] = "تعديل الكتاب";
 }
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">إضافة كتاب جديد</h2>
+    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">تعديل الكتاب</h2>
     <div class="card p-4 bg-light shadow-lg" style="max-width: 600px; margin: 0 auto; border: 2px solid #6f42c1; border-radius: 15px;">
-        <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="row g-3">
             @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="BookId" />
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- Title -->
@@ -32,11 +34,6 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
-            <div class="col-6">
-                <label asp-for="Rating" class="form-label fw-bold text-dark"> التقيم</label>
-                <input asp-for="Rating" class="form-control border-purple" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
             <!-- PublishedDate -->
             <div class="col-6">
                 <label asp-for="PublishedDate" class="form-label fw-bold text-dark">تاريخ النشر</label>
@@ -58,13 +55,13 @@
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
             </div>
 
-            
+            <!-- Image -->
             <div class="col-12">
                 <label asp-for="ImageFile" class="form-label fw-bold text-dark">صورة الكتاب</label>
-                <input asp-for="ImageFile" type="file" accept="image/book" class="form-control border-purple" onchange="previewImage(event)" />
-                <img id="preview" src="#" alt="Preview" style="max-width: 150px; display:none; margin-top:10px;" />
+                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control border-purple" onchange="previewImage(event)" />
+                <img id="preview" src="@Model.ImageUrl" alt="Preview" style="max-width: 150px; margin-top:10px;" />
             </div>
-            
+
             <!-- State -->
             <div class="col-12">
                 <label asp-for="State" class="form-label fw-bold text-dark">الحالة</label>
@@ -74,7 +71,7 @@
 
             <!-- Buttons -->
             <div class="col-12 text-center mt-3">
-                <button type="submit" class="btn btn-purple btn-lg px-4">حفظ <i class="bi bi-check-circle"></i></button>
+                <button type="submit" class="btn btn-purple btn-lg px-4">تحديث <i class="bi bi-check-circle"></i></button>
                 <a asp-action="Index" class="btn btn-secondary btn-lg px-4 ms-2">رجوع <i class="bi bi-arrow-left"></i></a>
             </div>
         </form>
@@ -119,7 +116,7 @@
     }
 
         .card:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 </style>
 
@@ -134,5 +131,3 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>
-
-
