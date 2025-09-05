@@ -17,7 +17,6 @@
                     @Model.Name
                 </h3>
 				<hr />
-                <h5>Books:</h5>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                     @foreach (var book in Model.Books)
                     {
@@ -41,18 +40,20 @@
                         </div>
                     }
                 </div>
+                @if (Model.Books == null || !Model.Books.Any())
+                {
+                    <div style="padding:15px;">
+                        <p style="text-align:center;position:relative;top: 20px;">📚 لا توجد كتب في هذه الفئة.</p>
+                    </div>
+                }
                 <hr />
                 <h5>Description:</h5>
                 <p>@Model.Description</p>
 
                 <div class="mt-4">
-                    <a asp-action="Index" class="btn btn-secondary">Back</a>
-                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn rounded-1" style="color:white;background-color:#213b56;">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </a>
-                    <a asp-controller="Category" asp-action="Delete" asp-route-id="@Model.CategoryId" class="btn rounded-1" style="color:#fff;background-color:#CA1929;border-color:#CA1929;">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-purple me-2">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@Model.CategoryId" class="btn btn-danger me-1">حذف</a>
+                    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
                 </div>
  
             </div>
