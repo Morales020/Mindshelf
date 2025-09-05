@@ -244,6 +244,7 @@ namespace MindShelf_BL.Services
                 BookId = b.BookId,
                 Title = b.Title,
                 Description = b.Description,
+                ImageUrl = b.ImageUrl,
                 AuthorName = b.Author?.Name ?? "Unknown",
                 CategoryName = b.Category?.Name ?? "Unknown"
             });

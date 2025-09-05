@@ -9,15 +9,18 @@
     <h2 class="text-center mb-4">📚 جميع الكتب</h2>
 
     <!-- Search Bar -->
-    <form asp-action="Search" method="get" class="mb-4">
+    <form id="searchForm" asp-action="Search" method="get" class="mb-4">
         <div class="input-group">
-            <input type="text" name="term" class="form-control" placeholder="ابحث عن كتاب أو مؤلف..." />
+            <input type="text" id="term" name="term" class="form-control" placeholder="ابحث عن كتاب أو مؤلف..." autocomplete="off" />
             <button class="btn btn-primary" type="submit">🔍 بحث</button>
         </div>
     </form>
 
+    <!-- Ajax Search Result Here -->
+    <div id="searchResults"></div>
+
     <!-- Books Grid -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <div id="booksGrid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @foreach (var book in Model)
         {
             <div class="col">
@@ -64,3 +67,38 @@
         border-color: #0d6efd;
     }
 </style>
+
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchForm").on("submit", function (e) {
+            e.preventDefault();
+        });
+
+        // البحث بمجرد الكتابة
+        $("#term").on("keyup", function () {
+            var searchQuery = $(this).val();
+
+            if (searchQuery.length > 0) {
+                $("#booksGrid").hide();
+
+                $.ajax({
+                    url: '/Books/Search',
+                    type: 'GET',
+                    data: { term: searchQuery },
+                    success: function (response) {
+                        $("#searchResults").html(response);
+                    },
+                    error: function () {
+                        $("#searchResults").html("<p style='color:red;'>حدث خطأ أثناء جلب النتائج.</p>");
+                    }
+                });
+            } else {
+                $("#searchResults").html("");
+                $("#booksGrid").show();
+            }
+        });
+    });
+</script>

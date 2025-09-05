@@ -1,0 +1,40 @@
+﻿@model IEnumerable<BookResponseDto>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @if (Model.Any())
+    {
+        foreach (var book in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm book-card">
+                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height:250px; object-fit:cover;" />
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text text-muted">👤 @book.AuthorName</p>
+
+                        <div class="mb-2">
+                            <span class="text-warning">⭐ @book.Rating</span>
+                            <span class="text-muted">(@book.ReviewCount مراجعة)</span>
+                        </div>
+
+                        <p class="fw-bold text-success">س.ر @book.Price</p>
+                        <a asp-action="Details" asp-route-id="@book.BookId" class="btn btn-outline-primary mt-auto">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-center text-muted">📚 لا توجد نتائج مطابقة.</p>
+    }
+</div>
+
+<style>
+    .book-card:hover {
+        transform: scale(1.02);
+        transition: 0.3s ease-in-out;
+        border-color: #0d6efd;
+    }
+</style>
