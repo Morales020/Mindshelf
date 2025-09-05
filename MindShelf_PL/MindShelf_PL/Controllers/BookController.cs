@@ -254,9 +254,9 @@ namespace MindShelf_MVC.Controllers
         }
 
         [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int BookId)
         {
-            var response = await _bookService.DeleteBookAsync(id);
+            var response = await _bookService.DeleteBookAsync(BookId);
             if (response.StatusCode != 200 || !response.Data)
                 return ErrorResult(response.Message);
 

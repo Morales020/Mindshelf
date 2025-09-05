@@ -80,15 +80,18 @@
                                 <!-- Action Buttons -->
                                 <div class="action-buttons">
                                     <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
-                                       class="btn btn-primary me-2">
+                                       class="btn btn-primary">
                                         <i class="fas fa-comments"></i> عرض المراجعات
                                     </a>
                                     <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
-                                       class="btn btn-success me-2">
+                                       class="btn btn-success">
                                         <i class="fas fa-plus"></i> أضف مراجعة
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-warning me-2">
+                                    <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-warning">
                                         <i class="fas fa-edit"></i> تعديل الكتاب
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@Model.BookId" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> حذف الكتاب
                                     </a>
                                     <a asp-action="Index" class="btn btn-secondary">
                                         <i class="fas fa-arrow-right"></i> العودة للكتب
@@ -197,12 +200,29 @@
         text-align: justify;
     }
 
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 20px;
+        border: 2px solid #dee2e6;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
     .action-buttons .btn {
         border-radius: 25px;
         padding: 0.75rem 1.5rem;
         font-weight: 500;
         transition: all 0.3s ease;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        width: 180px;
+        text-align: center;
+        flex-shrink: 0;
     }
 
     .action-buttons .btn:hover {
@@ -303,9 +323,15 @@
             font-size: 2rem;
         }
         
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+        }
+        
         .action-buttons .btn {
             width: 100%;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0;
         }
         
         .reviews-section {
