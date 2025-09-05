@@ -1,0 +1,61 @@
+﻿@model MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto
+
+<div class="col-lg-4 col-md-6 mb-4">
+    <div class="card author-card h-100">
+        <div class="card-body text-center">
+            <div class="author-image mb-3">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/authors/default-author.jpg" : Model.ImageUrl)" 
+                     alt="@Model.Name" class="rounded-circle" width="80" height="80" 
+                     style="object-fit: cover; border: 3px solid var(--primary-blue);">
+            </div>
+
+            <h5 class="author-name text-primary mb-2">@Model.Name</h5>
+
+            @if (!string.IsNullOrEmpty(Model.Bio))
+            {
+                <p class="author-bio text-muted mb-3">
+                    @(Model.Bio.Length > 100 ? Model.Bio.Substring(0, 100) + "..." : Model.Bio)
+                </p>
+            }
+
+            <div class="author-stats mb-3">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <strong class="text-brown">@Model.bookcount</strong>
+                            <br>
+                            <small class="text-muted">كتاب</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <strong class="text-brown">@Model.ReviewsCount</strong>
+                            <br>
+                            <small class="text-muted">مراجعة</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.DateOfBirth.HasValue)
+            {
+                <p class="author-birth text-muted mb-3">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    مواليد @Model.DateOfBirth.Value.ToString("yyyy")
+                </p>
+            }
+
+            <div class="author-actions">
+                <a href="@Url.Action("Details", "Author", new { id = Model.AuthorId })" 
+                   class="btn btn-primary btn-sm">
+                    <i class="fas fa-user"></i> عرض الملف الشخصي
+                </a>
+
+                <a href="@Url.Action("ByAuthor", "Books", new { authorId = Model.AuthorId })" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-books"></i> كتب المؤلف
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

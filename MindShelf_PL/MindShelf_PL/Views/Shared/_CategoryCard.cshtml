@@ -1,0 +1,70 @@
+﻿@model MindShelf_BL.Dtos.CategoryDto.CategoryResponseDto
+
+<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+    <div class="category-card">
+        <div class="category-icon">
+            @switch (Model.Name)
+            {
+                case "الأدب العربي":
+                    <i class="fas fa-feather-alt"></i>
+                    break;
+                case "العلوم":
+                    <i class="fas fa-flask"></i>
+                    break;
+                case "التاريخ":
+                    <i class="fas fa-landmark"></i>
+                    break;
+                case "الفلسفة":
+                    <i class="fas fa-brain"></i>
+                    break;
+                case "التكنولوجيا":
+                    <i class="fas fa-laptop-code"></i>
+                    break;
+                case "الطب":
+                    <i class="fas fa-stethoscope"></i>
+                    break;
+                case "الأطفال":
+                    <i class="fas fa-child"></i>
+                    break;
+                case "الطبخ":
+                    <i class="fas fa-utensils"></i>
+                    break;
+                case "السفر":
+                    <i class="fas fa-plane"></i>
+                    break;
+                case "الرياضة":
+                    <i class="fas fa-running"></i>
+                    break;
+                case "الدين":
+                    <i class="fas fa-mosque"></i>
+                    break;
+                case "الروايات":
+                    <i class="fas fa-book-open"></i>
+                    break;
+                default:
+                    <i class="fas fa-bookmark"></i>
+                    break;
+            }
+        </div>
+
+        <h5 class="category-title">@Model.Name</h5>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="category-description text-muted mb-3">
+                @(Model.Description.Length > 80 ? Model.Description.Substring(0, 80) + "..." : Model.Description)
+            </p>
+        }
+
+        <div class="category-count">
+            <strong>@Model.Books.Count</strong> كتاب متاح
+        </div>
+
+        <div class="category-actions mt-3">
+            <a href="@Url.Action("ByCategory", "Books", new { categoryId = Model.CategoryId })"
+               class="btn btn-primary btn-sm w-100">
+                <i class="fas fa-eye"></i> تصفح الكتب
+            </a>
+        </div>
+    </div>
+</div>

@@ -15,7 +15,10 @@ namespace MindShelf_BL.Dtos.AuthorDto
         public string Bio { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public DateTime? DateOfBirth { get; set; }
+        public int bookcount { get; set; }
+        public int ReviewsCount {  get; set; }
         public ICollection<BookResponseDto> BooksResponseDto { get; set; }
+
 
     }
 }
