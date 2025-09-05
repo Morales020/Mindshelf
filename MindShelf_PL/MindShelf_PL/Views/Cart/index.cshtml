@@ -1,0 +1,186 @@
+@using MindShelf_BL.Dtos.CartsDto
+@model CartResponseDto
+
+@{
+    ViewData["Title"] = "سلة التسوق";
+}
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">🛒 سلة التسوق</h2>
+
+    @if (Model?.CartItems != null && Model.CartItems.Any())
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📚 الكتب في السلة</h5>
+                        <small class="text-muted">@Model.CartItems.Count() عنصر</small>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="row border-bottom py-3 cart-item" data-cart-item-id="@item.CartItemId">
+                                <!-- Book Image -->
+                                <div class="col-md-2">
+                                    <img src="@item.BookImageUrl" class="img-fluid rounded" alt="@item.BookName" style="height: 120px; width: 100%; object-fit: cover;">
+                                </div>
+                                
+                                <!-- Book Details -->
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">@item.BookName</h6>
+                                    <p class="text-muted mb-1">👤 @item.BookAuthor</p>
+                                    <p class="text-muted mb-1">📂 @item.BookCategory</p>
+                                    <p class="text-muted mb-1">📅 @item.BookPublishedDate</p>
+                                    <div class="mb-2">
+                                        <span class="text-warning">⭐ @item.BookRating</span>
+                                        <span class="text-muted">(@item.BookReviewCount مراجعة)</span>
+                                    </div>
+                                    <p class="text-success fw-bold">س.ر @item.BookPrice</p>
+                                </div>
+                                
+                                <!-- Quantity Controls -->
+                                <div class="col-md-2">
+                                    <label class="form-label">الكمية:</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(@item.CartItemId, @item.Quantity - 1)">-</button>
+                                        <input type="number" class="form-control text-center" value="@item.Quantity" min="1" max="10" 
+                                               onchange="updateQuantity(@item.CartItemId, this.value)" id="quantity-@item.CartItemId">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(@item.CartItemId, @item.Quantity + 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Price and Actions -->
+                                <div class="col-md-2 text-end">
+                                    <div class="mb-2">
+                                        <strong class="text-primary">س.ر @item.TotalPrice</strong>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="removeItem(@item.CartItemId)">
+                                        🗑️ حذف
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📋 ملخص الطلب</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>عدد العناصر:</span>
+                            <span>@Model.CartItems.Count()</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>المجموع الفرعي:</span>
+                            <span>س.ر @Model.CartItems.Sum(x => x.TotalPrice)</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>المجموع الكلي:</strong>
+                            <strong class="text-primary">س.ر @Model.CartItems.Sum(x => x.TotalPrice)</strong>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <form asp-action="Checkout" method="post">
+                            <input type="hidden" name="UserName" value="@Model.UserName" />
+                            <button type="submit" class="btn btn-success w-100 mb-3">
+                                💳 متابعة للدفع
+                            </button>
+                        </form>
+                        
+                        <!-- Continue Shopping -->
+                        <a asp-controller="Books" asp-action="Index" class="btn btn-outline-primary w-100">
+                            🛍️ متابعة التسوق
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty Cart -->
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ccc;"></i>
+            </div>
+            <h4 class="text-muted">سلة التسوق فارغة</h4>
+            <p class="text-muted mb-4">لم تقم بإضافة أي كتب إلى السلة بعد</p>
+            <a asp-controller="Books" asp-action="Index" class="btn btn-primary">
+                🛍️ ابدأ التسوق
+            </a>
+        </div>
+    }
+</div>
+
+<!-- Update Quantity Form -->
+<form id="updateQuantityForm" asp-action="UpdateCartItem" method="post" style="display: none;">
+    <input type="hidden" name="CartItemId" id="updateCartItemId" />
+    <input type="hidden" name="Quantity" id="updateQuantity" />
+</form>
+
+<!-- Remove Item Form -->
+<form id="removeItemForm" asp-action="RemoveCartItem" method="post" style="display: none;">
+    <input type="hidden" name="CartItemId" id="removeCartItemId" />
+</form>
+
+@section Scripts {
+    <script>
+        function updateQuantity(cartItemId, newQuantity) {
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            if (newQuantity > 10) {
+                newQuantity = 10;
+            }
+            
+            document.getElementById('updateCartItemId').value = cartItemId;
+            document.getElementById('updateQuantity').value = newQuantity;
+            document.getElementById('updateQuantityForm').submit();
+        }
+        
+        function removeItem(cartItemId) {
+            if (confirm('هل أنت متأكد من حذف هذا العنصر من السلة؟')) {
+                document.getElementById('removeCartItemId').value = cartItemId;
+                document.getElementById('removeItemForm').submit();
+            }
+        }
+    </script>
+}
+
+<style>
+    .cart-item:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.3s ease;
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .btn {
+        border-radius: 0.375rem;
+    }
+    
+    .input-group .btn {
+        border-radius: 0;
+    }
+    
+    .input-group .btn:first-child {
+        border-top-left-radius: 0.375rem;
+        border-bottom-left-radius: 0.375rem;
+    }
+    
+    .input-group .btn:last-child {
+        border-top-right-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+    }
+</style>
