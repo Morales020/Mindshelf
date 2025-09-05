@@ -1,0 +1,141 @@
+﻿@model MindShelf_BL.Dtos.AuthorDto.AuthorUpdateDto
+
+@{
+    ViewData["Title"] = "تعديل المؤلف";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white bg-gradient-primary rounded-top-4">
+                    <h4 class="m-0">تعديل بيانات المؤلف</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+
+                    <form asp-action="Edit" method="post" class="row g-3">
+                        <input type="hidden" asp-for="AuthorId" />
+
+                        <!-- Name -->
+                        <div class="col-12">
+                            <label asp-for="Name" class="form-label fw-semibold">اسم المؤلف</label>
+                            <input asp-for="Name" class="form-control form-control-lg fancy-input" placeholder="اكتب اسم المؤلف" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="col-12">
+                            <label asp-for="Bio" class="form-label fw-semibold">نبذة قصيرة</label>
+                            <textarea asp-for="Bio" class="form-control fancy-input" rows="4" placeholder="اكتب نبذة مختصرة"></textarea>
+                            <span asp-validation-for="Bio" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label fw-semibold">تاريخ الميلاد</label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control fancy-input" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+
+                        <!-- ImageUrl -->
+                        <div class="col-md-6">
+                            <label asp-for="ImageUrl" class="form-label fw-semibold">رابط الصورة</label>
+                            <input asp-for="ImageUrl" class="form-control fancy-input" placeholder="https://example.com/image.jpg" oninput="previewAuthorImage(this.value)" />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="col-12">
+                            <div class="preview-wrapper">
+                                <img id="authorPreview" src="@Model.ImageUrl" alt="معاينة الصورة" class="img-fluid rounded-3 shadow-sm @(string.IsNullOrEmpty(Model.ImageUrl) ? "d-none" : "")" />
+                                <div id="noPreview" class="text-muted small @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "d-none")">
+                                    سيظهر هنا معاينة الصورة عند إدخال رابط صحيح.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="col-12 d-flex gap-2 justify-content-between mt-2">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">رجوع</a>
+                            <button type="submit" class="btn btn-primary px-4">حفظ التعديلات</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer text-muted small text-center">
+                    يمكنك تعديل البيانات وحفظ التغييرات أو الرجوع للقائمة.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    html, body, .container, form { direction: rtl; text-align: right; }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #6f42c1, #8b5cf6);
+    }
+
+    .fancy-input {
+        border: 2px solid #eee;
+        border-radius: 12px;
+        transition: all .2s ease-in-out;
+        padding: .7rem .9rem;
+        background-color: #fff;
+    }
+    .fancy-input:focus {
+        border-color: #6f42c1 !important;
+        box-shadow: 0 0 0 .25rem rgba(111, 66, 193, .15);
+    }
+
+    .card { border-radius: 1.25rem; }
+    .card-header { border-top-left-radius: 1.25rem; border-top-right-radius: 1.25rem; }
+
+    .preview-wrapper {
+        min-height: 120px;
+        border: 2px dashed #e5e7eb;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: .75rem;
+        background: #fafafa;
+    }
+    #authorPreview { max-height: 180px; object-fit: cover; }
+
+    .btn-primary {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(111, 66, 193, .25);
+    }
+    .btn-primary:hover { background-color: #5a2e9c; border-color: #5a2e9c; }
+    .btn-outline-secondary { border-radius: 12px; }
+</style>
+
+<script>
+    function isValidUrl(str) {
+        try { new URL(str); return true; } catch { return false; }
+    }
+    function previewAuthorImage(url) {
+        const img = document.getElementById('authorPreview');
+        const placeholder = document.getElementById('noPreview');
+
+        if (url && isValidUrl(url)) {
+            img.src = url;
+            img.classList.remove('d-none');
+            placeholder.classList.add('d-none');
+            img.onerror = () => {
+                img.classList.add('d-none');
+                placeholder.classList.remove('d-none');
+            };
+        } else {
+            img.classList.add('d-none');
+            placeholder.classList.remove('d-none');
+        }
+    }
+</script>

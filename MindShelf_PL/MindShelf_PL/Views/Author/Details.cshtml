@@ -1,0 +1,89 @@
+﻿@model MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto
+
+@{
+    ViewData["Title"] = "Author Details";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Custom CSS for Profile Styling and Background */
+        body {
+            background: linear-gradient(135deg, #e0e7ff, #a5b4fc);
+            min-height: 100vh;
+        }
+
+        .profile-card {
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+            .profile-card:hover {
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+                transform: translateY(-5px);
+            }
+
+        .btn {
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                filter: brightness(1.1);
+            }
+
+        .icon {
+            margin-left: 8px;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4b5563;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="container mx-auto p-6">
+        <!-- Profile Header -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">بروفايل المؤلف</h1>
+
+        <!-- Profile Card -->
+        <div class="profile-card bg-white rounded-lg shadow-lg p-8 max-w-lg mx-auto">
+            <!-- Author Image (if exists) -->
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="flex justify-center mb-4">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="profile-image w-24 h-24" />
+                </div>
+            }
+            <!-- Author Details -->
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">@Model.Name</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">
+                    <i class="fas fa-user icon"></i>
+                    <strong>السيرة الذاتية:</strong> @Model.Bio
+                </p>
+                <p class="text-gray-600">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    <strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString()
+                </p>
+            </div>
+            <!-- Action Buttons -->
+            <div class="flex space-x-2 space-x-reverse mt-6 justify-center">
+                <a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">تعديل</a>
+                <a asp-action="Index" class="btn bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">رجوع للقايمة</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```

@@ -95,6 +95,10 @@ namespace MindShelf_BL.Services
         {
             try
             {
+                if(createBookDto== null)
+                {
+                    return new ResponseMVC<BookResponseDto>(400, "Unvalid payload ");
+                }
                 var book = new Book
                 {
                     Title = createBookDto.Title,
@@ -103,6 +107,7 @@ namespace MindShelf_BL.Services
                     AuthorId = createBookDto.AuthorId,
                     CategoryId = createBookDto.CategoryId,
                     Price = createBookDto.Price,
+                    Rating = createBookDto.Rating,
                     ImageUrl = createBookDto.ImageUrl,
                     State = createBookDto.State
                 };
@@ -117,6 +122,7 @@ namespace MindShelf_BL.Services
                     Description = book.Description,
                     PublishedDate = book.PublishedDate,
                     Price = book.Price,
+                    Rating = book.Rating,
                     State = book.State,
                     ImageUrl = book.ImageUrl
                 };

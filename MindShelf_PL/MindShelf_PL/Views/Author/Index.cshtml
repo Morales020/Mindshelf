@@ -1,0 +1,71 @@
+﻿
+@model IEnumerable<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>
+
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Custom CSS for Extra Styling */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .btn {
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            filter: brightness(1.1);
+        }
+        .icon {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-6">
+        <!-- Header -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">قايمة المؤلفين</h1>
+
+        <!-- Create New Author Button -->
+        <div class="mb-6">
+            <a asp-action="Create" class="btn bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة مؤلف جديد</a>
+        </div>
+
+        <!-- Authors Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var author in Model)
+            {
+                <div class="card bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">
+                        <a asp-action="Details" asp-route-id="@author.AuthorId" class="text-blue-600 hover:underline">@author.Name</a>
+                    </h2>
+                    <p class="text-gray-600 mb-3">@author.Bio</p>
+                    <p class="text-sm text-gray-500 mb-2"><i class="fas fa-calendar-alt icon"></i>تاريخ الميلاد: @author.DateOfBirth.ToString()</p>
+                    <!-- Assuming ArticleCount and TotalViews are in AuthorResponseDto -->
+                   
+                 
+                    <div class="flex space-x-2 space-x-reverse">
+                        <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600">تعديل</a>
+                        <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">حذف</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
