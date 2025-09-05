@@ -1,0 +1,110 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model UpdateReviewDto
+
+@{
+    ViewData["Title"] = "تعديل المراجعة";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">✏️ تعديل المراجعة</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <input asp-for="ReviewId" type="hidden" />
+                        <input asp-for="BookId" type="hidden" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">📚 الكتاب</label>
+                            <input type="text" class="form-control" value="@ViewBag.BookTitle" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">⭐ التقييم</label>
+                            <div class="rating-stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <input type="radio" asp-for="Rating" value="@i" id="star@i" class="rating-input" />
+                                    <label for="star@i" class="rating-star">⭐</label>
+                                }
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Comment" class="form-label">💬 التعليق</label>
+                            <textarea asp-for="Comment" class="form-control" rows="4" 
+                                      placeholder="اكتب تعليقك عن الكتاب"></textarea>
+                            <span asp-validation-for="Comment" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                💾 حفظ التعديلات
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.ReviewId" 
+                               class="btn btn-secondary">
+                                ← إلغاء
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating-stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+    
+    .rating-input {
+        display: none;
+    }
+    
+    .rating-star {
+        font-size: 2rem;
+        cursor: pointer;
+        color: #ddd;
+        transition: color 0.2s ease;
+    }
+    
+    .rating-star:hover,
+    .rating-star:hover ~ .rating-star,
+    .rating-input:checked ~ .rating-star {
+        color: #ffc107;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Set the current rating when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentRating = @Model.Rating;
+            const radioButton = document.getElementById('star' + currentRating);
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+        });
+    </script>
+}
