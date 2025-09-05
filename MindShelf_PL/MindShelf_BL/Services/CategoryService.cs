@@ -124,6 +124,7 @@ namespace MindShelf_BL.Services
                 var category = await _unitOfWork.CategoryRepo
                     .Query()
                     .Include(c => c.Books)
+                    .ThenInclude(b => b.Author) 
                     .FirstOrDefaultAsync(c => c.CategoryId == id);
 
                 if (category == null)
