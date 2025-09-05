@@ -6,6 +6,7 @@ using MindShelf_BL.Services;
 using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
+using MindShelf_DAL.Models.Stripe;
 using System;
 using System.Threading.Tasks;
 
@@ -16,6 +17,26 @@ namespace MindShelf_PL
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Load .env file
+            var envFilePath = Path.Combine(builder.Environment.ContentRootPath, ".env");
+            if (File.Exists(envFilePath))
+            {
+                foreach (var line in File.ReadAllLines(envFilePath))
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                        continue;
+
+                    var parts = line.Split('=', 2);
+                    if (parts.Length == 2)
+                    {
+                        Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
+                    }
+                }
+            }
+
+            // Add environment variables to configuration
+            builder.Configuration.AddEnvironmentVariables();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -32,6 +53,9 @@ namespace MindShelf_PL
 
             builder.Services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<MindShelfDbContext>();
 
+            // Configure Stripe Settings
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
             builder.Services.AddScoped<UnitOfWork>();
             // add services here
             builder.Services.AddScoped<IBookServies,BookServies>();
@@ -41,7 +65,7 @@ namespace MindShelf_PL
             builder.Services.AddScoped<IOrderServices, OrderServices>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
-
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
 
