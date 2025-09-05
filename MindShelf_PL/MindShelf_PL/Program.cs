@@ -7,8 +7,10 @@ using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 using MindShelf_DAL.Models.Stripe;
+using Stripe;
 using System;
 using System.Threading.Tasks;
+using File = System.IO.File;
 
 namespace MindShelf_PL
 {
@@ -22,7 +24,7 @@ namespace MindShelf_PL
             var envFilePath = Path.Combine(builder.Environment.ContentRootPath, ".env");
             if (File.Exists(envFilePath))
             {
-                foreach (var line in File.ReadAllLines(envFilePath))
+                foreach (var line in System.IO.File.ReadAllLines(envFilePath))
                 {
                     if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
                         continue;
@@ -67,6 +69,30 @@ namespace MindShelf_PL
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
 
+
+            //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            //StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
+
+            // Stripe Settings
+            builder.Services.Configure<StripeSettings>(options =>
+            {
+                options.SecretKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")
+                                    ?? builder.Configuration["Stripe:SecretKey"];
+
+                options.PublishableKey = Environment.GetEnvironmentVariable("STRIPE_PUBLISHABLE_KEY")
+                                         ?? builder.Configuration["Stripe:PublishableKey"];
+            });
+
+            // Set global Stripe API key
+            var stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")
+                                  ?? builder.Configuration["Stripe:SecretKey"];
+
+            if (string.IsNullOrEmpty(stripeSecretKey))
+            {
+                throw new Exception("Stripe Secret Key is missing. Please check your .env file.");
+            }
+
+            StripeConfiguration.ApiKey = stripeSecretKey;
 
 
 
