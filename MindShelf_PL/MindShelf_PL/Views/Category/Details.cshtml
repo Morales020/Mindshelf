@@ -1,0 +1,88 @@
+﻿@model CategoryDetailsDto
+
+@{
+    ViewData["Title"] = "تفاصيل الفئه";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">
+        تفاصيل الفئه
+    </h2>
+
+    <div class="card p-4 shadow-lg" style="max-width: 800px; margin: 0 auto; border: 2px solid #6f42c1; border-radius: 15px;">
+        <div class="row">
+            <!-- Category Info -->
+            <div>
+                <h3 style="font-family: fantasy;text-align:center;">
+                    @Model.Name
+                </h3>
+				<hr />
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                    @foreach (var book in Model.Books)
+                    {
+                        <div class="col">
+                            <div class="card h-100 shadow-sm book-card">
+                                <!-- ✅ صورة الكتاب -->
+                                <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height:250px; object-fit:cover;" />
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">@book.Title</h5>
+                                    <p class="card-text text-muted">👤 @book.Author.Name</p>
+
+                                    <div class="mb-2">
+                                        <span class="text-warning">⭐ @book.Rating</span>
+                                        <span class="text-muted">(@book.ReviewCount مراجعة)</span>
+                                    </div>
+
+                                    <p class="fw-bold text-success">س.ر @book.Price</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (Model.Books == null || !Model.Books.Any())
+                {
+                    <div style="padding:15px;">
+                        <p style="text-align:center;position:relative;top: 20px;">📚 لا توجد كتب في هذه الفئة.</p>
+                    </div>
+                }
+                <hr />
+                <h5>Description:</h5>
+                <p>@Model.Description</p>
+
+                <div class="mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-purple me-2">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@Model.CategoryId" class="btn btn-danger me-1">حذف</a>
+                    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+                </div>
+ 
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-purple {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: white;
+        transition: all 0.3s;
+    }
+
+        .btn-purple:hover {
+            background-color: #5a2e9c;
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        transition: all 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+</style>
