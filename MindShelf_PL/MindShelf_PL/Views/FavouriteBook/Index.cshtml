@@ -1,0 +1,48 @@
+﻿@model IEnumerable<FavouriteBookResponseDto>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">
+         كتبي المفضلة
+    </h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var fav in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-lg border-0 rounded-3">
+                    <img src="@fav.BookImageUrl" style="height:500px;"
+                         class="card-img-top" 
+                         alt="@fav.BookTitle" 
+                         style="height: 250px; object-fit: cover;">
+
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@fav.BookTitle</h5>
+                        <p class="card-text text-muted">
+                            أضيفت بواسطة: <strong>@fav.UserName</strong>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-secondary">
+                                📅 تمت الإضافة: @(fav.AddedDate?.ToString("yyyy-MM-dd") ?? "غير محدد")
+                            </small>
+                        </p>
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between bg-light">
+                        <a asp-controller="Books" asp-action="Details" asp-route-id="@fav.BookId" 
+                           class="btn btn-sm btn-outline-primary">
+                            التفاصيل
+                        </a>
+
+                        <form asp-controller="FavouriteBook" asp-action="RemoveFromFavourite" method="post" class="m-0">
+                            <input type="hidden" name="favouriteBookId" value="@fav.FavouriteBookId" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                💔 إزالة
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
