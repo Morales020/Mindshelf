@@ -1,0 +1,395 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حدث جديد - مكتبة رقمية</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-100 py-3">
+        <div class="container mx-auto px-4">
+            <nav class="text-sm">
+                <ol class="list-none p-0 inline-flex space-x-2 space-x-reverse">
+                    <li class="flex items-center">
+                        <a href="#" class="text-blue-600 hover:text-blue-800">الرئيسية</a>
+                        <i class="fas fa-chevron-left mx-2 text-gray-400"></i>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="#" class="text-blue-600 hover:text-blue-800">الفعاليات</a>
+                        <i class="fas fa-chevron-left mx-2 text-gray-400"></i>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-gray-500">إنشاء فعالية جديدة</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-calendar-plus text-green-600 ml-2"></i>
+                        إنشاء فعالية جديدة
+                    </h1>
+                    <p class="text-gray-600">أضف فعالية جديدة لجذب القراء والمهتمين</p>
+                </div>
+                <a href="#" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg flex items-center">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للفعاليات
+                </a>
+            </div>
+        </div>
+
+        <!-- Create Event Form -->
+        <div class="bg-white rounded-xl card-shadow p-8">
+            <form id="createEventForm" class="space-y-6">
+                <!-- Event Title -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-heading ml-1 text-blue-500"></i>
+                            عنوان الفعالية *
+                        </label>
+                        <input type="text" id="title" name="title" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="أدخل عنوان الفعالية">
+                    </div>
+                </div>
+
+                <!-- Date and Time -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-day ml-1 text-green-500"></i>
+                            تاريخ البداية *
+                        </label>
+                        <input type="datetime-local" id="startDate" name="startDate" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="endDate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-check ml-1 text-red-500"></i>
+                            تاريخ النهاية *
+                        </label>
+                        <input type="datetime-local" id="endDate" name="endDate" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Location Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-4">
+                        <i class="fas fa-map-marker-alt ml-1 text-purple-500"></i>
+                        نوع الفعالية *
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                            <input type="radio" name="eventType" value="physical" class="text-blue-500 mr-3">
+                            <div>
+                                <div class="font-medium text-gray-800">
+                                    <i class="fas fa-building ml-2 text-blue-500"></i>
+                                    حضورية
+                                </div>
+                                <div class="text-sm text-gray-600">في مكان محدد</div>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                            <input type="radio" name="eventType" value="online" class="text-blue-500 mr-3">
+                            <div>
+                                <div class="font-medium text-gray-800">
+                                    <i class="fas fa-laptop ml-2 text-green-500"></i>
+                                    عبر الإنترنت
+                                </div>
+                                <div class="text-sm text-gray-600">اجتماع افتراضي</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Location Details -->
+                <div id="locationDetails">
+                    <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-map-marker-alt ml-1 text-red-500"></i>
+                        مكان الفعالية / رابط الاجتماع *
+                    </label>
+                    <input type="text" id="location" name="location" required
+                           class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="أدخل عنوان المكان أو رابط الاجتماع">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-align-right ml-1 text-yellow-500"></i>
+                        وصف الفعالية
+                    </label>
+                    <textarea id="description" name="description" rows="5"
+                              class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                              placeholder="اكتب وصفاً تفصيلياً للفعالية، أهدافها، والجمهور المستهدف..."></textarea>
+                </div>
+
+                <!-- Event Settings -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="maxParticipants" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-users ml-1 text-indigo-500"></i>
+                            الحد الأقصى للمشاركين
+                        </label>
+                        <input type="number" id="maxParticipants" name="maxParticipants" min="1"
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="اتركه فارغاً لعدم وضع حد">
+                    </div>
+                    <div>
+                        <label for="registrationDeadline" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-clock ml-1 text-orange-500"></i>
+                            آخر موعد للتسجيل
+                        </label>
+                        <input type="datetime-local" id="registrationDeadline" name="registrationDeadline"
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Event Status -->
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="isActive" name="isActive" checked
+                               class="rounded border-gray-300 text-blue-500 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 ml-2">
+                        <span class="text-sm font-medium text-gray-700">
+                            <i class="fas fa-eye ml-1 text-green-500"></i>
+                            فعالية نشطة (مرئية للجمهور)
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Event Image Upload -->
+                <div>
+                    <label for="eventImage" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-image ml-1 text-pink-500"></i>
+                        صورة الفعالية
+                    </label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                        <div class="space-y-1 text-center">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="eventImage" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-700 focus-within:outline-none">
+                                    <span>ارفع صورة</span>
+                                    <input id="eventImage" name="eventImage" type="file" accept="image/*" class="sr-only">
+                                </label>
+                                <p class="pr-1">أو اسحب وأفلت هنا</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF حتى 10MB</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle ml-1"></i>
+                        الحقول المميزة بـ (*) مطلوبة
+                    </div>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <button type="button" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
+                            <i class="fas fa-times ml-1"></i>
+                            إلغاء
+                        </button>
+                        <button type="button" class="btn-primary px-6 py-3 text-white rounded-lg font-medium">
+                            <i class="fas fa-save ml-1"></i>
+                            حفظ كمسودة
+                        </button>
+                        <button type="submit" class="btn-primary px-8 py-3 text-white rounded-lg font-medium">
+                            <i class="fas fa-plus ml-1"></i>
+                            إنشاء الفعالية
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="flex justify-center items-center mb-4">
+                    <i class="fas fa-book-open text-2xl text-blue-400 ml-2"></i>
+                    <h3 class="text-xl font-bold">مكتبة رقمية</h3>
+                </div>
+                <p class="text-gray-400 mb-4">بوابتك إلى المعرفة - أكثر من 50,000 كتاب في جميع المجالات</p>
+                <div class="flex justify-center space-x-6 space-x-reverse">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-700 text-sm text-gray-400">
+                    © 2024 مكتبة رقمية. جميع الحقوق محفوظة.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form validation and submission
+        document.getElementById('createEventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(this);
+            const eventData = Object.fromEntries(formData);
+
+            // Validate required fields
+            const requiredFields = ['title', 'startDate', 'endDate', 'location'];
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (!input.value.trim()) {
+                    input.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            // Validate date range
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+
+            if (startDate >= endDate) {
+                alert('تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
+                return;
+            }
+
+            if (isValid) {
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                successMessage.innerHTML = '<i class="fas fa-check-circle ml-2"></i>تم إنشاء الفعالية بنجاح!';
+                document.body.appendChild(successMessage);
+
+                // Remove message after 3 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 3000);
+
+                // Reset form
+                this.reset();
+
+                console.log('Event Data:', eventData);
+            } else {
+                // Show error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                errorMessage.innerHTML = '<i class="fas fa-exclamation-circle ml-2"></i>الرجاء ملء جميع الحقول المطلوبة';
+                document.body.appendChild(errorMessage);
+
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 3000);
+            }
+        });
+
+        // Event type change handler
+        document.querySelectorAll('input[name="eventType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const locationInput = document.getElementById('location');
+                if (this.value === 'online') {
+                    locationInput.placeholder = 'أدخل رابط الاجتماع (Zoom, Teams, etc.)';
+                } else {
+                    locationInput.placeholder = 'أدخل عنوان المكان';
+                }
+            });
+        });
+
+        // File upload preview
+        document.getElementById('eventImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create preview
+                    const preview = document.createElement('div');
+                    preview.className = 'mt-4 text-center';
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="max-w-xs mx-auto rounded-lg shadow-md">
+                        <p class="text-sm text-gray-600 mt-2">${file.name}</p>
+                    `;
+
+                    // Remove existing preview
+                    const existingPreview = document.querySelector('.image-preview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+
+                    preview.className += ' image-preview';
+                    e.target.closest('.border-dashed').appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Set minimum date to today
+        const today = new Date();
+        const todayString = today.toISOString().slice(0, 16);
+        document.getElementById('startDate').min = todayString;
+        document.getElementById('endDate').min = todayString;
+        document.getElementById('registrationDeadline').min = todayString;
+
+        // Update end date minimum when start date changes
+        document.getElementById('startDate').addEventListener('change', function() {
+            document.getElementById('endDate').min = this.value;
+        });
+    </script>
+</body>
+</html>

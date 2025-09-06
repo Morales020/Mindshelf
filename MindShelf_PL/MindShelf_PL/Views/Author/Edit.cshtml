@@ -4,12 +4,150 @@
     ViewData["Title"] = "تعديل المؤلف";
 }
 
+<style>
+    /* Author Form specific styles */
+    .author-form-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        border: 1px solid #e9ecef;
+        overflow: hidden;
+    }
+
+    .author-form-header {
+        background: linear-gradient(135deg, var(--warning-color), var(--primary-brown));
+        color: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+
+    .author-form-header h4 {
+        margin: 0;
+        font-family: var(--font-arabic-title);
+        font-weight: 700;
+    }
+
+    .fancy-input {
+        border: 2px solid #e9ecef;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        padding: 0.75rem 1rem;
+        background-color: #fff;
+        font-family: var(--font-arabic);
+    }
+
+    .fancy-input:focus {
+        border-color: var(--warning-color) !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15);
+        outline: none;
+    }
+
+    .preview-wrapper {
+        min-height: 120px;
+        border: 2px dashed #e9ecef;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: var(--light-beige);
+        transition: var(--transition);
+    }
+
+    .preview-wrapper:hover {
+        border-color: var(--warning-color);
+    }
+
+    #authorPreview {
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, var(--warning-color), var(--primary-brown));
+        border: none;
+        color: white;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--box-shadow);
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-cancel:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .author-form-card {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    .dark-mode .fancy-input {
+        background-color: #4a5568;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    .dark-mode .fancy-input:focus {
+        border-color: #f6ad55 !important;
+        background-color: #4a5568;
+    }
+
+    .dark-mode .preview-wrapper {
+        background: #4a5568;
+        border-color: #4a5568;
+    }
+
+    .dark-mode .preview-wrapper:hover {
+        border-color: #f6ad55;
+    }
+</style>
+
 <div class="container py-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-3">
+                <a asp-action="Index" class="btn-cancel me-3">
+                    <i class="fas fa-arrow-right me-2"></i>رجوع للقائمة
+                </a>
+                <h1 class="display-6 fw-bold text-primary mb-0">
+                    <i class="fas fa-edit me-3"></i>تعديل بيانات المؤلف
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Author Form -->
     <div class="row justify-content-center">
-        <div class="col-lg-7">
-            <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header text-white bg-gradient-primary rounded-top-4">
-                    <h4 class="m-0">تعديل بيانات المؤلف</h4>
+        <div class="col-lg-8">
+            <div class="author-form-card">
+                <div class="author-form-header">
+                    <h4><i class="fas fa-edit me-2"></i>تعديل بيانات المؤلف</h4>
                 </div>
 
                 <div class="card-body p-4">
@@ -21,111 +159,91 @@
 
                         <!-- Name -->
                         <div class="col-12">
-                            <label asp-for="Name" class="form-label fw-semibold">اسم المؤلف</label>
-                            <input asp-for="Name" class="form-control form-control-lg fancy-input" placeholder="اكتب اسم المؤلف" />
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="fas fa-user me-2 text-primary"></i>اسم المؤلف
+                            </label>
+                            <input asp-for="Name" class="form-control fancy-input" placeholder="اكتب اسم المؤلف الكامل" />
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
                         <!-- Bio -->
                         <div class="col-12">
-                            <label asp-for="Bio" class="form-label fw-semibold">نبذة قصيرة</label>
-                            <textarea asp-for="Bio" class="form-control fancy-input" rows="4" placeholder="اكتب نبذة مختصرة"></textarea>
+                            <label asp-for="Bio" class="form-label fw-semibold">
+                                <i class="fas fa-quote-right me-2 text-primary"></i>نبذة قصيرة
+                            </label>
+                            <textarea asp-for="Bio" class="form-control fancy-input" rows="4" placeholder="اكتب نبذة مختصرة عن المؤلف"></textarea>
                             <span asp-validation-for="Bio" class="text-danger small"></span>
                         </div>
 
                         <!-- Date of Birth -->
                         <div class="col-md-6">
-                            <label asp-for="DateOfBirth" class="form-label fw-semibold">تاريخ الميلاد</label>
+                            <label asp-for="DateOfBirth" class="form-label fw-semibold">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i>تاريخ الميلاد
+                            </label>
                             <input asp-for="DateOfBirth" type="date" class="form-control fancy-input" />
                             <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                         </div>
 
                         <!-- ImageUrl -->
                         <div class="col-md-6">
-                            <label asp-for="ImageUrl" class="form-label fw-semibold">رابط الصورة</label>
+                            <label asp-for="ImageUrl" class="form-label fw-semibold">
+                                <i class="fas fa-image me-2 text-primary"></i>رابط الصورة
+                            </label>
                             <input asp-for="ImageUrl" class="form-control fancy-input" placeholder="https://example.com/image.jpg" oninput="previewAuthorImage(this.value)" />
                             <span asp-validation-for="ImageUrl" class="text-danger small"></span>
                         </div>
 
                         <!-- Image Preview -->
                         <div class="col-12">
-                            <div class="preview-wrapper">
-                                <img id="authorPreview" src="@Model.ImageUrl" alt="معاينة الصورة" class="img-fluid rounded-3 shadow-sm @(string.IsNullOrEmpty(Model.ImageUrl) ? "d-none" : "")" />
-                                <div id="noPreview" class="text-muted small @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "d-none")">
-                                    سيظهر هنا معاينة الصورة عند إدخال رابط صحيح.
-                                </div>
-                            </div>
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-eye me-2 text-primary"></i>معاينة الصورة
+                            </label>
+                                    <div class="preview-wrapper">
+                                        <img id="authorPreview" src="@Model.ImageUrl" alt="معاينة الصورة" class="img-fluid @(string.IsNullOrEmpty(Model.ImageUrl) || !(Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)) ? "d-none" : "")" />
+                                        <div id="noPreview" class="text-center @(string.IsNullOrEmpty(Model.ImageUrl) || !(Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)) ? "" : "d-none")">
+                                            <img src="/Images/anon-icon.jpg" alt="صورة افتراضية" class="img-fluid" style="max-width: 150px; border-radius: 50%;" />
+                                            <div class="text-muted small mt-2">
+                                                <i class="fas fa-image me-2"></i>سيظهر هنا معاينة الصورة عند إدخال رابط صحيح
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
 
                         <!-- Actions -->
-                        <div class="col-12 d-flex gap-2 justify-content-between mt-2">
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4">رجوع</a>
-                            <button type="submit" class="btn btn-primary px-4">حفظ التعديلات</button>
+                        <div class="col-12 d-flex gap-3 justify-content-center mt-4">
+                            <a asp-action="Index" class="btn-cancel">
+                                <i class="fas fa-times me-2"></i>إلغاء
+                            </a>
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save me-2"></i>حفظ التعديلات
+                            </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="card-footer text-muted small text-center">
-                    يمكنك تعديل البيانات وحفظ التغييرات أو الرجوع للقائمة.
+                <div class="card-footer text-muted small text-center bg-light">
+                    <i class="fas fa-info-circle me-2"></i>يمكنك تعديل البيانات وحفظ التغييرات أو الرجوع للقائمة
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    html, body, .container, form { direction: rtl; text-align: right; }
-
-    .bg-gradient-primary {
-        background: linear-gradient(90deg, #6f42c1, #8b5cf6);
-    }
-
-    .fancy-input {
-        border: 2px solid #eee;
-        border-radius: 12px;
-        transition: all .2s ease-in-out;
-        padding: .7rem .9rem;
-        background-color: #fff;
-    }
-    .fancy-input:focus {
-        border-color: #6f42c1 !important;
-        box-shadow: 0 0 0 .25rem rgba(111, 66, 193, .15);
-    }
-
-    .card { border-radius: 1.25rem; }
-    .card-header { border-top-left-radius: 1.25rem; border-top-right-radius: 1.25rem; }
-
-    .preview-wrapper {
-        min-height: 120px;
-        border: 2px dashed #e5e7eb;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: .75rem;
-        background: #fafafa;
-    }
-    #authorPreview { max-height: 180px; object-fit: cover; }
-
-    .btn-primary {
-        background-color: #6f42c1;
-        border-color: #6f42c1;
-        border-radius: 12px;
-        box-shadow: 0 6px 16px rgba(111, 66, 193, .25);
-    }
-    .btn-primary:hover { background-color: #5a2e9c; border-color: #5a2e9c; }
-    .btn-outline-secondary { border-radius: 12px; }
-</style>
 
 <script>
     function isValidUrl(str) {
         try { new URL(str); return true; } catch { return false; }
     }
+    function isValidImageUrl(url) {
+        if (!url) return false;
+        const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        return validExtensions.some(ext => url.toLowerCase().endsWith(ext));
+    }
     function previewAuthorImage(url) {
         const img = document.getElementById('authorPreview');
         const placeholder = document.getElementById('noPreview');
 
-        if (url && isValidUrl(url)) {
+        if (url && isValidUrl(url) && isValidImageUrl(url)) {
             img.src = url;
             img.classList.remove('d-none');
             placeholder.classList.add('d-none');
