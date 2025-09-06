@@ -11,6 +11,8 @@ using Stripe;
 using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
+using Microsoft.AspNetCore.Http;
+using MindShelf_PL.Handlers;
 
 namespace MindShelf_PL
 {
@@ -42,6 +44,14 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            
+            // Add session support
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
@@ -99,7 +109,15 @@ namespace MindShelf_PL
             builder.Services.AddAuthentication()
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
+        options.LoginPath = "/";
+        options.AccessDeniedPath = "/";
+        options.ReturnUrlParameter = "returnUrl";
+        options.Cookie.Name = "MindShelfAuth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.SlidingExpiration = true;
     })
     .AddGoogle(options =>
     {
@@ -112,6 +130,11 @@ namespace MindShelf_PL
         options.CallbackPath = "/signin-google";
     });
 
+            // Configure Authorization
+            builder.Services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = options.DefaultPolicy;
+            });
 
             var app = builder.Build();
 
@@ -122,11 +145,20 @@ namespace MindShelf_PL
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            // Add status code pages middleware
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+            
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
