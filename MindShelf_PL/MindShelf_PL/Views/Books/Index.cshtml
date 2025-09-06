@@ -103,7 +103,7 @@
             @foreach (var book in Model)
             {
                 <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                    <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId )">
+                    <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
                         <div class="position-relative">
                             @if (!string.IsNullOrEmpty(book.ImageUrl))
                             {
@@ -111,6 +111,14 @@
                                      class="w-100" style="height: 250px; object-fit: cover; cursor: pointer;"
                                      onclick="viewBookDetails(@(book.BookId ))"
                                      onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
+
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm position-absolute"
+                                        style="top: 10px; left: 10px;"
+                                        onclick="addToFavourite(@(book.BookId ), this)"
+                                        title="إضافة للمفضلة">
+                                    <i class="far fa-heart"></i>
+                                </button>
                             }
                             else
                             {
@@ -121,13 +129,7 @@
                                 </div>
                             }
 
-                            <button type="button"
-                                    class="btn btn-outline-danger btn-sm position-absolute"
-                                    style="top: 10px; left: 10px;"
-                                    onclick="toggleFavorite(@(book.BookId ), this)"
-                                    title="إضافة للمفضلة">
-                                <i class="far fa-heart"></i>
-                            </button>
+
 
                             @if (book.State == MindShelf_DAL.Models.BookState.Available)
                             {
@@ -290,5 +292,23 @@
         function toggleFavorite(bookId, button) {
             alert("وظيفة المفضلة هنا يمكن إضافتها لاحقاً");
         }
+
+         function addToFavourite(bookId, btn) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("AddToFavourite", "FavouriteBook")',
+                type: 'POST',
+                data: { bookId: bookId, __RequestVerificationToken: token },
+                success: function(response) {
+                    $(btn).find('i').removeClass('far').addClass('fas'); // قلب ممتلئ
+                    alert("تمت الإضافة للمفضلة!");
+                },
+                error: function() {
+                    alert("حدث خطأ أثناء الإضافة للمفضلة");
+                }
+            });
+        }
+
     </script>
 }

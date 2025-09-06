@@ -249,8 +249,13 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                Rating = b.Rating,
+                ImageUrl=b.ImageUrl,
+                 State = b.State,
+                 PublishedDate = b.PublishedDate
+
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }

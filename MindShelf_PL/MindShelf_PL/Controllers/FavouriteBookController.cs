@@ -16,13 +16,20 @@ namespace MindShelf.Controllers
             _favouriteBookService = favouriteBookService;
         }
 
-        // عرض كل المفضلة
+        // صفحة عرض كل الكتب المفضلة
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var result = await _favouriteBookService.GetAllFavouriteBooks(page, pageSize);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "يجب تسجيل الدخول لعرض المفضلة";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var result = await _favouriteBookService.GetAllFavouriteBooks(userId, page, pageSize);
             if (!result.Success)
             {
-                ViewBag.Error = result.Message;
+                TempData["Error"] = result.Message;
                 return View(new List<FavouriteBookResponseDto>());
             }
 
@@ -32,82 +39,62 @@ namespace MindShelf.Controllers
         // إضافة كتاب للمفضلة
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(int bookId)
+        public async Task<IActionResult> AddToFavourite(int bookId)
         {
             if (bookId <= 0)
-                return Json(new { success = false, message = "معرف الكتاب غير صالح" });
+            {
+                TempData["Error"] = "معرف الكتاب غير صالح";
+                return RedirectToAction("Index", "Books");
+            }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
-                return Json(new { success = false, message = "المستخدم غير مسجل دخول" });
+            {
+                TempData["Error"] = "يجب تسجيل الدخول لإضافة كتاب للمفضلة";
+                return RedirectToAction("Login", "Account");
+            }
 
             var favouriteBook = await _favouriteBookService.AddFavouriteBookAsync(userId, bookId);
-
             if (favouriteBook == null)
-                return Json(new { success = false, message = "لم يتم العثور على الكتاب أو حدث خطأ" });
-
-            return Json(new { success = true, message = "تمت إضافة الكتاب إلى المفضلة", data = favouriteBook });
-        }
-
-        // إزالة كتاب من المفضلة
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Remove(int favouriteBookId)
-        {
-            if (favouriteBookId <= 0)
-                return Json(new { success = false, message = "معرف غير صالح" });
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Json(new { success = false, message = "المستخدم غير مسجل دخول" });
-
-            var result = await _favouriteBookService.RemoveFavouriteBookAsync(favouriteBookId);
-
-            if (!result)
-                return Json(new { success = false, message = "الكتاب غير موجود في المفضلة" });
-
-            return Json(new { success = true, message = "تمت إزالة الكتاب من المفضلة" });
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Toggle(int bookId)
-        {
-            if (bookId <= 0)
-                return Json(new { success = false, message = "معرف الكتاب غير صالح" });
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Json(new { success = false, message = "المستخدم غير مسجل دخول" });
-
-            var existing = await _favouriteBookService.GetAllFavouriteBooks(1, int.MaxValue);
-            if (!existing.Success || existing.Data == null)
-                return Json(new { success = false, message = "حدث خطأ أثناء جلب المفضلة" });
-
-            var favBook = existing.Data.FirstOrDefault(f => f.BookId == bookId && f.UserId == userId);
-
-            if (favBook != null)
             {
-                var removed = await _favouriteBookService.RemoveFavouriteBookAsync(favBook.FavouriteBookId);
-                return Json(new
-                {
-                    success = removed,
-                    message = removed ? "تمت إزالة الكتاب من المفضلة" : "خطأ أثناء الحذف",
-                    removed = true
-                });
+                TempData["Error"] = "حدث خطأ أثناء إضافة الكتاب إلى المفضلة";
             }
             else
             {
-                var added = await _favouriteBookService.AddFavouriteBookAsync(userId, bookId);
-                return Json(new
-                {
-                    success = added != null,
-                    message = added != null ? "تمت إضافة الكتاب إلى المفضلة" : "خطأ أثناء الإضافة",
-                    removed = false,
-                    data = added
-                });
+                TempData["Success"] = "تمت إضافة الكتاب إلى المفضلة";
             }
+
+            return RedirectToAction("Index", "Books");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromFavourite(int favouriteBookId)
+        {
+            if (favouriteBookId <= 0)
+            {
+                TempData["Error"] = "معرف غير صالح";
+                return RedirectToAction("Index");
+            }
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "يجب تسجيل الدخول لإزالة كتاب من المفضلة";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var result = await _favouriteBookService.RemoveFavouriteBookAsync(favouriteBookId);
+            if (!result)
+            {
+                TempData["Error"] = "الكتاب غير موجود في المفضلة";
+            }
+            else
+            {
+                TempData["Success"] = "تمت إزالة الكتاب من المفضلة";
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }

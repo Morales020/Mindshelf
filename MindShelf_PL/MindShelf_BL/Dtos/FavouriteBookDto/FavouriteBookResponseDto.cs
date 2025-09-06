@@ -14,5 +14,7 @@ namespace MindShelf_BL.Dtos.FavouriteBookDto
         public string UserId { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public DateTime? AddedDate { get; set; }
+        public string BookTitle { get; internal set; }
+        public string BookImageUrl { get; internal set; }
     }
 }
