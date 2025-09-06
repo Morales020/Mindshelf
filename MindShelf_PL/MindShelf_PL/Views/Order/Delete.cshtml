@@ -1,0 +1,77 @@
+﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
+
+@{
+    ViewData["Title"] = "حذف الطلب";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger"><i class="fas fa-trash-alt me-2"></i>حذف الطلب</h2>
+</div>
+
+<div class="alert alert-warning">
+    <h5><i class="fas fa-exclamation-triangle me-2"></i>تأكيد الحذف</h5>
+    <p>هل أنت متأكد أنك تريد حذف هذا الطلب بشكل نهائي؟</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">رقم الطلب</dt>
+            <dd class="col-sm-9">#@Model.Id.ToString().PadLeft(6, '0')</dd>
+
+            <dt class="col-sm-3">العميل</dt>
+            <dd class="col-sm-9">@Model.UserName</dd>
+
+            <dt class="col-sm-3">التاريخ</dt>
+            <dd class="col-sm-9">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-3">الإجمالي</dt>
+            <dd class="col-sm-9 fw-bold">@Model.TotalAmount.ToString("C")</dd>
+
+            <dt class="col-sm-3">الحالة</dt>
+            <dd class="col-sm-9">
+                <span class="badge @GetStatusBadgeClass(Model.OrderStatus)">
+                    @GetStatusText(Model.OrderStatus)
+                </span>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post" class="mt-4">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash-alt me-1"></i> حذف
+    </button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">
+        <i class="fas fa-undo me-1"></i> إلغاء
+    </a>
+</form>
+
+@functions {
+    string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
+    {
+        return status switch
+        {
+            MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
+            MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
+            MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
+            MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
+            MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    string GetStatusText(MindShelf_DAL.Models.OrderState status)
+    {
+        return status switch
+        {
+            MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
+            MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
+            MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
+            MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
+            MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
+            _ => status.ToString()
+        };
+    }
+}

@@ -13,7 +13,7 @@ namespace MindShelf_BL.Interfaces.IServices
     {
         Task<ResponseMVC<OrderResponseDto>> CreateOrderAsync(CreateOrderDto orderDto);
         Task<ResponseMVC<OrderResponseDto>> GetOrderByIdAsync(int orderId);
-        Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(int PageNumber, int PageSize);
+        Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(string? userId = null, string? status = null, DateTime? fromDate = null, DateTime? toDate = null, int pageNumber = 1, int pageSize = 10);
         Task<ResponseMVC<bool>> UpdateOrderStatusAsync(int orderId, OrderState status);
         Task<ResponseMVC<bool>> DeleteOrderAsync(int orderId);
         Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetOrdersByStatusAsync(OrderState status, int pageNumber, int pageSize);

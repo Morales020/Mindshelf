@@ -1,0 +1,41 @@
+﻿@model MindShelf_BL.Dtos.OrderDtos.CreateOrderDto
+
+
+@{
+	ViewData["Title"] = "إنشاء طلب جديد";
+}
+
+<div class="card shadow-sm">
+	<div class="card-header bg-success text-white">
+		<h5 class="mb-0">إنشاء طلب جديد</h5>
+	</div>
+	<div class="card-body">
+		<form asp-action="Create" method="post">
+			<div class="mb-3">
+				<label for="UserName" class="form-label">اسم العميل</label>
+				<input asp-for="UserName" class="form-control" />
+				<span asp-validation-for="UserName" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<label for="ShippingAddress" class="form-label">العنوان</label>
+				<input asp-for="ShippingAddress" class="form-control" />
+				<span asp-validation-for="ShippingAddress" class="text-danger"></span>
+			</div>
+
+
+			<div class="mb-3">
+				<label for="TotalAmount" class="form-label">الإجمالي</label>
+				<input asp-for="TotalAmount" class="form-control" />
+				<span asp-validation-for="TotalAmount" class="text-danger"></span>
+			</div>
+
+			<button type="submit" class="btn btn-success me-2">
+				<i class="fas fa-plus me-1"></i> إنشاء
+			</button>
+			<a asp-action="Index" class="btn btn-secondary">
+				<i class="fas fa-times me-1"></i> إلغاء
+			</a>
+		</form>
+	</div>
+</div>
