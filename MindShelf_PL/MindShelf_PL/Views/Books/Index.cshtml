@@ -1,0 +1,66 @@
+﻿@using MindShelf_BL.Dtos.BookDto
+@model IEnumerable<BookResponseDto>
+
+@{
+    ViewData["Title"] = "الكتب";
+}
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">📚 جميع الكتب</h2>
+
+    <!-- Search Bar -->
+    <form asp-action="Search" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="term" class="form-control" placeholder="ابحث عن كتاب أو مؤلف..." />
+            <button class="btn btn-primary" type="submit">🔍 بحث</button>
+        </div>
+    </form>
+
+    <!-- Books Grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var book in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm book-card">
+                    <!-- ✅ صورة الكتاب -->
+                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height:250px; object-fit:cover;" />
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text text-muted">👤 @book.AuthorName</p>
+
+                        <div class="mb-2">
+                            <span class="text-warning">⭐ @book.Rating</span>
+                            <span class="text-muted">(@book.ReviewCount مراجعة)</span>
+                        </div>
+
+                        <p class="fw-bold text-success">س.ر @book.Price</p>
+
+                        <!-- ✅ زر التفاصيل -->
+                        <a asp-action="Details" asp-route-id="@book.BookId" class="btn btn-outline-primary mt-auto">
+                            عرض التفاصيل
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination (لو عايز تعمل بجد محتاج تبعت رقم الصفحة من الـ Controller) -->
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">السابق</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">التالي</a></li>
+        </ul>
+    </nav>
+</div>
+
+<style>
+    .book-card:hover {
+        transform: scale(1.02);
+        transition: 0.3s ease-in-out;
+        border-color: #0d6efd;
+    }
+</style>

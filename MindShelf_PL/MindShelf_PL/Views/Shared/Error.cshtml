@@ -1,25 +1,67 @@
-﻿@model ErrorViewModel
+﻿@model MindShelf_PL.Models.ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "خطأ";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="container text-center py-5">
+    <!-- أيقونة -->
+    <div class="display-1 text-danger fw-bold animate-bounce">⚠️</div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    <!-- العنوان -->
+    <h1 class="fw-bold text-danger">حصل خطأ غير متوقع!</h1>
+    <p class="text-muted fs-5">
+        نأسف، حصلت مشكلة أثناء معالجة طلبك.
     </p>
-}
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+    <!-- الرسالة -->
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-warning shadow-sm mt-4" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            @Model.Message
+        </div>
+    }
+
+    <!-- Request Id -->
+    @if (Model.ShowRequestId)
+    {
+        <p class="text-muted small mt-3">
+            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        </p>
+    }
+
+    <!-- زر العودة -->
+    <a href="@Url.Action("Index", "Home")" class="btn btn-lg btn-primary mt-4 shadow">
+        ⬅️ العودة للصفحة الرئيسية
+    </a>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .animate-bounce {
+        animation: bounce 1.5s infinite;
+    }
+
+    @@keyframes bounce {
+        0%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    }
+
+    .alert {
+        border-radius: 15px;
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        padding: 10px 25px;
+    }
+</style>

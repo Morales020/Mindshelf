@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MindShelf_PL.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" href="D:/momar/Small logo.png" />
 </head>
 <body>
     <header>
@@ -32,11 +33,23 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <strong> تم بنجاح!</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <div class="text-center">
+        <img src="~/Images/Small logo.png" alt="Logo" style="max-height: 100px; margin-bottom: 20px;" />
+
+
+        <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - MindShelf_PL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
