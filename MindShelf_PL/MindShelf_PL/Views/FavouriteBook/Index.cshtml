@@ -1,48 +1,309 @@
 ﻿@model IEnumerable<FavouriteBookResponseDto>
+@Html.AntiForgeryToken()
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">
-         كتبي المفضلة
-    </h2>
+<style>
+    .alert, .alert-danger, .alert-success, .alert-warning, .alert-info {
+        display: none !important;
+    }
+    
+    .page-header {
+        background: var(--wood-brown);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin: 0;
+    }
+    
+    .book-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+        border: none;
+    }
+    
+    .book-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .book-image {
+        height: 250px;
+        object-fit: cover;
+    }
+    
+    .book-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--dark-blue);
+        margin-bottom: 0.5rem;
+    }
+    
+    .book-meta {
+        color: var(--dark-brown);
+        font-size: 0.9rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 8px;
+        margin: 2rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--wood-brown);
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-state h3 {
+        color: var(--dark-blue);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: var(--dark-brown);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-explore {
+        background-color: #8B4513 !important;
+        border: none !important;
+        padding: 0.8rem 2rem !important;
+        font-size: 1.1rem !important;
+        border-radius: 6px !important;
+        color: white !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+        display: inline-block !important;
+        cursor: pointer !important;
+        font-weight: 500 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    .btn-explore:hover {
+        background-color: #654321 !important;
+        color: white !important;
+        text-decoration: none !important;
+    }
+    
+    .btn-explore:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.3) !important;
+    }
+    
+    /* Dark Mode Styles */
+    body.dark-mode {
+        background: linear-gradient(135deg, #2C1810 0%, #1A1A1A 100%);
+        color: #F5F5DC;
+    }
+    
+    body.dark-mode .page-header {
+        background: linear-gradient(135deg, #1A1A1A 0%, var(--dark-brown) 100%);
+    }
+    
+    body.dark-mode .book-card {
+        background: rgba(44, 24, 16, 0.8);
+        color: #F5F5DC;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-mode .book-title {
+        color: #F5F5DC !important;
+    }
+    
+    body.dark-mode .book-meta {
+        color: #DAA520 !important;
+    }
+    
+    body.dark-mode .empty-state {
+        background: rgba(44, 24, 16, 0.8);
+        color: #F5F5DC;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-mode .empty-state h3 {
+        color: #F5F5DC !important;
+    }
+    
+    body.dark-mode .empty-state p {
+        color: #DAA520 !important;
+    }
+    
+    body.dark-mode .empty-state i {
+        color: var(--accent-gold) !important;
+    }
+    
+    body.dark-mode .btn-explore {
+        background-color: #DAA520 !important;
+        color: #2C1810 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    body.dark-mode .btn-explore:hover {
+        background-color: #B8860B !important;
+        color: #2C1810 !important;
+        text-decoration: none !important;
+    }
+    
+    body.dark-mode .btn-explore:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.3) !important;
+    }
+</style>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var fav in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-lg border-0 rounded-3">
-                    <img src="@fav.BookImageUrl" style="height:500px;"
-                         class="card-img-top" 
-                         alt="@fav.BookTitle" 
-                         style="height: 250px; object-fit: cover;">
-
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">@fav.BookTitle</h5>
-                        <p class="card-text text-muted">
-                            أضيفت بواسطة: <strong>@fav.UserName</strong>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-secondary">
-                                📅 تمت الإضافة: @(fav.AddedDate?.ToString("yyyy-MM-dd") ?? "غير محدد")
-                            </small>
-                        </p>
-                    </div>
-
-                    <div class="card-footer d-flex justify-content-between bg-light">
-                        <a asp-controller="Books" asp-action="Details" asp-route-id="@fav.BookId" 
-                           class="btn btn-sm btn-outline-primary">
-                            التفاصيل
-                        </a>
-
-                        <form asp-controller="FavouriteBook" asp-action="RemoveFromFavourite" method="post" class="m-0">
-                            <input type="hidden" name="favouriteBookId" value="@fav.FavouriteBookId" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                💔 إزالة
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-heart me-3"></i>كتبي المفضلة</h1>
     </div>
 </div>
+
+<div class="container mt-4">
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var fav in Model)
+            {
+                <div class="col">
+                    <div class="card book-card h-100">
+                        <div class="position-relative">
+                            <img src="@fav.BookImageUrl" 
+                                 class="card-img-top book-image" 
+                                 alt="@fav.BookTitle"
+                                 onerror="this.src='/Images/books/default.jpg'">
+                            
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 favourite-btn"
+                                    data-book-id="@fav.BookId"
+                                    onclick="toggleFavourite(@fav.BookId, this)"
+                                    title="إزالة من المفضلة">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="book-title">@fav.BookTitle</h5>
+                            <div class="book-meta mb-3">
+                                <p class="mb-1">
+                                    <i class="fas fa-user me-2"></i>
+                                    أضيفت بواسطة: <strong>@fav.UserName</strong>
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    @(fav.AddedDate?.ToString("dd MMM yyyy") ?? "غير محدد")
+                                </p>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@fav.BookId" 
+                                   class="btn btn-primary w-100">
+                                    <i class="fas fa-eye me-2"></i>عرض التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-heart-broken"></i>
+            <h3>لا توجد كتب مفضلة بعد</h3>
+            <p>ابدأ رحلتك في اكتشاف الكتب الرائعة وأضف المفضلة لديك</p>
+            <a href="@Url.Action("Index", "Books")" class="btn-explore">
+                <i class="fas fa-book me-2"></i>تصفح الكتب
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function toggleFavourite(bookId, btn) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            
+            // Disable button to prevent multiple clicks
+            $(btn).prop('disabled', true);
+            
+            // Show loading state
+            var originalText = $(btn).html();
+            $(btn).html('<i class="fas fa-spinner fa-spin"></i> جاري التحديث...');
+
+            $.ajax({
+                url: '@Url.Action("ToggleFavourite", "FavouriteBook")',
+                type: 'POST',
+                data: { 
+                    bookId: bookId, 
+                    __RequestVerificationToken: token 
+                },
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFavourited) {
+                            // Book is still favourited (shouldn't happen on this page)
+                            $(btn).html('<i class="fas fa-heart"></i> في المفضلة');
+                            $(btn).removeClass('btn-outline-danger').addClass('btn-danger');
+                            $(btn).attr('title', 'في المفضلة');
+                        } else {
+                            // Book was removed from favourites
+                            // Hide the entire card with animation
+                            $(btn).closest('.col').fadeOut(500, function() {
+                                $(this).remove();
+                                
+                                // Check if no more favourites left
+                                if ($('.col').length === 0) {
+                                    // Check if empty state already exists to prevent duplicates
+                                    if ($('.empty-state').length === 0) {
+                                        // Find the main container and replace only the content after the header
+                                        var mainContainer = $('.container.mt-4');
+                                        if (mainContainer.length > 0) {
+                                            mainContainer.html(`
+                                                <div class="empty-state">
+                                                    <i class="fas fa-heart-broken"></i>
+                                                    <h3>لا توجد كتب مفضلة بعد</h3>
+                                                    <p>ابدأ رحلتك في اكتشاف الكتب الرائعة وأضف المفضلة لديك</p>
+                                                    <a href="@Url.Action("Index", "Books")" class="btn-explore">
+                                                        <i class="fas fa-book me-2"></i>تصفح الكتب
+                                                    </a>
+                                                </div>
+                                            `);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Success - no message needed
+                    } else {
+                        // Restore original state on error
+                        $(btn).html(originalText);
+                        // No alert message needed
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Restore original state
+                    $(btn).html(originalText);
+                    $(btn).prop('disabled', false);
+                    
+                    // No error message needed
+                },
+                complete: function() {
+                    // Re-enable button
+                    $(btn).prop('disabled', false);
+                }
+            });
+        }
+    </script>
+}
 
