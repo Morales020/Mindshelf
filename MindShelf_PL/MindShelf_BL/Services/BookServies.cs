@@ -50,7 +50,9 @@ namespace MindShelf_BL.Services
                 ImageUrl = book.ImageUrl,
                 State = book.State,
                 AuthorName = book.Author?.Name ?? "Unknown",
+                AuthorId = book.AuthorId,
                 CategoryName = book.Category?.Name ?? "Unknown",
+                CategoryId = book.CategoryId,
                 ReviewCount = book.Reviews?.Count ?? 0,
                 Price = book.Price,
                 Rating = book.Rating
@@ -83,7 +85,9 @@ namespace MindShelf_BL.Services
                 Price = book.Price,
                 Rating = book.Rating,
                 AuthorName = book.Author?.Name ?? "Unknown",
+                AuthorId = book.AuthorId,
                 CategoryName = book.Category?.Name ?? "Unknown",
+                CategoryId = book.CategoryId,
                 State = book.State,
                 ImageUrl = book.ImageUrl,
             });
@@ -324,7 +328,9 @@ namespace MindShelf_BL.Services
                 ReviewCount = book.ReviewCount,
                 State = book.State,
                 AuthorName = book.Author?.Name ?? "Unknown Author",
-                CategoryName = book.Category?.Name ?? "Unknown Category"
+                AuthorId = book.AuthorId,
+                CategoryName = book.Category?.Name ?? "Unknown Category",
+                CategoryId = book.CategoryId
             });
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Top-rated books retrieved successfully", bookDtos);
