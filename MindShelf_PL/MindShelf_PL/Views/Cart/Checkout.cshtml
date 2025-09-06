@@ -1,0 +1,204 @@
+@model MindShelf_BL.Dtos.CartsDto.CartResponseDto
+
+@using MindShelf_DAL.Models.Stripe;
+@inject Microsoft.Extensions.Options.IOptions<StripeSettings> Stripe
+
+@{
+    ViewData["Title"] = "إتمام الطلب";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-credit-card me-2"></i>إتمام الطلب</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.CartItems != null && Model.CartItems.Any())
+                {
+                    <div class="row">
+                        <!-- Cart Summary -->
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-shopping-cart me-2"></i>ملخص الطلب</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>الكتاب</th>
+                                            <th>الكمية</th>
+                                            <th>السعر</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.CartItems)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        @if (!string.IsNullOrEmpty(item.BookImageUrl) && item.BookImageUrl.StartsWith("http"))
+                                                        {
+                                                            <img src="@item.BookImageUrl" 
+                                                                 class="img-thumbnail me-2" 
+                                                                 alt="@item.BookName" 
+                                                                 style="width: 40px; height: 50px; object-fit: cover;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <div class="book-placeholder me-2" style="width: 40px; height: 50px; background: #f8f9fa; border: 1px solid #dee2e6; display: none; text-align: center; line-height: 50px; font-size: 12px;">
+                                                                📚
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="book-placeholder me-2" style="width: 40px; height: 50px; background: #f8f9fa; border: 1px solid #dee2e6; text-align: center; line-height: 50px; font-size: 12px;">
+                                                                📚
+                                                            </div>
+                                                        }
+                                                        <div>
+                                                            <small class="fw-bold">@item.BookName</small><br>
+                                                            <small class="text-muted">@item.BookAuthor</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>@item.Quantity</td>
+                                                <td>@item.TotalPrice.ToString("C")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="table-success">
+                                            <th colspan="2">المجموع الكلي:</th>
+                                            <th>@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Form -->
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-credit-card me-2"></i>معلومات الدفع</h5>
+                            <form id="checkout-form">
+                                <div class="mb-3">
+                                    <label class="form-label">اسم حامل البطاقة</label>
+                                    <input type="text" id="cardname" class="form-control" placeholder="أدخل اسم حامل البطاقة" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" id="email" class="form-control" placeholder="example@mail.com" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">العنوان</label>
+                                    <textarea id="address" class="form-control" rows="3" placeholder="أدخل عنوان التسليم الكامل" required></textarea>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" id="checkout-button" class="btn btn-success btn-lg">
+                                        <i class="fas fa-lock me-1"></i>الدفع الآمن
+                                    </button>
+                                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-right me-1"></i>العودة للسلة
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">السلة فارغة</h5>
+                        <p class="text-muted">لا يمكن إتمام الطلب لأن السلة فارغة</p>
+                        <a href="@Url.Action("Index")" class="btn btn-primary">
+                            <i class="fas fa-shopping-cart me-1"></i>عرض السلة
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>معلومات مهمة</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-shipping-fast me-1"></i>مدة التسليم</h6>
+                    <p class="mb-0">3-5 أيام عمل</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-shield-alt me-1"></i>ضمان الجودة</h6>
+                    <p class="mb-0">جميع الكتب أصلية ومضمونة</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-undo me-1"></i>سياسة الإرجاع</h6>
+                    <p class="mb-0">إمكانية الإرجاع خلال 7 أيام</p>
+                </div>
+
+                <div class="alert alert-primary">
+                    <h6><i class="fas fa-lock me-1"></i>الدفع الآمن</h6>
+                    <p class="mb-0">جميع المعاملات محمية بتشفير SSL</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe("@Stripe.Value.PublishableKey");
+
+        document.getElementById("checkout-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const cardname = document.getElementById("cardname").value;
+            const email = document.getElementById("email").value;
+            const address = document.getElementById("address").value;
+
+            if (!cardname || !email || !address) {
+                alert("يرجى ملء جميع الحقول المطلوبة");
+                return;
+            }
+
+            // Show loading state
+            const button = document.getElementById("checkout-button");
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري المعالجة...';
+            button.disabled = true;
+
+            // Create checkout session with cart data
+            fetch("/Payment/CreateCheckoutSession", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cardname: cardname,
+                    email: email,
+                    address: address,
+                    orderItems: @Html.Raw(Json.Serialize(Model.CartItems))
+                })
+            })
+            .then(response => response.json())
+            .then(session => {
+                if (session.id) {
+                    stripe.redirectToCheckout({ sessionId: session.id });
+                } else {
+                    throw new Error('فشل في إنشاء جلسة الدفع');
+                }
+            })
+            .catch(err => {
+                console.error("Stripe Checkout Error:", err);
+                alert("حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى.");
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        });
+    </script>
+}

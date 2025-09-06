@@ -41,6 +41,7 @@ namespace MindShelf_BL.Services
                 CartItems = cart.ShoppingCartItems.Select(ci => new CartItemResponseDto
                 {
                     CartItemId = ci.CartItemId,
+                    BookId = ci.BookId,
                     BookName = ci.Book.Title,
                     BookImageUrl = ci.Book.ImageUrl,
                     BookDescription = ci.Book.Description,
@@ -90,7 +91,7 @@ namespace MindShelf_BL.Services
             }
             else
             {
-                cart.ShoppingCartItems.Add(new CartItem 
+                cart.ShoppingCartItems.Add(new CartItem
                 {
                     BookId = addToCartDto.BookId,
                     Quantity = addToCartDto.Quantity
@@ -153,6 +154,53 @@ namespace MindShelf_BL.Services
         }
         #endregion
 
+        #region ClearCart
+        public async Task<ResponseMVC<CartResponseDto>> ClearCart(string userName)
+        {
+            var cart = await _unitOfWork.ShoppingCartRepo.Query()
+                .Include(c => c.ShoppingCartItems)
+                .FirstOrDefaultAsync(c => c.UserName == userName);
+
+            if (cart == null)
+            {
+                return new ResponseMVC<CartResponseDto>(404, "Cart not found", null);
+            }
+
+            cart.ShoppingCartItems.Clear();
+            await _unitOfWork.SaveChangesAsync();
+
+            return await GetCartByUserName(userName);
+        }
+        #endregion
+
+        #region GetCartCount
+        public async Task<int> GetCartCount(string userName)
+        {
+            var cart = await _unitOfWork.ShoppingCartRepo.Query()
+                .Include(c => c.ShoppingCartItems)
+                .FirstOrDefaultAsync(c => c.UserName == userName);
+
+            return cart?.ShoppingCartItems?.Count ?? 0;
+        }
+        #endregion
+
+        #region GetCartTotal
+        public async Task<decimal> GetCartTotal(string userName)
+        {
+            var cart = await _unitOfWork.ShoppingCartRepo.Query()
+                .Include(c => c.ShoppingCartItems)
+                .ThenInclude(ci => ci.Book)
+                .FirstOrDefaultAsync(c => c.UserName == userName);
+
+            if (cart?.ShoppingCartItems == null || !cart.ShoppingCartItems.Any())
+            {
+                return 0;
+            }
+
+            return cart.ShoppingCartItems.Sum(ci => ci.Quantity * ci.Book.Price);
+        }
+        #endregion
+
         #region CheckoutAsync
         public async Task<ResponseMVC<CartResponseDto>> CheckoutAsync(CheckoutRequestDto checkoutRequestDto)
         {
@@ -191,5 +239,6 @@ namespace MindShelf_BL.Services
             return new ResponseMVC<CartResponseDto>(200, "Checkout successful", null);
         }
         #endregion
+        
     }
 }
