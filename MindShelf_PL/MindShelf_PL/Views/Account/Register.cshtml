@@ -58,6 +58,21 @@
                             <small>كلمة المرور يجب أن تحتوي على الأقل 6 أحرف</small>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">العنوان</label>
+                        <input asp-for="Address" class="form-control" placeholder="أدخل العنوان" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Gender" class="form-label">الجنس</label>
+                        <select asp-for="Gender" class="form-select">
+                            <option value="">اختر الجنس</option>
+                            <option value="M">ذكر</option>
+                            <option value="F">أنثى</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
 
                     <!-- Confirm Password -->
                     <div class="mb-3">
