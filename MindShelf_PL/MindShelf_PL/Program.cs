@@ -12,7 +12,6 @@ using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.Http;
-using MindShelf_PL.Handlers;
 
 namespace MindShelf_PL
 {
@@ -109,15 +108,8 @@ namespace MindShelf_PL
             builder.Services.AddAuthentication()
     .AddCookie(options =>
     {
-        options.LoginPath = "/";
-        options.AccessDeniedPath = "/";
-        options.ReturnUrlParameter = "returnUrl";
-        options.Cookie.Name = "MindShelfAuth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.ExpireTimeSpan = TimeSpan.FromDays(30);
-        options.SlidingExpiration = true;
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Error/Unauthorized";
     })
     .AddGoogle(options =>
     {
