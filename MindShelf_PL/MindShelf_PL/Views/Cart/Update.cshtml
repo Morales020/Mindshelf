@@ -1,0 +1,61 @@
+@model MindShelf_BL.Dtos.CartsDto.CartItemResponseDto
+
+@{
+    ViewData["Title"] = "تعديل عنصر السلة";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-edit me-2"></i>تعديل عنصر السلة</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        @if (!string.IsNullOrEmpty(Model.BookImageUrl))
+                        {
+                            <img src="@Model.BookImageUrl" class="img-fluid rounded" alt="@Model.BookName">
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-book fa-3x text-muted"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <h5>@Model.BookName</h5>
+                        <p class="text-muted">@Model.BookAuthor</p>
+                        <p>@Model.BookDescription</p>
+                        
+                        <form asp-action="UpdateQuantity" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">الكمية:</label>
+                                <input type="number" name="quantity" value="@Model.Quantity" min="1" max="99" class="form-control" style="width: 100px;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">السعر لكل كتاب:</label>
+                                <span class="form-control-plaintext">@Model.UnitPrice.ToString("C")</span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">المجموع:</label>
+                                <span class="form-control-plaintext text-success fs-5">@Model.TotalPrice.ToString("C")</span>
+                            </div>
+                            
+                            <input type="hidden" name="cartItemId" value="@Model.CartItemId">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>حفظ التغييرات
+                                </button>
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>العودة للسلة
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

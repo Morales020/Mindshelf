@@ -1,0 +1,57 @@
+@model MindShelf_BL.Dtos.CartsDto.CartItemResponseDto
+
+@{
+    ViewData["Title"] = "حذف العنصر من السلة";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-exclamation-triangle me-2 text-warning"></i>تأكيد الحذف</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>هل أنت متأكد من حذف هذا العنصر من السلة؟</h5>
+                    <p class="mb-0">هذا الإجراء لا يمكن التراجع عنه.</p>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="@(string.IsNullOrEmpty(Model.BookImageUrl) ? "/images/book-placeholder.jpg" : Model.BookImageUrl)"
+                                 class="img-fluid rounded-start" alt="@Model.BookName" style="height: 120px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.BookName</h5>
+                                <p class="card-text text-muted">@Model.BookAuthor</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        الكمية: @Model.Quantity | 
+                                        السعر: @Model.UnitPrice.ToString("C") | 
+                                        المجموع: @Model.TotalPrice.ToString("C")
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="RemoveCartItem" method="post">
+                    <input type="hidden" name="CartItemId" value="@Model.CartItemId" />
+                    <input type="hidden" name="UserName" value="@User.Identity.Name" />
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-arrow-right me-1"></i>إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>حذف العنصر
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
