@@ -1,111 +1,121 @@
 ﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
 
 @{
-    ViewData["Title"] = "تفاصيل الطلب";
+	ViewData["Title"] = "تفاصيل الطلب";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-receipt me-2"></i> تفاصيل الطلب #@Model.Id.ToString().PadLeft(6, '0')</h2>
-    <span class="badge @GetStatusBadgeClass(Model.OrderStatus)">
-        @GetStatusText(Model.OrderStatus)
-    </span>
+	<h2><i class="fas fa-receipt me-2"></i> تفاصيل الطلب #@Model.Id.ToString().PadLeft(6, '0')</h2>
+	<span class="badge @GetStatusBadgeClass(Model.OrderStatus)">
+		@GetStatusText(Model.OrderStatus)
+	</span>
 </div>
 
 <div class="card mb-4">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">تاريخ الطلب</dt>
-            <dd class="col-sm-9">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+	<div class="card-body">
+		<dl class="row">
+			<dt class="col-sm-3">تاريخ الطلب</dt>
+			<dd class="col-sm-9">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
 
-            <dt class="col-sm-3">المستخدم</dt>
-            <dd class="col-sm-9">@Model.UserName</dd>
+			<dt class="col-sm-3">المستخدم</dt>
+			<dd class="col-sm-9">@Model.UserName</dd>
 
-            <dt class="col-sm-3">العنوان</dt>
-            <dd class="col-sm-9">@Model.ShippingAddress</dd>
+			<dt class="col-sm-3">العنوان</dt>
+			<dd class="col-sm-9">@Model.ShippingAddress</dd>
 
-            <dt class="col-sm-3">الإجمالي</dt>
-            <dd class="col-sm-9 fw-bold">@Model.TotalAmount.ToString("C")</dd>
-        </dl>
-    </div>
+			<dt class="col-sm-3">الإجمالي</dt>
+			<dd class="col-sm-9 fw-bold">@Model.TotalAmount.ToString("C")</dd>
+		</dl>
+	</div>
 </div>
 
 <!-- Items -->
 <div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-boxes me-2"></i> عناصر الطلب
-    </div>
-    <div class="card-body">
-        @if (Model.OrderItems != null && Model.OrderItems.Any())
-        {
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>رقم العنصر</th>
-                        <th>رقم الكتاب</th>
-                        <th>الكمية</th>
-                        <th>السعر الكلي</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.OrderItems)
-                    {
-                        <tr>
-                            <td>@item.OrderItemId</td>
-                            <td>@item.BookId</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.TotalPrice.ToString("C")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p class="text-muted">لا توجد عناصر في هذا الطلب.</p>
-        }
-    </div>
+	<div class="card-header">
+		<i class="fas fa-boxes me-2"></i> عناصر الطلب
+	</div>
+	<div class="card-body">
+		@if (Model.OrderItems != null && Model.OrderItems.Any())
+		{
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>رقم العنصر</th>
+						<th>رقم الكتاب</th>
+						<th>الكمية</th>
+						<th>السعر الكلي</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.OrderItems)
+					{
+						<tr>
+							<td>@item.OrderItemId</td>
+							<td>@item.BookId</td>
+							<td>@item.Quantity</td>
+							<td>@item.TotalPrice.ToString("C")</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		else
+		{
+			<p class="text-muted">لا توجد عناصر في هذا الطلب.</p>
+		}
+	</div>
 </div>
 
 <!-- Actions -->
 <div class="d-flex justify-content-between">
-    <a asp-action="UserOrders" class="btn btn-secondary">
-        <i class="fas fa-arrow-left me-1"></i> رجوع للطلبات
-    </a>
+	@if (User.IsInRole("Admin"))
+	{
+		<a asp-action="Index" class="btn btn-secondary">
+			<i class="fas fa-arrow-left me-1"></i> رجوع للطلبات
+		</a>
+	}
+	else
+	{
+		<a asp-action="UserOrders" asp-route-userName="@User.Identity.Name" class="btn btn-secondary">
+			<i class="fas fa-arrow-left me-1"></i> رجوع لطلباتي
+		</a>
+	}
 
-    @if (Model.OrderStatus == MindShelf_DAL.Models.OrderState.Pending)
-    {
-        <form asp-action="Cancel" method="post" asp-route-id="@Model.Id" class="d-inline">
-            <button type="submit" class="btn btn-danger">
-                <i class="fas fa-times me-1"></i> إلغاء الطلب
-            </button>
-        </form>
-    }
+	@if (Model.OrderStatus == MindShelf_DAL.Models.OrderState.Pending)
+	{
+		<form asp-action="Cancel" method="post" asp-route-id="@Model.Id" class="d-inline">
+			<button type="submit" class="btn btn-danger">
+				<i class="fas fa-times me-1"></i> إلغاء الطلب
+			</button>
+		</form>
+	}
 </div>
 
-@functions {
-    string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
-    {
-        return status switch
-        {
-            MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
-            MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
-            MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
-            MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
-            MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
-            _ => "bg-secondary"
-        };
-    }
 
-    string GetStatusText(MindShelf_DAL.Models.OrderState status)
-    {
-        return status switch
-        {
-            MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
-            MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
-            MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
-            MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
-            MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
-            _ => status.ToString()
-        };
-    }
+@functions {
+	string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
+	{
+		return status switch
+		{
+			MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
+			MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
+			MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
+			MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
+			MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
+			_ => "bg-secondary"
+		};
+	}
+
+	string GetStatusText(MindShelf_DAL.Models.OrderState status)
+	{
+		return status switch
+		{
+			MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
+			MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
+			MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
+			MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
+			MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
+			_ => status.ToString()
+		};
+	}
 }

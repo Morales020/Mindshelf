@@ -2,167 +2,209 @@
 @using MindShelf_DAL.Models
 
 @{
-	ViewData["Title"] = "طلباتي";
-	var statusFilter = ViewBag.Status as string;
-	var fromDate = ViewBag.FromDate as string;
-	var toDate = ViewBag.ToDate as string;
-	int currentPage = ViewBag.CurrentPage ?? 1;
-	int totalPages = ViewBag.TotalPages ?? 1;
+    ViewData["Title"] = "طلباتي";
+    var statusFilter = ViewBag.Status as string;
+    var fromDate = ViewBag.FromDate as string;
+    var toDate = ViewBag.ToDate as string;
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <div class="card shadow-sm">
-	<div class="card-header bg-primary text-white">
-		<h5 class="mb-0">طلباتي</h5>
-	</div>
-	<div class="card-body">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">طلباتي</h5>
+    </div>
+    <div class="card-body">
 
-		<!-- Filter -->
-		<form method="get" class="row g-3 align-items-end mb-4">
-			<div class="col-md-3">
-				<label for="status" class="form-label">الحالة</label>
-				<select name="status" class="form-select">
-					<option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">
-						جميع الحالات
-					</option>
-					@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
-					{
-						<option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
-							@GetStatusText(state)
-						</option>
-					}
-				</select>
-			</div>
-			<div class="col-md-3">
-				<label for="fromDate" class="form-label">من تاريخ</label>
-				<input type="date" name="fromDate" class="form-control" value="@fromDate" />
-			</div>
-			<div class="col-md-3">
-				<label for="toDate" class="form-label">إلى تاريخ</label>
-				<input type="date" name="toDate" class="form-control" value="@toDate" />
-			</div>
-			<div class="col-md-3 d-flex">
-				<button type="submit" class="btn btn-primary me-2">
-					<i class="fas fa-filter me-1"></i> تطبيق الفلتر
-				</button>
-				<a asp-action="UserOrders" class="btn btn-outline-secondary">
-					<i class="fas fa-undo me-1"></i> إعادة تعيين
-				</a>
-			</div>
-		</form>
+        <!-- Filter -->
+        <form method="get" class="row g-3 align-items-end mb-4">
+            <div class="col-md-3">
+                <label for="status" class="form-label">الحالة</label>
+                <select name="status" class="form-select">
+                    <option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">
+                        جميع الحالات
+                    </option>
+                    @foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
+                    {
+                        <option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
+                            @GetStatusText(state)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="fromDate" class="form-label">من تاريخ</label>
+                <input type="date" name="fromDate" class="form-control" value="@fromDate" />
+            </div>
+            <div class="col-md-3">
+                <label for="toDate" class="form-label">إلى تاريخ</label>
+                <input type="date" name="toDate" class="form-control" value="@toDate" />
+            </div>
+            <div class="col-md-3 d-flex">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-filter me-1"></i> تطبيق الفلتر
+                </button>
+                <a asp-action="UserOrders" class="btn btn-outline-secondary">
+                    <i class="fas fa-undo me-1"></i> إعادة تعيين
+                </a>
+            </div>
+        </form>
 
-		<!-- Orders -->
-		@if (Model != null && Model.Any())
-		{
-			<div class="table-responsive">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>رقم الطلب</th>
-							<th>التاريخ</th>
-							<th>الإجمالي</th>
-							<th>الحالة</th>
-							<th>الإجراءات</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach (var order in Model)
-						{
-							<tr>
-								<td>
-									<a asp-action="Details" asp-route-id="@order.Id" class="text-decoration-none">
-										#@order.Id.ToString().PadLeft(6, '0')
-									</a>
-								</td>
-								<td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
-								<td class="fw-bold">@order.TotalAmount.ToString("C")</td>
-								<td>
-									<span class="badge @GetStatusBadgeClass(order.OrderStatus)">
-										@GetStatusText(order.OrderStatus)
-									</span>
-								</td>
-								<td>
-									<a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm me-1">
-										<i class="fas fa-eye"></i> تفاصيل
-									</a>
-									@if (order.OrderStatus == OrderState.Pending || order.OrderStatus == OrderState.Confirmed)
-									{
-										<a asp-action="Cancel" asp-route-id="@order.Id" class="btn btn-outline-danger btn-sm me-1">
-											<i class="fas fa-ban"></i> إلغاء
-										</a>
-									}
-									<a asp-action="Recalculate" asp-route-id="@order.Id" class="btn btn-outline-warning btn-sm">
-										<i class="fas fa-calculator"></i> إعادة الحساب
-									</a>
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
+        <!-- Orders -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="text-decoration-none">
+                                        #@order.Id.ToString().PadLeft(6, '0')
+                                    </a>
+                                </td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="fw-bold">@order.TotalAmount.ToString("C")</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(order.OrderStatus)">
+                                        @GetStatusText(order.OrderStatus)
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm me-1">
+                                        <i class="fas fa-eye"></i> تفاصيل
+                                    </a>
+                                    @if (order.OrderStatus == OrderState.Pending || order.OrderStatus == OrderState.Confirmed)
+                                    {
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#cancelModal"
+                                                data-order-id="@order.Id">
+                                            <i class="fas fa-ban"></i> إلغاء
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-			<!-- Pagination -->
-			<nav aria-label="Page navigation">
-				<ul class="pagination justify-content-center mt-4">
-					<li class="page-item @(currentPage == 1 ? "disabled" : "")">
-						<a class="page-link"
-						   asp-action="UserOrders"
-						   asp-route-pageNumber="@(currentPage - 1)"
-						   asp-route-status="@statusFilter"
-						   asp-route-fromDate="@fromDate"
-						   asp-route-toDate="@toDate">السابق</a>
-					</li>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mt-4">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="UserOrders"
+                           asp-route-pageNumber="@(currentPage - 1)"
+                           asp-route-status="@statusFilter"
+                           asp-route-fromDate="@fromDate"
+                           asp-route-toDate="@toDate">السابق</a>
+                    </li>
 
-					@for (int i = 1; i <= totalPages; i++)
-					{
-						<li class="page-item @(i == currentPage ? "active" : "")">
-							<a class="page-link"
-							   asp-action="UserOrders"
-							   asp-route-pageNumber="@i"
-							   asp-route-status="@statusFilter"
-							   asp-route-fromDate="@fromDate"
-							   asp-route-toDate="@toDate">@i</a>
-						</li>
-					}
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="UserOrders"
+                               asp-route-pageNumber="@i"
+                               asp-route-status="@statusFilter"
+                               asp-route-fromDate="@fromDate"
+                               asp-route-toDate="@toDate">@i</a>
+                        </li>
+                    }
 
-					<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-						<a class="page-link"
-						   asp-action="UserOrders"
-						   asp-route-pageNumber="@(currentPage + 1)"
-						   asp-route-status="@statusFilter"
-						   asp-route-fromDate="@fromDate"
-						   asp-route-toDate="@toDate">التالي</a>
-					</li>
-				</ul>
-			</nav>
-		}
-		else
-		{
-			<div class="text-center py-5">
-				<i class="fas fa-box fa-4x text-muted mb-3"></i>
-				<h5 class="text-muted">لا توجد طلبات</h5>
-			</div>
-		}
-	</div>
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="UserOrders"
+                           asp-route-pageNumber="@(currentPage + 1)"
+                           asp-route-status="@statusFilter"
+                           asp-route-fromDate="@fromDate"
+                           asp-route-toDate="@toDate">التالي</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-box fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">لا توجد طلبات</h5>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="cancelModalLabel"><i class="fas fa-ban me-2"></i>تأكيد الإلغاء</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد أنك تريد إلغاء الطلب <strong id="cancelOrderId"></strong>؟</p>
+            </div>
+            <div class="modal-footer">
+                <form id="cancelForm" method="post">
+                    <input type="hidden" name="id" id="cancelInputId" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-ban me-1"></i> إلغاء الطلب
+                    </button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @functions {
-	string GetStatusBadgeClass(OrderState status) => status switch
-	{
-		OrderState.Pending => "bg-warning",
-		OrderState.Confirmed => "bg-info",
-		OrderState.Shipping => "bg-primary",
-		OrderState.Delivered => "bg-success",
-		OrderState.Cancelled => "bg-danger",
-		_ => "bg-secondary"
-	};
+    string GetStatusBadgeClass(OrderState status) => status switch
+    {
+        OrderState.Pending => "bg-warning",
+        OrderState.Confirmed => "bg-info",
+        OrderState.Shipping => "bg-primary",
+        OrderState.Delivered => "bg-success",
+        OrderState.Cancelled => "bg-danger",
+        _ => "bg-secondary"
+    };
 
-	string GetStatusText(OrderState status) => status switch
-	{
-		OrderState.Pending => "في الانتظار",
-		OrderState.Confirmed => "مؤكد",
-		OrderState.Shipping => "تم الشحن",
-		OrderState.Delivered => "تم التسليم",
-		OrderState.Cancelled => "ملغي",
-		_ => status.ToString()
-	};
+    string GetStatusText(OrderState status) => status switch
+    {
+        OrderState.Pending => "في الانتظار",
+        OrderState.Confirmed => "مؤكد",
+        OrderState.Shipping => "تم الشحن",
+        OrderState.Delivered => "تم التسليم",
+        OrderState.Cancelled => "ملغي",
+        _ => status.ToString()
+    };
+}
+
+@section Scripts {
+    <script>
+        var cancelModal = document.getElementById('cancelModal');
+        cancelModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var orderId = button.getAttribute('data-order-id');
+
+            document.getElementById('cancelOrderId').textContent = "#" + orderId.padStart(6, "0");
+            document.getElementById('cancelInputId').value = orderId;
+
+            document.getElementById('cancelForm').action = '/Order/Cancel/' + orderId;
+        });
+    </script>
 }
