@@ -4,9 +4,16 @@
     <div class="card author-card h-100">
         <div class="card-body text-center">
             <div class="author-image mb-3">
-                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/authors/default-author.jpg" : Model.ImageUrl)" 
-                     alt="@Model.Name" class="rounded-circle" width="80" height="80" 
-                     style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl) && (Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="rounded-circle" width="80" height="80" 
+                         style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                }
+                else
+                {
+                    <img src="/Images/anon-icon.jpg" alt="@Model.Name" class="rounded-circle" width="80" height="80" 
+                         style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                }
             </div>
 
             <h5 class="author-name text-primary mb-2">@Model.Name</h5>

@@ -4,86 +4,234 @@
     ViewData["Title"] = "Author Details";
 }
 
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        /* Custom CSS for Profile Styling and Background */
-        body {
-            background: linear-gradient(135deg, #e0e7ff, #a5b4fc);
-            min-height: 100vh;
-        }
+<style>
+    /* Author Details specific styles */
+    .author-profile-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        border: 1px solid #e9ecef;
+        overflow: hidden;
+    }
 
-        .profile-card {
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.95);
-        }
+    .author-profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
 
-            .profile-card:hover {
-                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-                transform: translateY(-5px);
-            }
+    .author-profile-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--primary-beige);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
 
-        .btn {
-            transition: background-color 0.3s ease;
-        }
+    .author-profile-name {
+        color: var(--primary-blue);
+        font-family: var(--font-arabic-title);
+        font-weight: 700;
+        font-size: 2rem;
+    }
 
-            .btn:hover {
-                filter: brightness(1.1);
-            }
+    .author-profile-bio {
+        color: #6c757d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
 
-        .icon {
-            margin-left: 8px;
-        }
+    .author-profile-date {
+        color: var(--primary-brown);
+        font-size: 1rem;
+        font-weight: 500;
+    }
 
-        .profile-image {
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #4b5563;
-        }
-    </style>
-</head>
-<body class="font-sans">
-    <div class="container mx-auto p-6">
-        <!-- Profile Header -->
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">بروفايل المؤلف</h1>
+    .author-profile-info {
+        background: linear-gradient(135deg, var(--light-beige), #ffffff);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+    }
 
-        <!-- Profile Card -->
-        <div class="profile-card bg-white rounded-lg shadow-lg p-8 max-w-lg mx-auto">
-            <!-- Author Image (if exists) -->
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <div class="flex justify-center mb-4">
-                    <img src="@Model.ImageUrl" alt="@Model.Name" class="profile-image w-24 h-24" />
-                </div>
-            }
-            <!-- Author Details -->
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">@Model.Name</h2>
-            <div class="space-y-4">
-                <p class="text-gray-600">
-                    <i class="fas fa-user icon"></i>
-                    <strong>السيرة الذاتية:</strong> @Model.Bio
-                </p>
-                <p class="text-gray-600">
-                    <i class="fas fa-calendar-alt icon"></i>
-                    <strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString()
-                </p>
-            </div>
-            <!-- Action Buttons -->
-            <div class="flex space-x-2 space-x-reverse mt-6 justify-center">
-                <a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">تعديل</a>
-                <a asp-action="Index" class="btn bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">رجوع للقايمة</a>
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .info-text {
+        flex-grow: 1;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary-brown);
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: #495057;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-brown));
+        border: none;
+        color: white;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--box-shadow);
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: var(--warning-color);
+        border-color: var(--warning-color);
+        color: white;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-edit:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .author-profile-card {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    .dark-mode .author-profile-name {
+        color: #63b3ed;
+    }
+
+    .dark-mode .author-profile-bio {
+        color: #a0aec0;
+    }
+
+    .dark-mode .author-profile-date {
+        color: #f6ad55;
+    }
+
+    .dark-mode .author-profile-info {
+        background: linear-gradient(135deg, #4a5568, #2d3748);
+        border-color: #4a5568;
+    }
+
+    .dark-mode .info-label {
+        color: #f6ad55;
+    }
+
+    .dark-mode .info-value {
+        color: #e2e8f0;
+    }
+</style>
+
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-3">
+                <a asp-action="Index" class="btn-back me-3">
+                    <i class="fas fa-arrow-right me-2"></i>رجوع للقائمة
+                </a>
+                <h1 class="display-6 fw-bold text-primary mb-0">
+                    <i class="fas fa-user me-3"></i>تفاصيل المؤلف
+                </h1>
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Author Profile Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="author-profile-card">
+                <div class="card-body p-5">
+                    <!-- Author Image and Name -->
+                    <div class="text-center mb-4">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl) && (Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" class="author-profile-image mb-3" />
+                            }
+                            else
+                            {
+                                <img src="/Images/anon-icon.jpg" alt="@Model.Name" class="author-profile-image mb-3" />
+                            }
+                        <h2 class="author-profile-name">@Model.Name</h2>
+                    </div>
+
+                    <!-- Author Information -->
+                    <div class="author-profile-info">
+                        @if (!string.IsNullOrEmpty(Model.Bio))
+                        {
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-quote-right"></i>
+                                </div>
+                                <div class="info-text">
+                                    <div class="info-label">السيرة الذاتية</div>
+                                    <div class="info-value author-profile-bio">@Model.Bio</div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">تاريخ الميلاد</div>
+                                <div class="info-value author-profile-date">@(Model.DateOfBirth?.ToString("yyyy-MM-dd") ?? "غير محدد")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 justify-content-center mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn-edit">
+                            <i class="fas fa-edit me-2"></i>تعديل البيانات
+                        </a>
+                        <a asp-action="Index" class="btn-back">
+                            <i class="fas fa-list me-2"></i>عرض جميع المؤلفين
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 ```

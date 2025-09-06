@@ -9,17 +9,23 @@ namespace MindShelf_PL.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IBookServies _bookServices;
+        private readonly IAuthorServies _authorServices;
 
-        public HomeController(ILogger<HomeController> logger, IBookServies bookServices)
+        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices)
         {
             _logger = logger;
             _bookServices = bookServices;
+            _authorServices = authorServices;
         }
 
         public async Task<IActionResult> Index()
         {
             var topRatedBooksResponse = await _bookServices.GetTopRatedBooksAsync(4);
             ViewBag.TopRatedBooks = topRatedBooksResponse.Data ?? new List<MindShelf_BL.Dtos.BookDto.BookResponseDto>();
+            
+            var popularAuthorsResponse = await _authorServices.GetPopularAuthorsAsync(3);
+            ViewBag.PopularAuthors = popularAuthorsResponse.Data ?? new List<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>();
+            
             return View();
         }
 
