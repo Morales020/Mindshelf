@@ -1,131 +1,157 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@model IEnumerable<MindShelf_BL.Dtos.OrderDtos.OrderResponseDto>
 @using MindShelf_DAL.Models
-@model IEnumerable<OrderResponseDto>
 
 @{
 	ViewData["Title"] = "قائمة الطلبات";
 	var statusFilter = ViewBag.StatusFilter as string;
 	var searchQuery = ViewBag.SearchQuery as string;
-	int totalPages = ViewBag.TotalPages;
-	int currentPage = ViewBag.CurrentPage;
+	var fromDate = ViewBag.FromDate as string;
+	var toDate = ViewBag.ToDate as string;
+	int totalPages = ViewBag.TotalPages ?? 1;
+	int currentPage = ViewBag.CurrentPage ?? 1;
 }
 
-<div class="container mt-4">
-	<h2 class="mb-4"><i class="fas fa-shopping-cart me-2"></i>قائمة الطلبات</h2>
+<div class="card shadow-sm mt-4">
+	<div class="card-header bg-primary text-white">
+		<h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>قائمة الطلبات</h5>
+	</div>
+	<div class="card-body">
 
-	<!-- Success / Error Alerts -->
-	@if (TempData["Message"] != null)
-	{
-		<div class="alert alert-success alert-dismissible fade show" role="alert">
-			<i class="fas fa-check-circle me-2"></i>@TempData["Message"]
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	}
-	@if (TempData["Error"] != null)
-	{
-		<div class="alert alert-danger alert-dismissible fade show" role="alert">
-			<i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	}
+		<!-- Success / Error Alerts -->
+		@if (TempData["Message"] != null)
+		{
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<i class="fas fa-check-circle me-2"></i>@TempData["Message"]
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+		}
+		@if (TempData["Error"] != null)
+		{
+			<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				<i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+		}
 
-	<!-- Filters -->
-	<form method="get" class="row g-3 mb-3">
-		<div class="col-md-3">
-			<select name="status" class="form-select">
-				<option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">جميع الحالات</option>
-				@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
-				{
-					<option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
-						@GetStatusText(state)
+		<!-- Filters -->
+		<!-- Filters -->
+		<form method="get" class="row g-3 mb-4 align-items-end">
+			<div class="col-md-3">
+				<label class="form-label">الحالة</label>
+				<select name="status" class="form-select">
+					<option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">
+						جميع الحالات
 					</option>
-				}
-			</select>
+					@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
+					{
+						<option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
+							@GetStatusText(state)
+						</option>
+					}
+				</select>
+			</div>
 
-		</div>
-		<div class="col-md-4">
-			<input type="text" name="search" value="@searchQuery" class="form-control" placeholder="ابحث عن طلب..." />
-		</div>
-		<div class="col-md-2">
-			<button type="submit" class="btn btn-primary w-100">
-				<i class="fas fa-filter me-1"></i>تصفية
-			</button>
-		</div>
-	</form>
+			<div class="col-md-3">
+				<label class="form-label">من تاريخ</label>
+				<input type="date" name="fromDate" class="form-control" value="@fromDate" />
+			</div>
 
-	<!-- Orders Table -->
-	<table class="table table-bordered table-hover align-middle text-center">
-		<thead class="table-light">
-			<tr>
-				<th>رقم الطلب</th>
-				<th>العميل</th>
-				<th>المجموع</th>
-				<th>الحالة</th>
-				<th>التاريخ</th>
-				<th>الإجراءات</th>
-			</tr>
-		</thead>
-		<tbody>
-			@if (!Model.Any())
-			{
-				<tr>
-					<td colspan="6" class="text-muted">لا توجد طلبات مطابقة</td>
-				</tr>
-			}
-			else
-			{
-				@foreach (var order in Model)
-				{
-					<tr>
-						<td>@order.Id.ToString("D6")</td>
-						<td>@order.UserName</td>
-						<td>@order.TotalAmount.ToString("C")</td>
-						<td>@GetStatusText(order.OrderStatus)</td>
-						<td>@order.OrderDate.ToString("yyyy/MM/dd HH:mm")</td>
-						<td>
-							<div class="btn-group btn-group-sm">
-								<a asp-action="Details" asp-route-id="@order.Id"
-								   class="btn btn-outline-primary">
-									<i class="fas fa-eye"></i>
-								</a>
-								@if (User.IsInRole("Admin"))
-								{
-									<a asp-action="EditStatus" asp-route-id="@order.Id"
-									   class="btn btn-outline-secondary">
-										<i class="fas fa-edit"></i>
-									</a>
+			<div class="col-md-3">
+				<label class="form-label">إلى تاريخ</label>
+				<input type="date" name="toDate" class="form-control" value="@toDate" />
+			</div>
 
-									<!-- Delete button triggers modal -->
-									<button type="button"
-											class="btn btn-outline-danger"
-											data-bs-toggle="modal"
-											data-bs-target="#deleteModal"
-											data-order-id="@order.Id"
-											data-order-user="@order.UserName">
-										<i class="fas fa-trash-alt"></i>
-									</button>
-								}
-							</div>
-						</td>
-					</tr>
-				}
-			}
-		</tbody>
-	</table>
+			<div class="col-md-3 d-flex">
+				<button type="submit" class="btn btn-primary me-2">
+					<i class="fas fa-filter me-1"></i> تطبيق الفلتر
+				</button>
+				<a asp-action="Index" class="btn btn-outline-secondary">
+					<i class="fas fa-undo me-1"></i> إعادة تعيين
+				</a>
+			</div>
+		</form>
 
-	<!-- Pagination -->
-	<nav>
-		<ul class="pagination justify-content-center">
-			@for (int i = 1; i <= totalPages; i++)
-			{
-				<li class="page-item @(i == currentPage ? "active" : "")">
-					<a class="page-link" href="@Url.Action("Index", new { pageNumber = i, status = statusFilter, search = searchQuery })">
-						@i
-					</a>
-				</li>
-			}
-		</ul>
-	</nav>
+		<!-- Orders Table -->
+		@if (Model != null && Model.Any())
+		{
+			<div class="table-responsive">
+				<table class="table table-hover align-middle text-center">
+					<thead class="table-light">
+						<tr>
+							<th>رقم الطلب</th>
+							<th>العميل</th>
+							<th>المجموع</th>
+							<th>الحالة</th>
+							<th>التاريخ</th>
+							<th>الإجراءات</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var order in Model)
+						{
+							<tr>
+								<td>@order.Id.ToString("D6")</td>
+								<td>@order.UserName</td>
+								<td class="fw-bold">@order.TotalAmount.ToString("C")</td>
+								<td>
+									<span class="badge @GetStatusBadgeClass(order.OrderStatus)">
+										@GetStatusText(order.OrderStatus)
+									</span>
+								</td>
+								<td>@order.OrderDate.ToString("yyyy/MM/dd HH:mm")</td>
+								<td>
+									<div class="btn-group btn-group-sm">
+										<a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary">
+											<i class="fas fa-eye"></i>
+										</a>
+										@if (User.IsInRole("Admin"))
+										{
+											<a asp-action="EditStatus" asp-route-id="@order.Id" class="btn btn-outline-secondary">
+												<i class="fas fa-edit"></i>
+											</a>
+											<button type="button"
+													class="btn btn-outline-danger"
+													data-bs-toggle="modal"
+													data-bs-target="#deleteModal"
+													data-order-id="@order.Id"
+													data-order-user="@order.UserName">
+												<i class="fas fa-trash-alt"></i>
+											</button>
+										}
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Pagination -->
+			<nav class="mt-4">
+				<ul class="pagination justify-content-center">
+					<li class="page-item @(currentPage == 1 ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage - 1, status = statusFilter, search = searchQuery })">السابق</a>
+					</li>
+					@for (int i = 1; i <= totalPages; i++)
+					{
+						<li class="page-item @(i == currentPage ? "active" : "")">
+							<a class="page-link" href="@Url.Action("Index", new { pageNumber = i, status = statusFilter, search = searchQuery })">@i</a>
+						</li>
+					}
+					<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage + 1, status = statusFilter, search = searchQuery })">التالي</a>
+					</li>
+				</ul>
+			</nav>
+		}
+		else
+		{
+			<div class="text-center py-5 text-muted">
+				<i class="fas fa-box fa-4x mb-3"></i>
+				<h5>لا توجد طلبات</h5>
+			</div>
+		}
+	</div>
 </div>
 
 <!-- Delete Confirmation Modal -->
@@ -153,51 +179,42 @@
 		</div>
 	</div>
 </div>
-@functions {
-	string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
-	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
-			MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
-			MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
-			MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
-			MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
-			_ => "bg-secondary"
-		};
-	}
 
-	string GetStatusText(MindShelf_DAL.Models.OrderState status)
+@functions {
+	string GetStatusBadgeClass(OrderState status) => status switch
 	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
-			MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
-			MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
-			MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
-			MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
-			_ => status.ToString()
-		};
-	}
+		OrderState.Pending => "bg-warning",
+		OrderState.Confirmed => "bg-info",
+		OrderState.Shipping => "bg-primary",
+		OrderState.Delivered => "bg-success",
+		OrderState.Cancelled => "bg-danger",
+		_ => "bg-secondary"
+	};
+
+	string GetStatusText(OrderState status) => status switch
+	{
+		OrderState.Pending => "في الانتظار",
+		OrderState.Confirmed => "مؤكد",
+		OrderState.Shipping => "تم الشحن",
+		OrderState.Delivered => "تم التسليم",
+		OrderState.Cancelled => "ملغي",
+		_ => status.ToString()
+	};
 }
 
 @section Scripts {
-<script>
-	var deleteModal = document.getElementById('deleteModal');
-	deleteModal.addEventListener('show.bs.modal', function (event) {
-		var button = event.relatedTarget;
-		var orderId = button.getAttribute('data-order-id');
-		var orderUser = button.getAttribute('data-order-user');
+	<script>
+		var deleteModal = document.getElementById('deleteModal');
+		deleteModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			var orderId = button.getAttribute('data-order-id');
+			var orderUser = button.getAttribute('data-order-user');
 
-		// Update modal content
-		document.getElementById('deleteOrderId').textContent = "#" + orderId.padStart(6, "0");
-		document.getElementById('deleteOrderUser').textContent = orderUser;
-		document.getElementById('deleteInputId').value = orderId;
+			document.getElementById('deleteOrderId').textContent = "#" + orderId.padStart(6, "0");
+			document.getElementById('deleteOrderUser').textContent = orderUser;
+			document.getElementById('deleteInputId').value = orderId;
 
-		// Set form action dynamically
-		document.getElementById('deleteForm').action = '/Order/Delete/' + orderId;
-	});
-</script>
+			document.getElementById('deleteForm').action = '/Order/Delete/' + orderId;
+		});
+	</script>
 }
-
-

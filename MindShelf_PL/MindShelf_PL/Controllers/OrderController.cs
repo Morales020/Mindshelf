@@ -108,7 +108,10 @@ namespace MindShelf_PL.Controllers
             if (!result.Success)
                 return View("Error", result.Message);
 
-            return RedirectToAction("Details", new { id });
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("Index");
+            else
+                return RedirectToAction("UserOrders", new { userName = User.Identity?.Name });
         }
 
         [HttpPost]
