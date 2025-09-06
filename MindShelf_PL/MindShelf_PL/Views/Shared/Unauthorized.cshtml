@@ -1,0 +1,148 @@
+@{
+    ViewData["Title"] = "غير مصرح لك بالوصول";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card unauthorized-card shadow-lg">
+                <div class="card-body text-center p-5">
+                    <!-- Icon -->
+                    <div class="unauthorized-icon mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    
+                    <!-- Title -->
+                    <h1 class="unauthorized-title mb-3">غير مصرح لك بالوصول</h1>
+                    
+                    <!-- Message -->
+                    <p class="unauthorized-message mb-4">
+                        عذراً، لا يمكنك الوصول إلى هذه الصفحة أو تنفيذ هذا الإجراء.<br>
+                        يرجى تسجيل الدخول أولاً أو التأكد من أن لديك الصلاحيات المناسبة.
+                    </p>
+                    
+                    <!-- Actions -->
+                    <div class="unauthorized-actions">
+                        <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            تسجيل الدخول
+                        </a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>
+                            العودة للصفحة الرئيسية
+                        </a>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="unauthorized-info mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بفريق الدعم الفني
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .unauthorized-page {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .unauthorized-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .unauthorized-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        opacity: 0.8;
+    }
+
+    .unauthorized-title {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .unauthorized-message {
+        color: #6c757d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .unauthorized-actions .btn {
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .unauthorized-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .unauthorized-info {
+        border-top: 1px solid #e9ecef;
+        padding-top: 1rem;
+        margin-top: 2rem;
+    }
+
+    /* Dark mode support */
+    .dark-mode .unauthorized-page {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+
+    .dark-mode .unauthorized-card {
+        background: rgba(44, 62, 80, 0.95);
+        color: #ecf0f1;
+    }
+
+    .dark-mode .unauthorized-title {
+        color: #ecf0f1;
+    }
+
+    .dark-mode .unauthorized-message {
+        color: #bdc3c7;
+    }
+
+    .dark-mode .unauthorized-info {
+        border-top-color: #34495e;
+    }
+
+    .dark-mode .unauthorized-info small {
+        color: #95a5a6;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .unauthorized-title {
+            font-size: 2rem;
+        }
+        
+        .unauthorized-message {
+            font-size: 1rem;
+        }
+        
+        .unauthorized-actions .btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .unauthorized-actions .btn.me-3 {
+            margin-right: 0 !important;
+        }
+    }
+</style>

@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "صفحة محمية";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="text-success mb-4">
+                        <i class="fas fa-check-circle"></i>
+                        تم الوصول بنجاح!
+                    </h2>
+                    <p class="lead">هذه صفحة محمية وتتطلب تسجيل الدخول للوصول إليها.</p>
+                    <p>مرحباً <strong>@User.Identity.Name</strong>!</p>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        العودة للصفحة الرئيسية
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

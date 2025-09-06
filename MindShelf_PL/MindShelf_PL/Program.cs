@@ -100,6 +100,7 @@ namespace MindShelf_PL
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Error/Unauthorized";
     })
     .AddGoogle(options =>
     {
@@ -112,6 +113,12 @@ namespace MindShelf_PL
         options.CallbackPath = "/signin-google";
     });
 
+            // Configure Authorization
+            builder.Services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = options.DefaultPolicy;
+            });
+
 
             var app = builder.Build();
 
@@ -122,6 +129,13 @@ namespace MindShelf_PL
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            // Add status code pages middleware
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
