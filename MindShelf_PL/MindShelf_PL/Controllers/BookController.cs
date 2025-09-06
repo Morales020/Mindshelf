@@ -226,9 +226,9 @@ namespace MindShelf_MVC.Controllers
                 State = response.Data.State,
                 Title = response.Data.Title,
                 Description = response.Data.Description,
-               Rating =response.Data.Rating,
-               
-
+                Rating = response.Data.Rating,
+                AuthorId = response.Data.AuthorId,
+                CategoryId = response.Data.CategoryId
             };
 
             // Load dropdowns

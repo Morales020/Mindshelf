@@ -10,6 +10,7 @@
         <form asp-action="Edit" method="post" enctype="multipart/form-data" class="row g-3">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="BookId" />
+            <input type="hidden" asp-for="ImageUrl" />
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
