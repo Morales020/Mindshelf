@@ -1,0 +1,54 @@
+﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
+@using MindShelf_DAL.Models
+
+@{
+	ViewData["Title"] = "تحديث حالة الطلب";
+}
+
+<div class="card shadow-sm">
+	<div class="card-header bg-primary text-white">
+		<h5 class="mb-0">تحديث حالة الطلب - #@Model.Id</h5>
+	</div>
+	<div class="card-body">
+		<form asp-action="EditStatus" method="post">
+			<input type="hidden" name="id" value="@Model.Id" />
+
+			<div class="mb-3">
+				<label for="status" class="form-label">الحالة</label>
+				<select name="status" class="form-select">
+					@foreach (var state in Enum.GetValues(typeof(OrderState)))
+					{
+						var isSelected = Model.OrderStatus == (OrderState)state ? "selected" : "";
+						<option value="@state" selected="@isSelected">
+							@GetStatusText((OrderState)state)
+						</option>
+					}
+				</select>
+			</div>
+
+			<div class="d-flex">
+				<button type="submit" class="btn btn-success me-2">
+					<i class="fas fa-save me-1"></i> تحديث
+				</button>
+				<a asp-action="Index" class="btn btn-secondary">
+					<i class="fas fa-times me-1"></i> إلغاء
+				</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+@functions {
+	string GetStatusText(OrderState status)
+	{
+		return status switch
+		{
+			OrderState.Pending => "في الانتظار",
+			OrderState.Confirmed => "مؤكد",
+			OrderState.Shipping => "تم الشحن",
+			OrderState.Delivered => "تم التسليم",
+			OrderState.Cancelled => "ملغي",
+			_ => status.ToString()
+		};
+	}
+}

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using MindShelf_BL.Dtos.OrderDtos;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_DAL.Models;
 
 namespace MindShelf_PL.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderServices _orderServices;
@@ -14,25 +17,43 @@ namespace MindShelf_PL.Controllers
             _orderServices = orderServices;
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+       
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Index(
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? status = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
         {
-            var result = await _orderServices.GetAllOrdersAsync(pageNumber, pageSize);
+            var result = await _orderServices.GetAllOrdersAsync(
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                userId: null, 
+                status: status,
+                fromDate: fromDate,
+                toDate: toDate
+            );
+
             if (!result.Success)
                 return View("Error", result.Message);
 
             ViewBag.TotalPages = result.TotalPages;
             ViewBag.CurrentPage = pageNumber;
+            ViewBag.Status = status;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+
             return View(result.Data);
         }
+
 
         public async Task<IActionResult> Details(int id)
         {
             var result = await _orderServices.GetOrderByIdAsync(id);
             if (!result.Success)
-                return NotFound();
+                return View("Error", result.Message);
 
-            var totalAmountResult = await _orderServices.CalculateTotalAmountAsync(id);
-            ViewBag.TotalAmount = totalAmountResult.Success ? totalAmountResult.Data : 0;
             return View(result.Data);
         }
 
@@ -43,105 +64,114 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateOrderDto orderDto)
+        public async Task<IActionResult> Create(CreateOrderDto dto)
         {
             if (!ModelState.IsValid)
-                return View(orderDto);
+                return View(dto);
 
-            var result = await _orderServices.CreateOrderAsync(orderDto);
+            var result = await _orderServices.CreateOrderAsync(dto);
             if (!result.Success)
             {
                 ModelState.AddModelError("", result.Message);
-                return View(orderDto);
+                return View(dto);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { id = result.Data.Id });
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStatus(int id)
         {
             var result = await _orderServices.GetOrderByIdAsync(id);
             if (!result.Success)
-                return NotFound();
+                return View("Error", result.Message);
 
             return View(result.Data);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStatus(int id, OrderState status)
         {
             var result = await _orderServices.UpdateOrderStatusAsync(id, status);
             if (!result.Success)
-            {
-                ModelState.AddModelError("", result.Message);
-                var orderResult = await _orderServices.GetOrderByIdAsync(id);
-                return View(orderResult.Data);
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var result = await _orderServices.GetOrderByIdAsync(id);
-            if (!result.Success)
-                return NotFound();
-
-            return View(result.Data);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var result = await _orderServices.DeleteOrderAsync(id);
-            if (!result.Success)
-                return BadRequest(result.Message);
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ByStatus(OrderState status, int pageNumber = 1, int pageSize = 10)
-        {
-            var result = await _orderServices.GetOrdersByStatusAsync(status, pageNumber, pageSize);
-            if (!result.Success)
                 return View("Error", result.Message);
 
-            ViewBag.Status = status;
-            ViewBag.TotalPages = result.TotalPages;
-            ViewBag.CurrentPage = pageNumber;
-            return View("Index", result.Data);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ByUser(string userName)
-        {
-            var result = await _orderServices.GetOrdersByUserNameAsync(userName);
-            if (!result.Success)
-                return View("Error", result.Message);
-
-            ViewBag.UserName = userName;
-            return View("Index", result.Data);
+            return RedirectToAction("Details", new { id });
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancel(int id)
         {
             var result = await _orderServices.CancelOrder(id);
             if (!result.Success)
-            {
-                ModelState.AddModelError("", result.Message);
-                var orderResult = await _orderServices.GetOrderByIdAsync(id);
-                return View("Details", orderResult.Data);
-            }
+                return View("Error", result.Message);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecalculateTotal(int id)
+        {
+            var result = await _orderServices.CalculateTotalAmountAsync(id);
+            if (!result.Success)
+                return View("Error", result.Message);
+
+            TempData["Message"] = $"Total recalculated: {result.Data:C}";
+            return RedirectToAction("Details", new { id });
+        }
+
+        
+        public async Task<IActionResult> UserOrders(
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? status = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
+        {
+           
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var result = await _orderServices.GetAllOrdersAsync(userId, status, fromDate, toDate, pageNumber );
+
+            if (!result.Success)
+                return View("Error", result.Message);
+
+            ViewBag.TotalPages = result.TotalPages;
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.Status = status;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            ViewBag.UserName = User.Identity?.Name;
+
+            return View("UserOrders", result.Data); 
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _orderServices.GetOrderByIdAsync(id);
+            if (!result.Success)
+                return View("Error", result.Message);
+
+            return View(result.Data); // show confirmation page
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _orderServices.DeleteOrderAsync(id);
+            if (!result.Success)
+                return View("Error", result.Message);
+
+            return RedirectToAction("Index");
         }
     }
 }
