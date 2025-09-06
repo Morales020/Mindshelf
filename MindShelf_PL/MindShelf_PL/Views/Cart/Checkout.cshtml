@@ -7,6 +7,96 @@
     ViewData["Title"] = "إتمام الطلب";
 }
 
+<style>
+    .checkout-book-item {
+        transition: all 0.3s ease;
+    }
+    
+    .checkout-book-item:hover {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .book-image-checkout {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .book-image-checkout:hover {
+        transform: scale(1.05);
+    }
+    
+    .checkout-table th {
+        background-color: #f8f9fa;
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        padding: 0.75rem;
+    }
+    
+    .checkout-table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .checkout-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .checkout-summary h5 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .checkout-summary .table {
+        color: white;
+    }
+    
+    .checkout-summary .table-success {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .checkout-summary .table-success th {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        color: #333 !important;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .checkout-summary .table td {
+        color: #333 !important;
+    }
+    
+    .checkout-summary .table th {
+        color: #333 !important;
+    }
+    
+    .checkout-summary small {
+        color: #333 !important;
+    }
+    
+    .checkout-summary a {
+        color: #333 !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease;
+    }
+    
+    .checkout-summary a:hover {
+        color: #007bff !important;
+        text-decoration: none !important;
+    }
+    
+    .checkout-summary a:hover small {
+        color: #007bff !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-lg-8">
         <div class="card">
@@ -19,57 +109,65 @@
                     <div class="row">
                         <!-- Cart Summary -->
                         <div class="col-md-6">
-                            <h5><i class="fas fa-shopping-cart me-2"></i>ملخص الطلب</h5>
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>الكتاب</th>
-                                            <th>الكمية</th>
-                                            <th>السعر</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.CartItems)
-                                        {
+                            <div class="checkout-summary">
+                                <h5><i class="fas fa-shopping-cart me-2"></i>ملخص الطلب</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm checkout-table">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        @if (!string.IsNullOrEmpty(item.BookImageUrl) && item.BookImageUrl.StartsWith("http"))
-                                                        {
-                                                            <img src="@item.BookImageUrl" 
-                                                                 class="img-thumbnail me-2" 
-                                                                 alt="@item.BookName" 
-                                                                 style="width: 40px; height: 50px; object-fit: cover;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <div class="book-placeholder me-2" style="width: 40px; height: 50px; background: #f8f9fa; border: 1px solid #dee2e6; display: none; text-align: center; line-height: 50px; font-size: 12px;">
-                                                                📚
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div class="book-placeholder me-2" style="width: 40px; height: 50px; background: #f8f9fa; border: 1px solid #dee2e6; text-align: center; line-height: 50px; font-size: 12px;">
-                                                                📚
-                                                            </div>
-                                                        }
-                                                        <div>
-                                                            <small class="fw-bold">@item.BookName</small><br>
-                                                            <small class="text-muted">@item.BookAuthor</small>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>@item.Quantity</td>
-                                                <td>@item.TotalPrice.ToString("C")</td>
+                                                <th>الكتاب</th>
+                                                <th>الكمية</th>
+                                                <th>السعر</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                    <tfoot>
-                                        <tr class="table-success">
-                                            <th colspan="2">المجموع الكلي:</th>
-                                            <th>@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.CartItems)
+                                            {
+                                                <tr class="checkout-book-item">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            @if (!string.IsNullOrEmpty(item.BookImageUrl))
+                                                            {
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <img src="@item.BookImageUrl" 
+                                                                         class="img-thumbnail me-2 book-image-checkout" 
+                                                                         alt="@item.BookName"
+                                                                         style="width: 50px; height: 65px; object-fit: cover; cursor: pointer;" 
+                                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                                </a>
+                                                                <div class="book-placeholder me-2" style="width: 50px; height: 65px; background: rgba(255,255,255,0.2); border: 2px dashed rgba(255,255,255,0.5); display: none; text-align: center; line-height: 65px; font-size: 14px; border-radius: 8px;">
+                                                                    <i class="fas fa-book text-white"></i>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <div class="book-placeholder me-2" style="width: 50px; height: 65px; background: rgba(255,255,255,0.2); border: 2px dashed rgba(255,255,255,0.5); text-align: center; line-height: 65px; font-size: 14px; border-radius: 8px;">
+                                                                        <i class="fas fa-book text-white"></i>
+                                                                    </div>
+                                                                </a>
+                                                            }
+                                                            <div>
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <small class="fw-bold" style="color: #333 !important;">@item.BookName</small>
+                                                                </a><br>
+                                                                <small style="color: #666 !important;">@item.BookAuthor</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color: #333 !important;">@item.Quantity</td>
+                                                    <td style="color: #333 !important;">@item.TotalPrice.ToString("C")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-success">
+                                                <th colspan="2" style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">المجموع الكلي:</th>
+                                                <th style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
