@@ -9,10 +9,12 @@ namespace MindShelf_PL.Controllers
     public class PaymentController : Controller
     {
         private readonly IPaymentService _paymentService;
+        private readonly ICartServices _cartServices;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, ICartServices cartServices)
         {
             _paymentService = paymentService;
+            _cartServices = cartServices;
         }
 
         public IActionResult Checkout()
@@ -52,10 +54,27 @@ namespace MindShelf_PL.Controllers
             }
         }
 
-        public IActionResult Success(string session_id)
+        public async Task<IActionResult> Success(string session_id)
         {
-            ViewBag.SessionId = session_id;
-            return View();
+            try
+            {
+                // Clear the cart after successful payment
+                var userName = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    await _cartServices.ClearCart(userName);
+                }
+
+                ViewBag.SessionId = session_id;
+                ViewBag.SuccessMessage = "تم الدفع بنجاح وتم مسح السلة";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.SessionId = session_id;
+                ViewBag.ErrorMessage = "تم الدفع بنجاح ولكن حدث خطأ في مسح السلة";
+                return View();
+            }
         }
 
         public IActionResult Cancel()

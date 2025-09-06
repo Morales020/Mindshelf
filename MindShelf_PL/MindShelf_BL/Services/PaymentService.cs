@@ -72,8 +72,8 @@ namespace MindShelf_BL.Services
                        }
                    },
                 Mode = "payment",
-                SuccessUrl = "https://localhost:7099/Payment/Success?session_id={CHECKOUT_SESSION_ID}",
-                CancelUrl = "https://localhost:7099/Payment/Cancel"
+                SuccessUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/Payment/Success?session_id={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/Payment/Cancel"
             };
 
             var service = new SessionService();

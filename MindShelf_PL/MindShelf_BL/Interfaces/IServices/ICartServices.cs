@@ -15,4 +15,10 @@ public interface ICartServices
     Task<ResponseMVC<CartResponseDto>> UpdateCartItem(UpdateCartItemDto updateCartItemDto);
     // checkout
     Task<ResponseMVC<CartResponseDto>> CheckoutAsync(CheckoutRequestDto checkoutRequestDto);
+    // clear cart
+    Task<ResponseMVC<CartResponseDto>> ClearCart(string userName);
+    // get cart count
+    Task<int> GetCartCount(string userName);
+    // get cart total
+    Task<decimal> GetCartTotal(string userName);
 }
