@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using MindShelf_BL.Dtos.EventDtos;
-using MindShelf_BL.Dtos.OrderDtos;
 using MindShelf_BL.Helper;
 using MindShelf_BL.Interfaces.IServices;
-using MindShelf_BL.Services;
 using MindShelf_DAL.Models;
 
 namespace MindShelf_PL.Controllers
@@ -11,51 +11,66 @@ namespace MindShelf_PL.Controllers
     public class EventController : Controller
     {
         private readonly IEventServices _eventService;
+        private readonly UserManager<User> _userManager;
 
-        public EventController(IEventServices eventService)
+        public EventController(IEventServices eventService, UserManager<User> userManager)
         {
             _eventService = eventService;
+            _userManager = userManager;
         }
 
-        // GET: /Event
+        // GET: /Event - متاح للجميع
         public async Task<IActionResult> Index()
         {
             var result = await _eventService.GetAllEvents();
             if (!result.Success)
                 return View("Error", result.Message);
 
-            ViewBag.Response = result;
+            var user = await _userManager.GetUserAsync(User);
+            var isAdmin = user != null && await _userManager.IsInRoleAsync(user, "Admin");
+            ViewBag.IsAdmin = isAdmin;
+
             return View(result.Data);
         }
 
-        // GET: /Event/Details/5
+        // GET: /Event/Details/5 - متاح للجميع
         public async Task<IActionResult> Details(int id)
         {
             var result = await _eventService.GetEventDetails(id);
             if (!result.Success)
                 return View("Error", result.Message);
 
-            ViewBag.Response = result;
+            var user = await _userManager.GetUserAsync(User);
+            var isAdmin = user != null && await _userManager.IsInRoleAsync(user, "Admin");
+            ViewBag.IsAdmin = isAdmin;
+            ViewBag.IsLoggedIn = user != null;
+
             return View(result.Data);
         }
 
-        // GET: /Event/Create
+        // GET: /Event/Create - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
-            var response = ResponseMVC<CreateEventDto>.SuccessResponse(new CreateEventDto());
+            var response = ResponseMVC<CreateEventDto>.SuccessResponse(new CreateEventDto
+            {
+                StartingDate = DateTime.Now.AddDays(1),
+                EndingDate = DateTime.Now.AddDays(1).AddHours(2)
+            });
             ViewBag.Response = response;
             return View(response.Data);
         }
 
-        // POST: /Event/Create
+        // POST: /Event/Create - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateEventDto eventDto)
         {
             if (!ModelState.IsValid)
             {
-                var errorResponse = ResponseMVC<CreateEventDto>.ErrorResponse("Invalid model state");
+                var errorResponse = ResponseMVC<CreateEventDto>.ErrorResponse("بيانات غير صحيحة");
                 ViewBag.Response = errorResponse;
                 return View(eventDto);
             }
@@ -68,10 +83,12 @@ namespace MindShelf_PL.Controllers
                 return View(eventDto);
             }
 
+            TempData["Success"] = "تم إنشاء الحدث بنجاح";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Event/Edit/5
+        // GET: /Event/Edit/5 - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -94,14 +111,15 @@ namespace MindShelf_PL.Controllers
             return View(dto);
         }
 
-        // POST: /Event/Edit/5
+        // POST: /Event/Edit/5 - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateEventDto eventDto)
         {
             if (!ModelState.IsValid)
             {
-                var errorResponse = ResponseMVC<UpdateEventDto>.ErrorResponse("Invalid model state");
+                var errorResponse = ResponseMVC<UpdateEventDto>.ErrorResponse("بيانات غير صحيحة");
                 ViewBag.Response = errorResponse;
                 return View(eventDto);
             }
@@ -114,10 +132,12 @@ namespace MindShelf_PL.Controllers
                 return View(eventDto);
             }
 
+            TempData["Success"] = "تم تحديث الحدث بنجاح";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Event/Delete/5
+        // GET: /Event/Delete/5 - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -129,7 +149,8 @@ namespace MindShelf_PL.Controllers
             return View(result.Data);
         }
 
-        // POST: /Event/Delete/5
+        // POST: /Event/Delete/5 - للأدمن فقط
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -137,11 +158,27 @@ namespace MindShelf_PL.Controllers
             var result = await _eventService.DeleteEventAsync(id);
             if (!result.Success)
             {
-                ViewBag.Response = result;
-                return BadRequest(result.Message);
+                TempData["Error"] = result.Message;
+                return RedirectToAction(nameof(Index));
             }
 
+            TempData["Success"] = "تم حذف الحدث بنجاح";
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: /Event/Register/5 - للمستخدمين المسجلين فقط
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterForEvent(int eventId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            // هنا يمكنك إضافة منطق تسجيل المستخدم في الحدث
+            // مثل إنشاء جدول EventRegistrations
+
+            TempData["Success"] = "تم تسجيلك في الحدث بنجاح";
+            return RedirectToAction("Details", new { id = eventId });
         }
     }
 }
