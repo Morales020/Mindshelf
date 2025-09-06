@@ -125,5 +125,35 @@ namespace MindShelf_BL.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        // Check if a book is already in user's favourites
+        public async Task<bool> IsBookFavouritedAsync(string userId, int bookId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return false;
+
+            var existing = await _unitOfWork.FavoriteBookRepo
+                .Query()
+                .FirstOrDefaultAsync(f => f.UserId == userId && f.BookId == bookId);
+
+            return existing != null;
+        }
+
+        // Remove favourite book by userId and bookId
+        public async Task<bool> RemoveFavouriteBookByUserAndBookAsync(string userId, int bookId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return false;
+
+            var favouriteBook = await _unitOfWork.FavoriteBookRepo
+                .Query()
+                .FirstOrDefaultAsync(f => f.UserId == userId && f.BookId == bookId);
+
+            if (favouriteBook == null) return false;
+
+            _unitOfWork.FavoriteBookRepo.Delete(favouriteBook.FavouriteBookId);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
     }
 }
