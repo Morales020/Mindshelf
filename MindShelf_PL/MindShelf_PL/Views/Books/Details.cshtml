@@ -1,42 +1,130 @@
-﻿@model MindShelf_BL.Dtos.BookDto.BookResponseDto
+﻿@using MindShelf_BL.Dtos.ReviewDto
+@model BookResponseDto
 
 @{
-    ViewData["Title"] = "تفاصيل الكتاب";
+    ViewData["Title"] = Model.Title;
+    ViewBag.BodyClass = "book-details-page";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">
-        تفاصيل الكتاب
-    </h2>
+<div class="container py-5">
+    <!-- Book Header Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <!-- Book Image -->
+                        <div class="col-md-4 text-center">
+                            <div class="book-image-container">
+                                <img src="@Model.ImageUrl" alt="@Model.Title" 
+                                     class="img-fluid rounded-3 shadow" 
+                                     style="max-height: 400px; width: 100%; object-fit: contain;" />
+                            </div>
+                        </div>
 
-    <div class="card p-4 shadow-lg" style="max-width: 800px; margin: 0 auto; border: 2px solid #6f42c1; border-radius: 15px;">
-        <div class="row">
-            <!-- Image -->
-            <div class="col-md-4 text-center">
-                <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" style="max-height: 300px;" />
+                        <!-- Book Information -->
+                        <div class="col-md-8">
+                            <div class="book-info">
+                                <h1 class="book-title mb-3">📚 @Model.Title</h1>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="info-item mb-2">
+                                            <i class="fas fa-user-edit text-primary me-3"></i>
+                                            <strong>المؤلف:</strong> @Model.AuthorName
+                                        </div>
+                                        <div class="info-item mb-2">
+                                            <i class="fas fa-list text-primary me-3"></i>
+                                            <strong>الفئة:</strong> @Model.CategoryName
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-item mb-2">
+                                            <i class="fas fa-calendar text-primary me-3"></i>
+                                            <strong>تاريخ النشر:</strong> @Model.PublishedDate.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="info-item mb-2">
+                                            <i class="fas fa-tag text-primary me-3"></i>
+                                            <strong>السعر:</strong> <span class="price">@Model.Price.ToString("C")</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Rating Section -->
+                                <div class="rating-section mb-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="rating-stars me-3">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(Model.Rating))
+                                                {
+                                                    <i class="fas fa-star text-warning"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star text-warning"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <span class="rating-number h4 mb-0 me-2">@Model.Rating.ToString("0.0")</span>
+                                        <span class="text-muted">(@Model.ReviewCount مراجعة)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="description-section mb-4">
+                                    <h5 class="section-title">📖 الوصف</h5>
+                                    <p class="book-description">@Model.Description</p>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="action-buttons">
+                                    <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
+                                       class="btn btn-primary">
+                                        <i class="fas fa-comments"></i> عرض المراجعات
+                                    </a>
+                                    <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
+                                       class="btn btn-success">
+                                        <i class="fas fa-plus"></i> أضف مراجعة
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> تعديل الكتاب
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@Model.BookId" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> حذف الكتاب
+                                    </a>
+                                    <a asp-action="Index" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-right"></i> العودة للكتب
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Book Info -->
-            <div class="col-md-8">
-                <h3 class="fw-bold">@Model.Title</h3>
-                <p class="text-muted mb-1"><strong>المؤلف:</strong> @Model.AuthorName</p>
-                <p class="text-muted mb-1"><strong>الفئة:</strong> @Model.CategoryName</p>
-                <p class="text-muted mb-1"><strong>تاريخ النشر:</strong> @Model.PublishedDate.ToString("")</p>
-                <p class="text-muted mb-1"><strong>السعر:</strong> @Model.Price.ToString("C")</p>
-                <p class="text-muted mb-1"><strong>الحالة:</strong> @Model.State</p>
-                <p class="text-muted mb-1"><strong>المخزون:</strong> @Model.State.ToString()</p>
-                <p class="text-muted mb-1"><strong>عدد المراجعات:</strong> @Model.ReviewCount</p>
-                <p class="text-muted mb-3"><strong>التقييم:</strong> @Model.Rating.ToString("0.0") / 5</p>
+    <!-- Reviews Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="reviews-section">
+                <div class="section-header mb-4">
+                    <h2 class="section-title">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        مراجعات القراء
+                    </h2>
+                    <p class="section-subtitle text-muted">آراء القراء حول هذا الكتاب</p>
+                </div>
 
-                <hr />
-
-                <h5>الوصف:</h5>
-                <p>@Model.Description</p>
-
-                <div class="mt-4">
-                    <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-purple me-2">تعديل</a>
-                    <a asp-action="Delete" asp-route-id="@Model.BookId" class="btn btn-danger me-1">حذف</a>
-                    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+                <!-- Reviews will be loaded here via AJAX or direct integration -->
+                <div id="reviews-container">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">جاري التحميل...</span>
+                        </div>
+                        <p class="mt-2 text-muted">جاري تحميل المراجعات...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,12 +213,10 @@
         border: 2px solid #dee2e6;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-
     .dark-mode .action-buttons {
         background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
         border-color: #555;
     }
-
     .action-buttons .btn {
         border-radius: 25px;
         padding: 0.75rem 1.5rem;
@@ -188,7 +274,6 @@
         transition: all 0.3s ease;
         margin-bottom: 1.5rem;
     }
-
     .review-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0,0,0,0.15);
@@ -205,20 +290,16 @@
         color: #2c3e50;
         font-size: 1.1rem;
     }
-
     .dark-mode .review-user {
         color: #F5F5DC;
     }
-
     .review-date {
         color: #6c757d;
         font-size: 0.9rem;
     }
-
     .dark-mode .review-date {
         color: #b0b0b0;
     }
-
     .review-rating {
         font-size: 1.2rem;
     }
@@ -228,21 +309,17 @@
         line-height: 1.6;
         color: #495057;
     }
-
     .dark-mode .review-comment {
         color: #F5F5DC;
     }
-
     .no-reviews {
         text-align: center;
         padding: 3rem;
         color: #6c757d;
     }
-
     .dark-mode .no-reviews {
         color: #b0b0b0;
     }
-
     .no-reviews > i {
         font-size: 4rem;
         margin-bottom: 1rem;
@@ -283,3 +360,52 @@
         height: 3rem;
     }
 </style>
+
+<script>
+    // Load reviews when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        loadReviews();
+    });
+
+    function loadReviews() {
+        const bookId = @Model.BookId;
+        const container = document.getElementById('reviews-container');
+        
+        fetch(`/Review/GetBookReviews?bookId=${bookId}`)
+            .then(response => response.text())
+            .then(html => {
+                // Extract reviews from the response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const reviewsSection = doc.querySelector('.reviews-container');
+                
+                if (reviewsSection && reviewsSection.children.length > 0) {
+                    container.innerHTML = reviewsSection.innerHTML;
+                } else {
+                    container.innerHTML = `
+                        <div class="no-reviews">
+                            <i class="fas fa-comment-slash"></i>
+                            <h4>لا توجد مراجعات بعد</h4>
+                            <p>كن أول من يكتب مراجعة لهذا الكتاب</p>
+                            <a href="/Review/Create?bookId=${bookId}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> أضف مراجعة
+                            </a>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                container.innerHTML = `
+                    <div class="no-reviews">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>خطأ في تحميل المراجعات</h4>
+                        <p>حدث خطأ أثناء تحميل المراجعات. يرجى المحاولة مرة أخرى.</p>
+                        <button onclick="loadReviews()" class="btn btn-primary">
+                            <i class="fas fa-redo"></i> إعادة المحاولة
+                        </button>
+                    </div>
+                `;
+            });
+    }
+</script>

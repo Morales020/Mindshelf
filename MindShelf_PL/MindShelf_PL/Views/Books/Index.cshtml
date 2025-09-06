@@ -1,66 +1,294 @@
-﻿@using MindShelf_BL.Dtos.BookDto
-@model IEnumerable<BookResponseDto>
+﻿@model List<BookResponseDto>
 
 @{
     ViewData["Title"] = "الكتب";
 }
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">📚 جميع الكتب</h2>
-
-    <!-- Search Bar -->
-    <form asp-action="Search" method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="term" class="form-control" placeholder="ابحث عن كتاب أو مؤلف..." />
-            <button class="btn btn-primary" type="submit">🔍 بحث</button>
-        </div>
-    </form>
-
-    <!-- Books Grid -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @foreach (var book in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm book-card">
-                    <!-- ✅ صورة الكتاب -->
-                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height:250px; object-fit:cover;" />
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@book.Title</h5>
-                        <p class="card-text text-muted">👤 @book.AuthorName</p>
-
-                        <div class="mb-2">
-                            <span class="text-warning">⭐ @book.Rating</span>
-                            <span class="text-muted">(@book.ReviewCount مراجعة)</span>
-                        </div>
-
-                        <p class="fw-bold text-success">س.ر @book.Price</p>
-
-                        <!-- ✅ زر التفاصيل -->
-                        <a asp-action="Details" asp-route-id="@book.BookId" class="btn btn-outline-primary mt-auto">
-                            عرض التفاصيل
-                        </a>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-book-open me-3"></i>مكتبة الكتب</h1>
+        <p class="lead">اكتشف عالماً من المعرفة والثقافة</p>
     </div>
-
-    <!-- Pagination (لو عايز تعمل بجد محتاج تبعت رقم الصفحة من الـ Controller) -->
-    <nav class="mt-5">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="#">السابق</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">التالي</a></li>
-        </ul>
-    </nav>
 </div>
 
-<style>
-    .book-card:hover {
-        transform: scale(1.02);
-        transition: 0.3s ease-in-out;
-        border-color: #0d6efd;
+<div class="container">
+    <!-- رسائل النجاح والخطأ -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
-</style>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" asp-action="Index">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">البحث بالعنوان</label>
+                                <input type="text" name="searchTerm" class="form-control"
+                                       placeholder="ادخل عنوان الكتاب..." value="@ViewBag.SearchTerm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">التصنيف</label>
+                                <select class="form-select"
+                                        onchange="if(this.value) window.location.href='@Url.Action("ByCategory","Books")?categoryId=' + this.value">
+                                    <option value="">جميع التصنيفات</option>
+                                    @if (ViewBag.Categories is List<CategoryResponseDto> categories)
+                                    {
+                                        foreach (var category in categories)
+                                        {
+                                            <option value="@category.CategoryId"
+                                                    selected="@(ViewBag.SelectedCategoryId != null && (int)ViewBag.SelectedCategoryId == category.CategoryId ? "selected" : null)">
+                                                @category.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">المؤلف</label>
+                                <select class="form-select"
+                                        onchange="if(this.value) window.location.href='@Url.Action("ByAuthor","Books")?authorId=' + this.value">
+                                    <option value="">جميع المؤلفين</option>
+                                    @if (ViewBag.Authors is List<AuthorResponseDto> authors)
+                                    {
+                                        foreach (var author in authors)
+                                        {
+                                            <option value="@author.AuthorId"
+                                                    selected="@(ViewBag.SelectedAuthorId != null && (int)ViewBag.SelectedAuthorId == author.AuthorId ? "selected" : null)">
+                                                @author.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-1"></i> بحث
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-end">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
+                </a>
+            }
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row" id="books-container">
+            @foreach (var book in Model)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                    <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId )">
+                        <div class="position-relative">
+                            @if (!string.IsNullOrEmpty(book.ImageUrl))
+                            {
+                                <img src="@book.ImageUrl" alt="@book.Title"
+                                     class="w-100" style="height: 250px; object-fit: cover; cursor: pointer;"
+                                     onclick="viewBookDetails(@(book.BookId ))"
+                                     onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center bg-light"
+                                     style="height: 250px; cursor: pointer;"
+                                     onclick="viewBookDetails(@(book.BookId ))">
+                                    <i class="fas fa-book fa-3x text-muted"></i>
+                                </div>
+                            }
+
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm position-absolute"
+                                    style="top: 10px; left: 10px;"
+                                    onclick="toggleFavorite(@(book.BookId ), this)"
+                                    title="إضافة للمفضلة">
+                                <i class="far fa-heart"></i>
+                            </button>
+
+                            @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                            {
+                                <span class="badge bg-success position-absolute" style="top: 10px; right: 10px;">
+                                    متوفر
+                                </span>
+                            }
+                            else if (book.State == MindShelf_DAL.Models.BookState.OutOfStock)
+                            {
+                                <span class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">
+                                    غير متوفر
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title fw-bold mb-2 text-truncate"
+                                onclick="viewBookDetails(@(book.BookId ))"
+                                style="cursor: pointer; color: var(--primary-color);">
+                                @book.Title
+                            </h6>
+                            <p class="text-muted mb-2 text-truncate">
+                                <i class="fas fa-user me-1"></i>@(book.AuthorName ?? "غير محدد")
+                            </p>
+
+                            <div class="rating-container mb-2">
+                                @if (book.Rating > 0)
+                                {
+                                    <div class="rating-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= book.Rating)
+                                            {
+                                                <i class="fas fa-star text-warning"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star text-warning"></i>
+                                            }
+                                        }
+                                    </div>
+                                    <small class="text-muted">(@book.Rating من 5)</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">لا توجد تقييمات</small>
+                                }
+                            </div>
+
+                            <div class="mb-2">
+                                @if (book.Price > 0)
+                                {
+                                    <span class="h6 text-success fw-bold">@book.Price ر.س</span>
+                                }
+                                else
+                                {
+                                    <span class="h6 text-info fw-bold">مجاناً</span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(book.Description))
+                            {
+                                <p class="card-text text-muted small mb-3" style="max-height: 40px; overflow: hidden; text-overflow: ellipsis;">
+                                    @(book.Description.Length > 100 ? book.Description.Substring(0, 100) + "..." : book.Description)
+                                </p>
+                            }
+
+                            <div class="mt-auto">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                                        {
+                                            <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                                                <input type="hidden" name="BookId" value="@(book.BookId )" />
+                                                <input type="hidden" name="Quantity" value="1" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                    <i class="fas fa-cart-plus me-1"></i> السلة
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
+                                        }
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-outline-primary btn-sm w-100"
+                                                onclick="viewBookDetails(@(book.BookId ))">
+                                            <i class="fas fa-eye me-1"></i> التفاصيل
+                                        </button>
+                                    </div>
+                                </div>
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-6">
+                                            <a asp-action="Edit" asp-route-id="@(book.BookId )" class="btn btn-warning btn-sm w-100">
+                                                <i class="fas fa-edit me-1"></i> تعديل
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a asp-action="Delete" asp-route-id="@(book.BookId )" class="btn btn-danger btn-sm w-100">
+                                                <i class="fas fa-trash me-1"></i> حذف
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (ViewBag.TotalPages != null && (int)ViewBag.TotalPages > 1)
+        {
+            <nav aria-label="صفحات الكتب" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == (ViewBag.CurrentPage ?? 1) ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm })">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-book fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">لا توجد كتب متاحة</h4>
+                <p class="text-muted">لم يتم العثور على أي كتب تطابق معايير البحث.</p>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function viewBookDetails(bookId) {
+            if (bookId === 0) {
+                alert('معرف الكتاب غير صالح');
+                return;
+            }
+            window.location.href = '@Url.Action("Details", "Books")/' + bookId;
+        }
+
+        function toggleFavorite(bookId, button) {
+            alert("وظيفة المفضلة هنا يمكن إضافتها لاحقاً");
+        }
+    </script>
+}

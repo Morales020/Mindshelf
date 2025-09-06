@@ -3,56 +3,137 @@
 
 @{
     ViewData["Title"] = "إضافة مراجعة جديدة";
+    ViewBag.BodyClass = "create-review-page";
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">✍️ إضافة مراجعة جديدة</h3>
+        <div class="col-lg-8">
+            <!-- Header Section -->
+            <div class="page-header mb-5">
+                <div class="text-center">
+                    <h1 class="page-title">
+                        <i class="fas fa-star text-warning me-3"></i>
+                        إضافة مراجعة جديدة
+                    </h1>
+                    <p class="page-subtitle text-muted">شارك رأيك حول هذا الكتاب</p>
                 </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
-                        <input asp-for="BookId" type="hidden" />
-                        
-                        <div class="mb-3">
-                            <label asp-for="UserName" class="form-label">👤 اسم المستخدم</label>
-                            <input asp-for="UserName" class="form-control" placeholder="أدخل اسم المستخدم" />
-                            <span asp-validation-for="UserName" class="text-danger"></span>
-                        </div>
+            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">⭐ التقييم</label>
-                            <div class="rating-stars">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    <input type="radio" asp-for="Rating" value="@i" id="star@i" class="rating-input" />
-                                    <label for="star@i" class="rating-star">⭐</label>
-                                }
+            <!-- Review Form -->
+            <div class="review-form-container">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header bg-gradient-success text-white py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-edit me-2"></i>
+                                    مراجعة الكتاب
+                                </h3>
+                                <p class="mb-0 opacity-75">اكتب مراجعتك وتقييمك</p>
                             </div>
-                            <span asp-validation-for="Rating" class="text-danger"></span>
+                            <div class="col-md-4 text-end">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" 
+                                   class="btn btn-light btn-sm">
+                                    <i class="fas fa-arrow-right"></i> العودة للكتاب
+                                </a>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <form asp-action="Create" method="post" class="review-form">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                            
+                            <input asp-for="BookId" type="hidden" />
+                            
+                            <!-- User Name Field -->
+                            <div class="form-group mb-4">
+                                <label asp-for="UserName" class="form-label">
+                                    <i class="fas fa-user text-primary me-2"></i>
+                                    اسم المستخدم
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </span>
+                                    <input asp-for="UserName" class="form-control form-control-lg" 
+                                           placeholder="أدخل اسم المستخدم" />
+                                </div>
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Comment" class="form-label">💬 التعليق (اختياري)</label>
-                            <textarea asp-for="Comment" class="form-control" rows="4" 
-                                      placeholder="اكتب تعليقك عن الكتاب (اختياري)"></textarea>
-                            <span asp-validation-for="Comment" class="text-danger"></span>
-                        </div>
+                            <!-- Rating Field -->
+                            <div class="form-group mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-star text-warning me-2"></i>
+                                    التقييم
+                                </label>
+                                <div class="rating-container">
+                                    <div class="rating-stars" id="rating-stars">
+                                        <span class="star" data-rating="1">
+                                            <i class="far fa-star"></i>
+                                        </span>
+                                        <span class="star" data-rating="2">
+                                            <i class="far fa-star"></i>
+                                        </span>
+                                        <span class="star" data-rating="3">
+                                            <i class="far fa-star"></i>
+                                        </span>
+                                        <span class="star" data-rating="4">
+                                            <i class="far fa-star"></i>
+                                        </span>
+                                        <span class="star" data-rating="5">
+                                            <i class="far fa-star"></i>
+                                        </span>
+                                    </div>
+                                    <input type="hidden" asp-for="Rating" id="rating-input" value="0" />
+                                    <div class="rating-text">
+                                        <span id="rating-text">اختر التقييم</span>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
 
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success">
-                                💾 حفظ المراجعة
-                            </button>
-                            <a asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
-                               class="btn btn-secondary">
-                                ← إلغاء
-                            </a>
-                        </div>
-                    </form>
+                            <!-- Comment Field -->
+                            <div class="form-group mb-5">
+                                <label asp-for="Comment" class="form-label">
+                                    <i class="fas fa-comment text-primary me-2"></i>
+                                    التعليق (اختياري)
+                                </label>
+                                <div class="comment-container">
+                                    <textarea asp-for="Comment" class="form-control comment-textarea" rows="5" 
+                                              placeholder="اكتب تعليقك عن الكتاب... شارك تجربتك في القراءة، ما أعجبك وما لم يعجبك، ونصائح للقراء الآخرين"></textarea>
+                                    <div class="comment-footer">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            التعليق اختياري، لكنه يساعد القراء الآخرين
+                                        </small>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Comment" class="text-danger"></span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                            <i class="fas fa-save me-2"></i>
+                                            حفظ المراجعة
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
+                                           class="btn btn-secondary btn-lg w-100">
+                                            <i class="fas fa-times me-2"></i>
+                                            إلغاء
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,37 +141,218 @@
 </div>
 
 <style>
+    /* Create Review Page Styles */
+    .create-review-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .dark-mode .create-review-page {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(45deg, #28a745, #1e7e34);
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dark-mode .page-title {
+        color: #F5F5DC;
+    }
+
+    .page-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .review-form-container {
+        position: relative;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .dark-mode .form-label {
+        color: #F5F5DC;
+    }
+
+    .form-control-lg {
+        padding: 1rem 1.25rem;
+        font-size: 1.1rem;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-lg:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .input-group-text {
+        border-radius: 15px 0 0 15px;
+        border: 2px solid #e9ecef;
+        border-right: none;
+        background: #f8f9fa;
+    }
+
+    .input-group .form-control-lg {
+        border-radius: 0 15px 15px 0;
+        border-left: none;
+    }
+
+    /* Rating Styles */
+    .rating-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #e9ecef;
+    }
+
     .rating-stars {
         display: flex;
-        flex-direction: row-reverse;
-        justify-content: flex-end;
-        gap: 5px;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
     
-    .rating-input {
-        display: none;
-    }
-    
-    .rating-star {
-        font-size: 2rem;
+    .star {
+        font-size: 2.5rem;
         cursor: pointer;
         color: #ddd;
-        transition: color 0.2s ease;
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 50%;
+        user-select: none;
     }
     
-    .rating-star:hover,
-    .rating-star:hover ~ .rating-star,
-    .rating-input:checked ~ .rating-star {
+    .star:hover {
+        color: #ffc107;
+        transform: scale(1.1);
+    }
+    
+    .star.active {
         color: #ffc107;
     }
     
-    .card {
-        border: none;
-        border-radius: 15px;
+    .star.active i {
+        font-weight: 900;
     }
-    
-    .card-header {
-        border-radius: 15px 15px 0 0 !important;
+
+    .rating-text {
+        text-align: center;
+        font-weight: 600;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+
+    /* Comment Styles */
+    .comment-container {
+        position: relative;
+    }
+
+    .comment-textarea {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 1.25rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        resize: vertical;
+        min-height: 120px;
+        transition: all 0.3s ease;
+    }
+
+    .comment-textarea:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .comment-footer {
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+
+    /* Button Styles */
+    .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #1e7e34);
+        border: none;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #545b62);
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-light {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .btn-light:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    /* Alert Styles */
+    .alert-danger {
+        border-radius: 15px;
+        border: none;
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .rating-star {
+            font-size: 2rem;
+        }
+        
+        .btn-lg {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
     }
 </style>
 
@@ -98,12 +360,76 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
-        // Update rating display when stars are clicked
-        document.querySelectorAll('.rating-input').forEach(input => {
-            input.addEventListener('change', function() {
-                const rating = this.value;
-                console.log('Selected rating:', rating);
+        // Dynamic Rating System
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating-input');
+            const ratingText = document.getElementById('rating-text');
+            
+            const ratingTexts = {
+                0: 'اختر التقييم',
+                1: 'ضعيف جداً',
+                2: 'ضعيف',
+                3: 'متوسط',
+                4: 'جيد',
+                5: 'ممتاز'
+            };
+            
+            let currentRating = 0;
+            
+            // Initialize rating display
+            function updateRatingDisplay(rating) {
+                // Update stars
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                        star.querySelector('i').className = 'fas fa-star';
+                    } else {
+                        star.classList.remove('active');
+                        star.querySelector('i').className = 'far fa-star';
+                    }
+                });
+                
+                // Update hidden input
+                ratingInput.value = rating;
+                
+                // Update text
+                ratingText.textContent = ratingTexts[rating];
+                ratingText.style.color = rating > 0 ? '#ffc107' : '#495057';
+            }
+            
+            // Star click event
+            stars.forEach((star, index) => {
+                star.addEventListener('click', function() {
+                    const rating = index + 1;
+                    currentRating = rating;
+                    updateRatingDisplay(rating);
+                });
+                
+                // Hover effects
+                star.addEventListener('mouseenter', function() {
+                    const rating = index + 1;
+                    stars.forEach((s, i) => {
+                        if (i < rating) {
+                            s.style.color = '#ffc107';
+                            s.querySelector('i').className = 'fas fa-star';
+                        } else {
+                            s.style.color = '#ddd';
+                            s.querySelector('i').className = 'far fa-star';
+                        }
+                    });
+                    ratingText.textContent = ratingTexts[rating];
+                    ratingText.style.color = '#ffc107';
+                });
             });
+            
+            // Reset on mouse leave
+            document.getElementById('rating-stars').addEventListener('mouseleave', function() {
+                updateRatingDisplay(currentRating);
+            });
+            
+            // Initialize
+            updateRatingDisplay(0);
         });
     </script>
 }

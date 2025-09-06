@@ -1,58 +1,322 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MindShelf_DAL.Models.User> SignInManager
+@inject UserManager<MindShelf_DAL.Models.User> UserManager
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MindShelf_PL</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MindShelf_PL.styles.css" asp-append-version="true" />
-    <link rel="icon" type="image/png" href="D:/momar/Small logo.png" />
+    <title>@ViewData["Title"] - مكتبة MindShelf الرقمية</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/digital-library.css" asp-append-version="true" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/site-toast.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="icon" href="~/Images/Small_logo.png" type="image/x-icon">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MindShelf_PL</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+<body class="@(ViewBag.BodyClass ?? "")">
+    <!-- Header -->
+    <header class="digital-header sticky-top">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <div class="logo-icon me-3">
+                        <i class="fas fa-book-open text-primary fs-2"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h4 class="mb-0 text-primary fw-bold">MindShelf</h4>
+                        <small class="text-muted">بوابتك إلى المعرفة</small>
+                    </div>
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <!-- Navigation Menu -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i> الرئيسية
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-controller="Books" asp-action="Index">
+                                <i class="fas fa-book"></i> الكتب
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Author" asp-action="Index">
+                                <i class="fas fa-user-edit"></i> المؤلفون
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">
+                                <i class="fas fa-list"></i> التصنيفات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Event" asp-action="Index">
+                                <i class="fas fa-calendar-alt"></i> الفعاليات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Order" asp-action="Index">
+                                <i class="fas fa-shopping-bag"></i> الطلبات
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Search Bar -->
+                    <div class="search-container me-3">
+                        <form class="d-flex" asp-controller="Books" asp-action="Search">
+                            <div class="input-group">
+                                <input class="form-control search-input" type="search" name="term"
+                                       placeholder="البحث عن كتاب، مؤلف..." id="smartSearch">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="search-suggestions" id="searchSuggestions"></div>
+                    </div>
+
+                    <!-- User Menu -->
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var isAdmin = User.IsInRole("Admin");
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                                   id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle fs-4 me-2"></i>
+                                    <span>@(currentUser?.UserName ?? "المستخدم")</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @if (isAdmin)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="/Admin/Dashboard">
+                                                <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="FavouriteBook" asp-action="Index">
+                                            <i class="fas fa-heart"></i> المفضلة
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Order" asp-action="ByUser"
+                                           asp-route-userName="@User.Identity.Name">
+                                            <i class="fas fa-shopping-bag"></i> طلباتي
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Cart" asp-action="Index"
+                                           asp-route-userName="@User.Identity.Name">
+                                            <i class="fas fa-shopping-cart"></i> السلة
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-primary text-white ms-2" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus"></i> إنشاء حساب
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Dark Mode Toggle -->
+                        <li class="nav-item">
+                            <button class="nav-link btn" id="darkModeToggle" title="التبديل للوضع الليلي">
+                                <i class="fas fa-moon"></i>
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @if (TempData["Success"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        <strong> تم بنجاح!</strong> @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
-            @RenderBody()
-        </main>
-    </div>
+    <!-- Main Content -->
+    <main>
+        <!-- Breadcrumb (if available) -->
+        @if (ViewBag.Breadcrumbs != null)
+        {
+            <nav aria-label="breadcrumb" class="bg-light py-2">
+                <div class="container">
+                    <ol class="breadcrumb mb-0">
+                        @foreach (var breadcrumb in ViewBag.Breadcrumbs)
+                        {
+                            <li class="breadcrumb-item">
+                                @if (breadcrumb.Url != null)
+                                {
+                                    <a href="@breadcrumb.Url">@breadcrumb.Title</a>
+                                }
+                                else
+                                {
+                                    @breadcrumb.Title
+                                }
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </nav>
+        }
 
-        <footer class="border-top footer text-muted">
+        <!-- Success/Error Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                <i class="fas fa-check-circle"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show m-3" role="alert">
+                <i class="fas fa-info-circle"></i> @TempData["Info"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Page Content -->
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="digital-footer py-5 mt-5">
         <div class="container">
-            &copy; 2025 - MindShelf_PL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-section">
+                        <h5 class="text-primary mb-3">
+                            <i class="fas fa-book-open"></i> مكتبة MindShelf
+                        </h5>
+                        <p class="text-muted">
+                            بوابتك الرقمية إلى عالم المعرفة والثقافة. اكتشف آلاف الكتب والمؤلفات في جميع المجالات.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="footer-section">
+                        <h6 class="text-primary">روابط سريعة</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="@Url.Action("Index", "Home")" class="text-muted">الرئيسية</a></li>
+                            <li><a href="@Url.Action("Index", "Books")" class="text-muted">الكتب</a></li>
+                            <li><a href="@Url.Action("Index", "Author")" class="text-muted">المؤلفون</a></li>
+                            <li><a href="@Url.Action("Index", "Event")" class="text-muted">الفعاليات</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="footer-section">
+                        <h6 class="text-primary">الخدمات</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-muted">استعارة الكتب</a></li>
+                            <li><a href="#" class="text-muted">القراءة الإلكترونية</a></li>
+                            <li><a href="#" class="text-muted">الاشتراك الشهري</a></li>
+                            <li><a href="#" class="text-muted">التحميل المجاني</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer-section">
+                        <h6 class="text-primary">النشرة البريدية</h6>
+                        <p class="text-muted">اشترك لتصلك آخر الكتب والفعاليات</p>
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="بريدك الإلكتروني">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">
+                        &copy; @DateTime.Now.Year مكتبة MindShelf الرقمية. جميع الحقوق محفوظة.
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="text-muted me-3">سياسة الخصوصية</a>
+                    <a href="#" class="text-muted me-3">الشروط والأحكام</a>
+                    <a href="~/html/AboutUs.html" class="text-muted">اتصل بنا</a>
+                </div>
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/digital-library.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">جاري التحميل...</span>
+        </div>
+    </div>
 </body>
 </html>

@@ -168,8 +168,9 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                ImageUrl = b.ImageUrl,
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }
@@ -182,6 +183,7 @@ namespace MindShelf_BL.Services
                 .Where(b => b.CategoryId == categoryId)
                 .Include(b => b.Author)
                 .Include(b => b.Category)
+
                 .ToListAsync();
 
             if (!books.Any())
@@ -193,8 +195,10 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                ImageUrl = b.ImageUrl,
+                
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }

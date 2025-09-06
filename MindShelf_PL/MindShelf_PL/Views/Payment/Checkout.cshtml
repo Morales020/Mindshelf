@@ -159,7 +159,7 @@
 </head>
 <body>
     <div class="model">
-        <!-- Left side -->
+
         <div class="room">
             <div class="text-cover">
                 <h1>Danny's House</h1>
@@ -170,7 +170,7 @@
             </div>
         </div>
 
-        <!-- Right side -->
+
         <div class="payment">
             <div class="receipt-box">
                 <h3>Receipt Summary</h3>
@@ -216,7 +216,8 @@
         var stripe = Stripe("@Stripe.Value.PublishableKey");
 
         document.getElementById("checkout-button").addEventListener("click", function (e) {
-            e.preventDefault(); // عشان ميعملش Submit عادي
+            e.preventDefault(); 
+
             fetch("/Payment/CreateCheckoutSession", {
                 method: "POST"
             })

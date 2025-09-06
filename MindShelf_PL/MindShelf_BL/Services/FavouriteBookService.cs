@@ -55,18 +55,37 @@ namespace MindShelf_BL.Services
         }
         public async Task<FavouriteBookResponseDto> AddFavouriteBookAsync(string userId, int bookId)
         {
-            // جلب اليوزر والكتاب
-            var user = await _UnitOfWork._dbcontext.Users.FindAsync(userId);
-            var book = await _UnitOfWork._dbcontext.Books.FindAsync(bookId);
+             var book = await _UnitOfWork._dbcontext.Books.FindAsync(bookId);
+            if (book == null)
+                return null;
 
-            if (user == null || book == null)
-                return null; // أو ممكن تعمل Exception
+            // تأكد ان نفس الكتاب مش متسجل للمستخدم ده قبل كده
+            var existing = await _UnitOfWork.FavoriteBookRepo
+                .Query()
+                .FirstOrDefaultAsync(f => f.UserId == userId && f.BookId == bookId);
 
+            if (existing != null)
+            {
+                return new FavouriteBookResponseDto
+                {
+                    FavouriteBookId = existing.FavouriteBookId,
+                    BookId = existing.BookId,
+                    UserId = existing.UserId,
+                    UserName = existing.UserName,
+                    AddedDate = existing.AddedDate
+                };
+            }
+
+            
             var favouriteBook = new FavouriteBook
             {
                 UserId = userId,
                 BookId = bookId,
-                AddedDate = DateTime.UtcNow
+                AddedDate = DateTime.UtcNow,
+                UserName = await _UnitOfWork._dbcontext.Users
+                                .Where(u => u.Id == userId)
+                                .Select(u => u.UserName)
+                                .FirstOrDefaultAsync()
             };
 
             await _UnitOfWork.FavoriteBookRepo.Add(favouriteBook);
@@ -77,10 +96,9 @@ namespace MindShelf_BL.Services
                 FavouriteBookId = favouriteBook.FavouriteBookId,
                 BookId = favouriteBook.BookId,
                 UserId = favouriteBook.UserId,
-                UserName = user.UserName,
+                UserName = favouriteBook.UserName,
                 AddedDate = favouriteBook.AddedDate
             };
-
         }
 
         public async Task<bool> RemoveFavouriteBookAsync(int favouriteBookId)

@@ -70,6 +70,9 @@ ScaffoldingReadMe.txt
 # Ionide (F#)
 .ionide/
 
+# Environment variables
+.env
+
 # Others
 MigrationBackup/
 FodyWeavers.xsd

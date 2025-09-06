@@ -75,7 +75,7 @@ namespace MindShelf_PL.Controllers
             var model = new UpateCategoryDto
             {
                 Name = Category.Data.Name,
-                Description = Category.Data.Books != null ? string.Join(", ", Category.Data.Books.Select(b => b.Title)) : "" //
+                Description = Category.Data.Description
             };
 
             return View(model);

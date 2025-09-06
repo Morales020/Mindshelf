@@ -75,6 +75,7 @@ namespace MindShelf_BL.Services
                 {
                     CategoryId = c.CategoryId,
                     Name = c.Name,
+                    Description = c.Description,
                     Books = c.Books.ToList()
                 }).ToList();
 
@@ -105,6 +106,7 @@ namespace MindShelf_BL.Services
                 {
                     CategoryId = category.CategoryId,
                     Name = category.Name,
+                    Description = category.Description,
                     Books = category.Books.ToList()
                 };
 
@@ -124,6 +126,7 @@ namespace MindShelf_BL.Services
                 var category = await _unitOfWork.CategoryRepo
                     .Query()
                     .Include(c => c.Books)
+                    .ThenInclude(b => b.Author) 
                     .FirstOrDefaultAsync(c => c.CategoryId == id);
 
                 if (category == null)

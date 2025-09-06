@@ -1,7 +1,10 @@
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MindShelf_BL.Dtos.CartsDto;
+using MindShelf_BL.Helper;
 using MindShelf_BL.Interfaces.IServices;
-using MindShelf_BL.Services;
+using MindShelf_DAL.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace MindShelf_PL.Controllers
@@ -9,62 +12,96 @@ namespace MindShelf_PL.Controllers
     public class CartController : Controller
     {
         private readonly ICartServices _cartServices;
-        
-        public CartController(ICartServices cartServices)
+        private readonly UserManager<User> _userManager;
+
+        public CartController(ICartServices cartServices ,UserManager<User> userManager)
         {
             _cartServices = cartServices;
+            _userManager = userManager;
         }
-        
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View("Index");
+            var cart = await _cartServices.GetCartByUserName(User.Identity.Name);
+            return View(cart.Data);
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> GetCartByUserName(string userName)
-        {
-            var cart = await _cartServices.GetCartByUserName(userName);
-            return View("Index", cart.Data);
-        }
-        
+
         [HttpPost]
-        public async Task<IActionResult> AddToCart(AddToCartDto addToCartDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("Index", addToCartDto);
-            }
+        [ValidateAntiForgeryToken]
+      
             
+            public async Task<IActionResult> AddToCart(int BookId, int Quantity)
+            {
+           Console.WriteLine($"Received: BookId={BookId}, Quantity={Quantity}");
+
+            if (BookId <= 0 || Quantity <= 0)
+            {
+                TempData["Error"] = "بيانات غير صالحة";
+                return RedirectToAction("Index", "Books");
+            }
+
+            var userName = User.Identity?.Name;
+            if (string.IsNullOrEmpty(userName))
+            {
+                TempData["Error"] = "يجب تسجيل الدخول أولاً";
+                return RedirectToAction("Login", "Account");
+            }
+
+            // جلب UserId من AspNetUsers بناءً على UserName
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                TempData["Error"] = "المستخدم غير موجود";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var addToCartDto = new AddToCartDto
+            {
+                BookId = BookId,
+                Quantity = Quantity,
+                UserName = userName,
+                UserId = user.Id // إضافة UserId للـ DTO
+            };
+
             var cart = await _cartServices.AddToCart(addToCartDto);
             if (!cart.Success)
             {
-                ModelState.AddModelError("", cart.Message);
-                return View("Index", addToCartDto);
+                TempData["Error"] = cart.Message;
+                return RedirectToAction("Index", "Books");
             }
-            
-            return View("Index", cart.Data);
+
+            TempData["Success"] = "تم إضافة الكتاب إلى السلة بنجاح";
+            return RedirectToAction("Index", "Books");
         }
         
+
         [HttpPost]
-        public async Task<IActionResult> RemoveCartItem(RemoveCartItemDto removeCartItemDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveCartItem(RemoveCartItemDto dto)
         {
-            var cart = await _cartServices.RemoveCartItem(removeCartItemDto);
-            return View("Index", cart.Data);
+            dto.UserName = User.Identity.Name;
+            await _cartServices.RemoveCartItem(dto);
+            return RedirectToAction(nameof(Index));
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> UpdateCartItem(UpdateCartItemDto updateCartItemDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCartItem(UpdateCartItemDto dto)
         {
-            var cart = await _cartServices.UpdateCartItem(updateCartItemDto);
-            return View("Index", cart.Data);
+            dto.UserName = User.Identity.Name;
+            await _cartServices.UpdateCartItem(dto);
+            return RedirectToAction(nameof(Index));
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> Checkout(CheckoutRequestDto checkoutRequestDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(CheckoutRequestDto dto)
         {
-            var cart = await _cartServices.CheckoutAsync(checkoutRequestDto);
-            return View("Index", cart.Data);
+            dto.UserName = User.Identity.Name;
+            await _cartServices.CheckoutAsync(dto);
+            return RedirectToAction(nameof(Index));
         }
+      
     }
 }
