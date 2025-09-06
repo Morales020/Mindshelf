@@ -1,99 +1,233 @@
-﻿@* @{
-    ViewData["Title"] = "Register";
-    Layout = null;
+﻿@model MindShelf_BL.Dtos.AccountDto.RegisterDto
+
+@{
+    ViewData["Title"] = "إنشاء حساب جديد";
 }
 
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3><i class="fas fa-user-plus me-2"></i>إنشاء حساب جديد</h3>
+                <p class="mb-0">انضم إلى مكتبة رقمية واكتشف عالم المعرفة</p>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Register" method="post" id="registerForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<style>
-    body {
-        font-family: "Roboto", sans-serif;
-        background-color: #fff;
-    }
-    p { color: #b3b3b3; font-weight: 300; }
-    h1,h2,h3,h4,h5,h6 { font-family: "Roboto", sans-serif; }
-    .content { padding: 7rem 0; }
-    h2 { font-size: 20px; }
-
-    .half, .half .container > .row { height: 100vh; min-height: 700px; }
-    .half .contents { background: #f6f7fc; }
-    .half .contents, .half .bg { width: 50%; }
-    @@media (max-width: 1199.98px) { .half .contents, .half .bg { width: 100%; } }
-
-    .half .contents .form-control {
-        border: none;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        border-radius: 4px;
-        height: 54px;
-        background: #fff;
-    }
-
-    .half .bg {
-        background-size: cover;
-        background-position: center;
-    }
-
-    .half .btn {
-        height: 54px;
-        padding: 0 30px;
-    }
-</style>
-
-<div class="d-lg-flex half">
-    <div class="bg order-1" style="background-image: url('@Url.Content("~/images/bg_1.jpg")');"></div>
-
-    <div class="contents order-2">
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-7">
-                    <h3>Register</h3>
-                    <p class="mb-4">Sign up now to access all features.</p>
-
-                    <form asp-action="Register" method="post">
-                        <div class="form-group mb-3">
-                            <label asp-for="Name"></label>
-                            <input asp-for="Name" class="form-control" placeholder="Full Name" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Email"></label>
-                            <input asp-for="Email" class="form-control" placeholder="example@email.com" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Password"></label>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-4">
-                            <label asp-for="ConfirmPassword"></label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-
-                        <input type="submit" value="Register" class="btn btn-block btn-primary w-100">
-                    </form>
-
-                    <p class="mt-3">Already have an account? <a href="/Account/Login">Login</a></p>
-
-                    <div class="text-danger mt-3">
-                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label">
+                            <i class="fas fa-user me-1"></i>الاسم الكامل
+                        </label>
+                        <input asp-for="UserName" class="form-control" placeholder="أدخل الاسم الكامل" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">
+                            <i class="fas fa-envelope me-1"></i>البريد الإلكتروني
+                        </label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="أدخل البريد الإلكتروني" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label">
+                            <i class="fas fa-phone me-1"></i>رقم الهاتف (اختياري)
+                        </label>
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" placeholder="أدخل رقم الهاتف" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>كلمة المرور
+                        </label>
+                        <div class="input-group">
+                            <input asp-for="Password" class="form-control" type="password" placeholder="أدخل كلمة المرور" id="password" />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="form-text">
+                            <small>كلمة المرور يجب أن تحتوي على الأقل 6 أحرف</small>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">
+                            <i class="fas fa-lock me-1"></i>تأكيد كلمة المرور
+                        </label>
+                        <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="أعد إدخال كلمة المرور" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                   
+                    <!-- Register Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="registerBtn">
+                            <i class="fas fa-user-plus me-1"></i>
+                            <span class="btn-text">إنشاء الحساب</span>
+                            <span class="spinner-border spinner-border-sm d-none" id="registerSpinner"></span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Divider -->
+                <div class="text-center my-4">
+                    <span class="text-muted">أو</span>
                 </div>
+
+                <!-- Social Login -->
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-danger" type="button">
+                        <i class="fab fa-google me-2"></i>التسجيل باستخدام Google
+                    </button>
+                    <button class="btn btn-outline-primary" type="button">
+                        <i class="fab fa-facebook me-2"></i>التسجيل باستخدام Facebook
+                    </button>
+                </div>
+            </div>
+            <div class="card-footer text-center bg-light">
+                <p class="mb-0">
+                    لديك حساب بالفعل؟
+                    <a href="@Url.Action("Login")" class="text-decoration-none fw-bold">تسجيل الدخول</a>
+                </p>
             </div>
         </div>
     </div>
+</div>
 
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">الشروط والأحكام</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+            </div>
+            <div class="modal-body">
+                <h6>شروط الاستخدام</h6>
+                <p>مرحباً بك في مكتبة رقمية. باستخدام خدماتنا، فإنك توافق على هذه الشروط.</p>
+
+                <h6>الخصوصية</h6>
+                <p>نحن نحترم خصوصيتك ونحمي بياناتك الشخصية وفقاً لسياسة الخصوصية الخاصة بنا.</p>
+
+                <h6>المسؤوليات</h6>
+                <p>أنت مسؤول عن الحفاظ على سرية حسابك وكلمة المرور.</p>
+
+                <h6>حقوق الطبع والنشر</h6>
+                <p>جميع المحتويات محمية بحقوق الطبع والنشر ولا يجوز استخدامها دون إذن.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
- *@
+    <script>
+        // Password visibility toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('togglePasswordIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Form submission with loading state
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('registerBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = document.getElementById('registerSpinner');
+
+            btnText.textContent = 'جاري إنشاء الحساب...';
+            spinner.classList.remove('d-none');
+            btn.disabled = true;
+
+            // Re-enable after 5 seconds if form doesn't submit
+            setTimeout(() => {
+                btnText.textContent = 'إنشاء الحساب';
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+            }, 5000);
+        });
+
+        // Real-time validation
+        const inputs = document.querySelectorAll('input[asp-for]');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                this.classList.add('was-validated');
+            });
+        });
+    </script>
+
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+            border-color: #2c5aa0;
+        }
+
+        .btn-primary {
+            background-color: #2c5aa0;
+            border-color: #2c5aa0;
+        }
+
+            .btn-primary:hover {
+                background-color: #1e3d72;
+                border-color: #1e3d72;
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+        }
+
+        .social-btn {
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+            .social-btn:hover {
+                transform: translateY(-2px);
+            }
+
+        @@media (max-width: 768px) {
+            .col-md-6
+
+        {
+            margin: 1rem;
+        }
+
+        }
+    </style>
+}
