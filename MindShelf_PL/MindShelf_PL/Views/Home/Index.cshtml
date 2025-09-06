@@ -79,177 +79,95 @@
         <div class="section-header">
             <h2 class="section-title">
                 <i class="fas fa-star text-warning"></i>
-                الكتب المميزة
+                الأعلى تقييماً
             </h2>
-            <p class="section-subtitle">أحدث وأفضل الكتب المختارة خصيصاً لك</p>
+            <p class="section-subtitle">أفضل الكتب بناءً على تقييمات القراء</p>
         </div>
 
         <div class="row" id="featuredBooks">
-
-            <!-- Book Card Template -->
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="book-card">
-                    <div class="position-relative">
-                        <img src="/images/books/sample1.jpg" alt="كتاب مميز" class="book-cover">
-                        <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                            <i class="fas fa-star"></i> مميز
-                        </span>
-                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="book-info">
-                        <h5 class="book-title">عنوان الكتاب المميز</h5>
-                        <p class="book-author">
-                            <i class="fas fa-user-edit me-1"></i>
-                            اسم المؤلف
-                        </p>
-                        <div class="book-rating">
-                            <div class="rating-stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+            @if (ViewBag.TopRatedBooks != null && ((IEnumerable<MindShelf_BL.Dtos.BookDto.BookResponseDto>)ViewBag.TopRatedBooks).Any())
+            {
+                @foreach (var book in (IEnumerable<MindShelf_BL.Dtos.BookDto.BookResponseDto>)ViewBag.TopRatedBooks)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="book-card">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(book.ImageUrl) ? "/images/books/default.jpg" : book.ImageUrl)" 
+                                     alt="@book.Title" class="book-cover">
+                                <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+                                    <i class="fas fa-star"></i> الأعلى تقييماً
+                                </span>
+                                <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
+                                    <i class="far fa-heart"></i>
+                                </button>
                             </div>
-                            <small class="text-muted">(4.5)</small>
+                            <div class="book-info">
+                                <h5 class="book-title">@book.Title</h5>
+                                <p class="book-author">
+                                    <i class="fas fa-user-edit me-1"></i>
+                                    @book.AuthorName
+                                </p>
+                                <div class="book-rating">
+                                    <div class="rating-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Floor(book.Rating))
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else if (i == Math.Ceiling(book.Rating) && book.Rating % 1 != 0)
+                                            {
+                                                <i class="fas fa-star-half-alt"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                    <small class="text-muted">(@book.Rating.ToString("F1"))</small>
+                                </div>
+                                <div class="book-price">
+                                    @if (book.Price == 0)
+                                    {
+                                        <strong class="text-success">مجاني</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="text-primary">@book.Price.ToString("F2") ر.س</strong>
+                                    }
+                                </div>
+                                <div class="d-grid gap-2">
+                                    @if (book.Price == 0)
+                                    {
+                                        <button class="btn btn-success btn-sm">
+                                            <i class="fas fa-download"></i> تحميل مجاني
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-cart-plus"></i> إضافة للسلة
+                                        </button>
+                                    }
+                                    <a href="@Url.Action("Details", "Books", new { id = book.BookId })" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> التفاصيل
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="book-price">
-                            <strong class="text-primary">45.00 ر.س</strong>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-cart-plus"></i> إضافة للسلة
-                            </button>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye"></i> التفاصيل
-                            </a>
-                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        لا توجد كتب متاحة حالياً
                     </div>
                 </div>
-            </div>
-
-            <!-- المزيد من الكتب -->
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="book-card">
-                    <div class="position-relative">
-                        <img src="/images/books/sample2.jpg" alt="كتاب مميز" class="book-cover">
-                        <span class="badge bg-success position-absolute top-0 start-0 m-2">جديد</span>
-                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="book-info">
-                        <h5 class="book-title">كتاب جديد ومثير</h5>
-                        <p class="book-author">
-                            <i class="fas fa-user-edit me-1"></i>
-                            مؤلف مشهور
-                        </p>
-                        <div class="book-rating">
-                            <div class="rating-stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <small class="text-muted">(4.0)</small>
-                        </div>
-                        <div class="book-price">
-                            <strong class="text-primary">35.00 ر.س</strong>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-cart-plus"></i> إضافة للسلة
-                            </button>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye"></i> التفاصيل
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- يمكن إضافة المزيد من الكتب -->
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="book-card">
-                    <div class="position-relative">
-                        <img src="/images/books/sample3.jpg" alt="كتاب مميز" class="book-cover">
-                        <span class="badge bg-info position-absolute top-0 start-0 m-2">الأكثر مبيعاً</span>
-                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
-                            <i class="fas fa-heart text-danger"></i>
-                        </button>
-                    </div>
-                    <div class="book-info">
-                        <h5 class="book-title">الكتاب الأكثر مبيعاً</h5>
-                        <p class="book-author">
-                            <i class="fas fa-user-edit me-1"></i>
-                            كاتب مبدع
-                        </p>
-                        <div class="book-rating">
-                            <div class="rating-stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <small class="text-muted">(5.0)</small>
-                        </div>
-                        <div class="book-price">
-                            <strong class="text-primary">55.00 ر.س</strong>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-cart-plus"></i> إضافة للسلة
-                            </button>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye"></i> التفاصيل
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="book-card">
-                    <div class="position-relative">
-                        <img src="/images/books/sample4.jpg" alt="كتاب مميز" class="book-cover">
-                        <span class="badge bg-primary position-absolute top-0 start-0 m-2">مجاني</span>
-                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="book-info">
-                        <h5 class="book-title">كتاب مجاني رائع</h5>
-                        <p class="book-author">
-                            <i class="fas fa-user-edit me-1"></i>
-                            مؤلف معروف
-                        </p>
-                        <div class="book-rating">
-                            <div class="rating-stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <small class="text-muted">(4.2)</small>
-                        </div>
-                        <div class="book-price">
-                            <strong class="text-success">مجاني</strong>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-success btn-sm">
-                                <i class="fas fa-download"></i> تحميل مجاني
-                            </button>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye"></i> التفاصيل
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
 
         <div class="text-center mt-4">
