@@ -54,6 +54,50 @@
     .quantity-input[type=number] {
         -moz-appearance: textfield;
     }
+    
+    /* Cart table styling */
+    .table th {
+        background-color: #f8f9fa;
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+    }
+    
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* Book name styling */
+    .book-name-link {
+        color: #212529;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .book-name-link:hover {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    /* Action buttons */
+    .btn-danger.btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-danger.btn-sm:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
 </style>
 
 <div class="row">
@@ -92,28 +136,26 @@
                                     <tr data-cart-item-id="@item.CartItemId">
                                         <td>
                                             <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
-                                                @if (!string.IsNullOrEmpty(item.BookImageUrl) && item.BookImageUrl.StartsWith("http"))
+                                                @if (!string.IsNullOrEmpty(item.BookImageUrl))
                                                 {
                                                     <img src="@item.BookImageUrl" 
                                                          class="img-thumbnail" 
-                                                         style="width: 50px; height: 60px; object-fit: cover; cursor: pointer;" 
+                                                         style="width: 60px; height: 80px; object-fit: cover; cursor: pointer; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" 
                                                          alt="@item.BookName"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 60px; display: none;">
-                                                        <i class="fas fa-book text-muted"></i>
-                                                    </div>
+                                                         onmouseover="this.style.transform='scale(1.05)'"
+                                                         onmouseout="this.style.transform='scale(1)'">
                                                 }
                                                 else
                                                 {
-                                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 60px; cursor: pointer;">
-                                                        <i class="fas fa-book text-muted"></i>
+                                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 80px; cursor: pointer; border-radius: 8px; border: 2px dashed #dee2e6;">
+                                                        <i class="fas fa-book text-muted fa-lg"></i>
                                                     </div>
                                                 }
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
-                                                <strong class="text-dark">@item.BookName</strong>
+                                            <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="book-name-link">
+                                                <strong>@item.BookName</strong>
                                             </a>
                                             <br>
                                             <small class="text-muted">@item.BookDescription</small>
