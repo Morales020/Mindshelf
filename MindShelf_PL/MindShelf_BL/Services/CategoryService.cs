@@ -75,6 +75,7 @@ namespace MindShelf_BL.Services
                 {
                     CategoryId = c.CategoryId,
                     Name = c.Name,
+                    Description = c.Description,
                     Books = c.Books.ToList()
                 }).ToList();
 
