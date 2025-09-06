@@ -123,7 +123,12 @@ namespace MindShelf_PL
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // Only use HTTPS redirection in development
+            if (!app.Environment.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -148,8 +153,16 @@ namespace MindShelf_PL
                 }
             }
 
-
-            app.Run();
+            // Configure port for production - only override if PORT environment variable is set
+            var port = Environment.GetEnvironmentVariable("PORT");
+            if (!string.IsNullOrEmpty(port))
+            {
+                app.Run($"http://0.0.0.0:{port}");
+            }
+            else
+            {
+                app.Run();
+            }
         }
     }
 }
