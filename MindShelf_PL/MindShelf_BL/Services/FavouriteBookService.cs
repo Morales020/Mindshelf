@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MindShelf_BL.Dtos.AuthorDto;
-using MindShelf_BL.Dtos.BookDto;
 using MindShelf_BL.Dtos.FavouriteBookDto;
 using MindShelf_BL.Helper;
 using MindShelf_BL.Interfaces.IServices;
@@ -9,58 +7,69 @@ using MindShelf_DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MindShelf_BL.Services
 {
     public class FavouriteBookService : IFavouriteBookService
     {
-        private readonly UnitOfWork _UnitOfWork;
+        private readonly UnitOfWork _unitOfWork;
 
         public FavouriteBookService(UnitOfWork unitOfWork)
         {
-            _UnitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<ResponseMVC<IEnumerable<FavouriteBookResponseDto>>> GetAllFavouriteBooks(int page, int pageSize)
+        // جلب كل المفضلة لمستخدم معين
+        public async Task<ResponseMVC<IEnumerable<FavouriteBookResponseDto>>> GetAllFavouriteBooks(string userId, int page, int pageSize)
         {
+            if (string.IsNullOrEmpty(userId))
+                return new ResponseMVC<IEnumerable<FavouriteBookResponseDto>>(400, "المستخدم غير محدد", null);
+
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 10;
 
-            var FavouriteBooks = await _UnitOfWork.FavoriteBookRepo
+            var favouriteBooksQuery = _unitOfWork.FavoriteBookRepo
                 .Query()
-                .Include(s => s.Book)
+                .Where(f => f.UserId == userId)
+                .Include(f => f.Book)
+                .AsNoTracking();
+
+            var totalCount = await favouriteBooksQuery.CountAsync();
+
+            if (totalCount == 0)
+                return new ResponseMVC<IEnumerable<FavouriteBookResponseDto>>(404, "لا توجد كتب مفضلة", null);
+
+            var favouriteBooks = await favouriteBooksQuery
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .AsNoTracking()
                 .ToListAsync();
 
-            if (FavouriteBooks.Count == 0)
+            var favouriteBookDtos = favouriteBooks.Select(f => new FavouriteBookResponseDto
             {
-                return new ResponseMVC<IEnumerable<FavouriteBookResponseDto>>(404, "Favourite book not found", null);
-            }
-
-            var FavouriteBookDto = FavouriteBooks.Select(FBook => new FavouriteBookResponseDto
-            {
-                FavouriteBookId = FBook.FavouriteBookId,
-                BookId = FBook.BookId,
-                UserId = FBook.UserId,
-                UserName = FBook.UserName,
-                AddedDate = FBook.AddedDate,
+                FavouriteBookId = f.FavouriteBookId,
+                BookId = f.BookId,
+                UserId = f.UserId,
+                UserName = f.UserName,
+                AddedDate = f.AddedDate,
+                BookTitle = f.Book?.Title,
+                BookImageUrl = f.Book?.ImageUrl
             }).ToList();
 
-
-            return new ResponseMVC<IEnumerable<FavouriteBookResponseDto>>(200, "Success", FavouriteBookDto);
+            return new ResponseMVC<IEnumerable<FavouriteBookResponseDto>>(200, "نجاح", favouriteBookDtos);
         }
+
+        // إضافة كتاب للمفضلة
         public async Task<FavouriteBookResponseDto> AddFavouriteBookAsync(string userId, int bookId)
         {
-             var book = await _UnitOfWork._dbcontext.Books.FindAsync(bookId);
+            if (string.IsNullOrEmpty(userId))
+                return null;
+
+            var book = await _unitOfWork._dbcontext.Books.FindAsync(bookId);
             if (book == null)
                 return null;
 
-            // تأكد ان نفس الكتاب مش متسجل للمستخدم ده قبل كده
-            var existing = await _UnitOfWork.FavoriteBookRepo
+            var existing = await _unitOfWork.FavoriteBookRepo
                 .Query()
                 .FirstOrDefaultAsync(f => f.UserId == userId && f.BookId == bookId);
 
@@ -72,24 +81,27 @@ namespace MindShelf_BL.Services
                     BookId = existing.BookId,
                     UserId = existing.UserId,
                     UserName = existing.UserName,
-                    AddedDate = existing.AddedDate
+                    AddedDate = existing.AddedDate,
+                    BookTitle = book.Title,
+                    BookImageUrl = book.ImageUrl
                 };
             }
 
-            
+            var userName = await _unitOfWork._dbcontext.Users
+                                .Where(u => u.Id == userId)
+                                .Select(u => u.UserName)
+                                .FirstOrDefaultAsync();
+
             var favouriteBook = new FavouriteBook
             {
                 UserId = userId,
                 BookId = bookId,
-                AddedDate = DateTime.UtcNow,
-                UserName = await _UnitOfWork._dbcontext.Users
-                                .Where(u => u.Id == userId)
-                                .Select(u => u.UserName)
-                                .FirstOrDefaultAsync()
+                UserName = userName,
+                AddedDate = DateTime.UtcNow
             };
 
-            await _UnitOfWork.FavoriteBookRepo.Add(favouriteBook);
-            await _UnitOfWork.SaveChangesAsync();
+            await _unitOfWork.FavoriteBookRepo.Add(favouriteBook);
+            await _unitOfWork.SaveChangesAsync();
 
             return new FavouriteBookResponseDto
             {
@@ -97,17 +109,20 @@ namespace MindShelf_BL.Services
                 BookId = favouriteBook.BookId,
                 UserId = favouriteBook.UserId,
                 UserName = favouriteBook.UserName,
-                AddedDate = favouriteBook.AddedDate
+                AddedDate = favouriteBook.AddedDate,
+                BookTitle = book.Title,
+                BookImageUrl = book.ImageUrl
             };
         }
 
+       
         public async Task<bool> RemoveFavouriteBookAsync(int favouriteBookId)
         {
-            var favouriteBook = await _UnitOfWork.FavoriteBookRepo.GetById(favouriteBookId);
+            var favouriteBook = await _unitOfWork.FavoriteBookRepo.GetById(favouriteBookId);
             if (favouriteBook == null) return false;
 
-            _UnitOfWork.FavoriteBookRepo.Delete(favouriteBook.FavouriteBookId);
-            await _UnitOfWork.SaveChangesAsync();
+            _unitOfWork.FavoriteBookRepo.Delete(favouriteBook.FavouriteBookId);
+            await _unitOfWork.SaveChangesAsync();
             return true;
         }
     }

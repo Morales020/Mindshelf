@@ -11,7 +11,7 @@ namespace MindShelf_BL.Interfaces.IServices
 {
     public interface IFavouriteBookService
     {
-        Task<ResponseMVC<IEnumerable<FavouriteBookResponseDto>>> GetAllFavouriteBooks(int page, int pageSize);
+        Task<ResponseMVC<IEnumerable<FavouriteBookResponseDto>>> GetAllFavouriteBooks( string UserId, int page, int pageSize);
         Task<FavouriteBookResponseDto> AddFavouriteBookAsync(string userId, int bookId);
         Task<bool> RemoveFavouriteBookAsync(int favouriteBookId);
     }

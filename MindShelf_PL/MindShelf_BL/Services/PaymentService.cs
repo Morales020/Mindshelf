@@ -30,7 +30,6 @@ namespace MindShelf_BL.Services
         public async Task<string> CreateCheckoutSessionAsync(decimal amount, int orderId)
         {
             var order = await _unitOfWork.OrderRepo.GetById(orderId);
-
             // Fix: Use HttpContext instead of ClaimsPrincipal.Current
             var user = _httpContextAccessor.HttpContext?.User;
             var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -95,7 +94,6 @@ namespace MindShelf_BL.Services
 
             return session.Id;
         }
-
         // Add new method for cart-based checkout
         public async Task<string> CreateCartCheckoutSessionAsync(decimal amount, int orderId, List<CartItemResponseDto> cartItems)
         {
