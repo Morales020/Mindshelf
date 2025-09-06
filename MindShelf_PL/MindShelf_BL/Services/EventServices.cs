@@ -62,10 +62,20 @@ namespace MindShelf_BL.Services
                 {
                     EventId = e.EventId,
                     Title = e.Title,
+                    Description = e.Description,
                     StartingDate = e.StartingDate,
                     EndingDate = e.EndingDate,
+                    Location = e.Location,
                     IsOnline = e.IsOnline,
-                    IsActive = e.IsActive
+                    IsActive = e.IsActive,
+                    Registrations = e.EventRegistrations.Select(r => new EventRegistrationResponseDto
+                    {
+                        EventRegistrationId = r.EventRegistrationId,
+                        UserId = r.UserId,
+                        UserName = r.UserName,
+                        RegistrationDate = r.RegistrationDate,
+                        Notes = r.Notes
+                    }).ToList()
                 }).ToList();
 
                 return ResponseMVC<IEnumerable<EventResponseDto>>.SuccessResponse(result, "Events retrieved successfully", 200);
@@ -89,6 +99,7 @@ namespace MindShelf_BL.Services
                 {
                     EventId = ev.EventId,
                     Title = ev.Title,
+                    Description = ev.Description,
                     StartingDate = ev.StartingDate,
                     EndingDate = ev.EndingDate,
                     IsOnline = ev.IsOnline,

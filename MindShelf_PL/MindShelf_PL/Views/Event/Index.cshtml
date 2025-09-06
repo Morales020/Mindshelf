@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+﻿@model List<EventResponseDto>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,10 +62,12 @@
                 </div>
                 <div class="flex items-center space-x-reverse space-x-4">
                     <!-- Admin Only: Create Event Button -->
-                    <button id="createEventBtn" class="hidden bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
+
+                    <a asp-controller="Event" asp-action="Create" id="createEventBtn"
+                       class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
                         <i class="fas fa-plus ml-2"></i>
                         إضافة حدث جديد
-                    </button>
+                    </a>
                     <!-- Filter Buttons -->
                     <div class="flex space-x-reverse space-x-2">
                         <button class="filter-btn bg-red-600 text-white px-4 py-2 rounded-lg text-sm" data-filter="all">الكل</button>
@@ -79,44 +81,64 @@
     </div>
 
     <!-- Events Grid -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsGrid">
-            <!-- Event Card 1 -->
+   <main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsGrid">
+
+        @foreach (var ev in Model)
+        {
+            <!-- Event Card -->
             <div class="event-card bg-white rounded-lg card-shadow hover-shadow overflow-hidden event-online" data-type="upcoming online">
                 <div class="relative">
                     <div class="h-48 bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                         <i class="fas fa-calendar-alt text-white text-6xl"></i>
                     </div>
-                    <div class="absolute top-4 right-4">
-                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
-                            <i class="fas fa-video ml-1"></i>
-                            أونلاين
-                        </span>
-                    </div>
+                        <div class="absolute top-4 right-4">
+                            @if (ev.IsOnline)
+                            {
+                                <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-video ml-1"></i>
+                                    أونلاين
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-building ml-1"></i>
+                                    حضورية
+                                </span>
+                            }
+                        </div>
                     <div class="absolute top-4 left-4">
-                        <span class="status-active text-white px-3 py-1 rounded-full text-sm">نشط</span>
+                        @if (ev.IsActive == true)
+                        {
+                            <span class="status-active text-white px-3 py-1 rounded-full text-sm">نشط</span>
+                        }
+                        else
+                        {
+                            <span class="status-active text-white px-3 py-1 rounded-full text-sm">منتهي</span>
+                        }
                     </div>
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">ندوة الأدب العربي المعاصر</h3>
-                    <p class="text-gray-600 mb-4 text-sm">نقاش حول اتجاهات الأدب العربي الحديث مع نخبة من الكتاب والنقاد المتميزين</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">@ev.Title</h3>
+                    <p class="text-gray-600 mb-4 text-sm">@ev.Description</p>
 
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center text-sm text-gray-500">
                             <i class="fas fa-calendar ml-2"></i>
-                            <span>15 ديسمبر 2024</span>
+                            <span>@ev.StartingDate</span>
                         </div>
                         <div class="flex items-center text-sm text-gray-500">
-                            <i class="fas fa-clock ml-2"></i>
-                            <span>7:00 م - 9:00 م</span>
+                            <i class="fas fa-calendar ml-2"></i>
+                            <span>@ev.EndingDate</span>
                         </div>
                         <div class="flex items-center text-sm text-gray-500">
                             <i class="fas fa-globe ml-2"></i>
-                            <span>منصة زووم</span>
+                            <span>@ev.Location</span>
                         </div>
                         <div class="flex items-center text-sm text-gray-500">
                             <i class="fas fa-users ml-2"></i>
-                            <span>125 مشارك مسجل</span>
+                            <span>@ev.Registrations.Count()</span>
                         </div>
                     </div>
 
@@ -136,8 +158,12 @@
                     </div>
                 </div>
             </div>
+        }
 
-            <!-- Event Card 2 -->
+    </div>
+</main>
+
+            @* <!-- Event Card 2 -->
             <div class="event-card bg-white rounded-lg card-shadow hover-shadow overflow-hidden event-offline" data-type="upcoming offline">
                 <div class="relative">
                     <div class="h-48 bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center">
@@ -462,7 +488,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <script>
         // Simulate user authentication state
