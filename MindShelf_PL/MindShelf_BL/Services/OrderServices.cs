@@ -195,16 +195,43 @@ namespace MindShelf_BL.Services
         #endregion
 
         #region GetAllOrder
-        public async Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<ResponseMVC<IEnumerable<OrderResponseDto>>> GetAllOrdersAsync(string? userId = null,
+            string? status = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null,
+            int pageNumber = 1,
+            int pageSize = 10
+            ) 
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
-            var totalOrders = await _unitOfWork.OrderRepo.Query().CountAsync();
-
-            var orders = await _unitOfWork.OrderRepo.Query()
+            var query = _unitOfWork.OrderRepo.Query()
                 .Include(o => o.OrderItems)
-                .AsNoTracking()
+                .AsNoTracking();
+
+            
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(o => o.UserId == userId);
+            }
+
+            
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderState>(status, out var state))
+            {
+                query = query.Where(o => o.State == state);
+            }
+
+            if (fromDate.HasValue)
+                query = query.Where(o => o.OrderDate >= fromDate.Value);
+
+            if (toDate.HasValue)
+                query = query.Where(o => o.OrderDate <= toDate.Value);
+
+            var totalOrders = await query.CountAsync();
+
+            var orders = await query
+                .OrderByDescending(o => o.OrderDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Select(o => new OrderResponseDto
@@ -234,6 +261,8 @@ namespace MindShelf_BL.Services
             };
         }
         #endregion
+
+
 
         #region UpdateOrderStauts
         public async Task<ResponseMVC<bool>> UpdateOrderStatusAsync(int orderId, OrderState status)
