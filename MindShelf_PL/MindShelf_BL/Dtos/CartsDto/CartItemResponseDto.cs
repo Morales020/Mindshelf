@@ -6,6 +6,7 @@ public class CartItemResponseDto
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice { get; set; }
+    public int bookId { get; set; }
     public string BookName { get; set; }
     public string BookImageUrl { get; set; }
     public string BookDescription { get; set; }

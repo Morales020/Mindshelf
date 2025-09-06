@@ -1,1722 +1,685 @@
 ﻿@{
-    Layout = null;
+    ViewData["Title"] = "الصفحة الرئيسية";
+    ViewBag.BodyClass = "home-page";
 }
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-    <link href="~/css/StyleSheet.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">مرحباً بكم في مكتبة MindShelf الرقمية</h1>
+            <p class="hero-subtitle">اكتشف عالماً من المعرفة والثقافة من خلال آلاف الكتب المتنوعة</p>
 
-
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="~/Images/Mind.png" alt="شعار المكتبة" />
+            <!-- Enhanced Search -->
+            <div class="hero-search mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <form asp-controller="Books" asp-action="Search" method="get">
+                            <div class="input-group input-group-lg">
+                                <input type="text" name="term" class="form-control"
+                                       placeholder="البحث عن كتاب أو تصنيف..."
+                                       id="heroSearch">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i> بحث
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-
-            <nav class="nav">
-                <a href="#home">الرئيسية</a>
-                <a href="#books">الكتب</a>
-                <a href="#authors">المؤلفين</a>
-                <a href="#events">الفعاليات</a>
-                <a href="#blog">المدونة</a>
-                <a href="#about">عنا</a>
-            </nav>
-
-            <div class="actions">
-                <button id="darkModeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="relative">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </button>
-                <a class="relative" asp-controller="Shopping" asp-action="Index">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="notification-badge">2</span>
+            <!-- Quick Actions -->
+            <div class="hero-actions mt-4">
+                <a href="@Url.Action("Index", "Books")" class="btn btn-primary me-3">
+                    <i class="fas fa-book"></i> تصفح جميع الكتب
                 </a>
-                <a asp-controller="Account" asp-action="Login" class="login-btn">
-                    تسجيل الدخول
+                <a href="@Url.Action("Index", "Category")" class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i> التصنيفات
                 </a>
             </div>
         </div>
-    </header>
+    </div>
+</section>
 
-
-
-    <section id="home" class="py-8">
-
-        <div class="container mx-auto px-4 mb-12">
-            <div class="hero-gradient rounded-2xl p-12 text-white text-center animate-fade-up">
-                <h2 class="text-4xl font-bold mb-4 font-amiri">اكتشف عالماً من المعرفة</h2>
-                <p class="text-xl mb-8">أكثر من 50,000 كتاب في جميع المجالات</p>
-
-
-                <div class="max-w-2xl mx-auto">
-                    <div class="relative">
-                        <input type="text" id="smartSearch" placeholder="ابحث عن كتاب، مؤلف، أو موضوع..."
-                               class="w-full px-6 py-4 pr-12 rounded-full text-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-yellow-300">
-                        <button class="absolute left-3 top-1/2 transform -translate-y-1/2 text-wood">
-                            <i class="fas fa-search text-xl"></i>
-                        </button>
-                    </div>
-                    <div id="searchSuggestions" class="mt-2 bg-white rounded-lg shadow-lg hidden">
-                        <div class="p-4 text-gray-800 text-right">
-                            <p class="text-sm text-gray-600 mb-2">اقتراحات البحث:</p>
-                            <div class="space-y-2">
-                                <div class="cursor-pointer hover:bg-gray-100 p-2 rounded">الأسود يليق بك - أحلام مستغانمي</div>
-                                <div class="cursor-pointer hover:bg-gray-100 p-2 rounded">مئة عام من العزلة - غابرييل غارسيا ماركيز</div>
-                                <div class="cursor-pointer hover:bg-gray-100 p-2 rounded">كتب الفلسفة</div>
-                            </div>
-                        </div>
-                    </div>
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number" id="booksCount">1,250</span>
+                    <div class="stat-label">كتاب متاح</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number" id="authorsCount">320</span>
+                    <div class="stat-label">مؤلف</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number" id="usersCount">5,480</span>
+                    <div class="stat-label">قارئ نشط</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number" id="downloadsCount">12,650</span>
+                    <div class="stat-label">تحميل هذا الشهر</div>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-
-        <div class="container mx-auto px-4">
-
-            <div class="mb-12">
-                <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">الأكثر قراءة</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="book-card p-6 text-center">
-                        <div class="w-32 h-40 bg-gradient-to-b from-red-800 to-red-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                            <img src="~/Images/الاسود يليق بك.jpeg" class="w-full h-full object-cover" />
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">الأسود يليق بك</h4>
-                        <p class="text-gray-600 mb-2">أحلام مستغانمي</p>
-                        <div class="stars mb-3">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-gray-600 mr-2">(4.8)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <button class="bg-wood text-white px-4 py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                استعارة
-                            </button>
-                            <span class="text-green-600 font-bold">متوفر</span>
-                        </div>
-                    </div>
-
-                    <div class="book-card p-6 text-center">
-                        <div class="w-32 h-40 bg-gradient-to-b from-blue-800 to-blue-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                            <span class="text-white text-xs font-bold">مئة عام من العزلة</span>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">مئة عام من العزلة</h4>
-                        <p class="text-gray-600 mb-2">غابرييل غارسيا ماركيز</p>
-                        <div class="stars mb-3">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-gray-600 mr-2">(4.6)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <button class="bg-wood text-white px-4 py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                شراء - 25 ر.س
-                            </button>
-                            <span class="text-orange-600 font-bold">2 متبقي</span>
-                        </div>
-                    </div>
-
-                    <div class="book-card p-6 text-center">
-                        <div class="w-32 h-40 bg-gradient-to-b from-green-800 to-green-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                            <img src="~/Images/alchemist.jpg" alt="الخيميائي" class="w-full h-full object-cover" />
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">الخيميائي</h4>
-                        <p class="text-gray-600 mb-2">باولو كويلو</p>
-                        <div class="stars mb-3">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-gray-600 mr-2">(4.9)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <button class="bg-wood text-white px-4 py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                قراءة مجانية
-                            </button>
-                            <span class="text-blue-600 font-bold">إلكتروني</span>
-                        </div>
-                    </div>
-
-                    <div class="book-card p-6 text-center">
-                        <div class="w-32 h-40 bg-gradient-to-b from-purple-800 to-purple-600 mx-auto mb-4 rounded-lg flex items-center justify-center">
-                            <span class="text-white text-xs font-bold">مدن الملح</span>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">مدن الملح</h4>
-                        <p class="text-gray-600 mb-2">عبد الرحمن منيف</p>
-                        <div class="stars mb-3">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="text-gray-600 mr-2">(4.3)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <button class="bg-wood text-white px-4 py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                استعارة
-                            </button>
-                            <span class="text-green-600 font-bold">متوفر</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="mb-12">
-                <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">جديد المكتبة</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                    <div class="book-card p-4 text-center">
-                        <div class="w-24 h-32 bg-gradient-to-b from-teal-800 to-teal-600 mx-auto mb-3 rounded-lg"></div>
-                        <h4 class="font-bold text-sm mb-1">أرض السواد</h4>
-                        <p class="text-gray-600 text-xs">عبد الرحمن الشرقاوي</p>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">جديد</span>
-                    </div>
-                    <div class="book-card p-4 text-center">
-                        <div class="w-24 h-32 bg-gradient-to-b from-orange-800 to-orange-600 mx-auto mb-3 rounded-lg"></div>
-                        <h4 class="font-bold text-sm mb-1">الحب في زمن الكوليرا</h4>
-                        <p class="text-gray-600 text-xs">غابرييل غارسيا ماركيز</p>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">جديد</span>
-                    </div>
-                    <div class="book-card p-4 text-center">
-                        <div class="w-24 h-32 bg-gradient-to-b from-indigo-800 to-indigo-600 mx-auto mb-3 rounded-lg"></div>
-                        <h4 class="font-bold text-sm mb-1">كتاب الأمير</h4>
-                        <p class="text-gray-600 text-xs">نيكولو مكيافيلي</p>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">جديد</span>
-                    </div>
-                    <div class="book-card p-4 text-center">
-                        <div class="w-24 h-32 bg-gradient-to-b from-pink-800 to-pink-600 mx-auto mb-3 rounded-lg"></div>
-                        <h4 class="font-bold text-sm mb-1">الجريمة والعقاب</h4>
-                        <p class="text-gray-600 text-xs">فيودور دوستويفسكي</p>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">جديد</span>
-                    </div>
-                    <div class="book-card p-4 text-center">
-                        <div class="w-24 h-32 bg-gradient-to-b from-gray-800 to-gray-600 mx-auto mb-3 rounded-lg"></div>
-                        <h4 class="font-bold text-sm mb-1">1984</h4>
-                        <p class="text-gray-600 text-xs">جورج أورويل</p>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">جديد</span>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="mb-12">
-                <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">مقترحة لك</h3>
-                <div class="section-bg rounded-2xl p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="book-card p-6">
-                            <div class="flex">
-                                <div class="w-20 h-28 bg-gradient-to-b from-yellow-800 to-yellow-600 rounded-lg ml-4"></div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-lg mb-2">كليلة ودمنة</h4>
-                                    <p class="text-gray-600 mb-2">ابن المقفع</p>
-                                    <div class="stars text-sm mb-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                        <span class="text-gray-600 mr-1">(4.7)</span>
-                                    </div>
-                                    <p class="text-sm text-gray-700 mb-3">مجموعة من الحكايات على لسان الحيوانات</p>
-                                    <button class="bg-dark-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">
-                                        عرض التفاصيل
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="book-card p-6">
-                            <div class="flex">
-                                <div class="w-20 h-28 bg-gradient-to-b from-red-800 to-red-600 rounded-lg ml-4"></div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-lg mb-2">الأغاني</h4>
-                                    <p class="text-gray-600 mb-2">أبو الفرج الأصفهاني</p>
-                                    <div class="stars text-sm mb-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <span class="text-gray-600 mr-1">(4.1)</span>
-                                    </div>
-                                    <p class="text-sm text-gray-700 mb-3">موسوعة في الأدب والتاريخ والموسيقى</p>
-                                    <button class="bg-dark-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">
-                                        عرض التفاصيل
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="book-card p-6">
-                            <div class="flex">
-                                <div class="w-20 h-28 bg-gradient-to-b from-green-800 to-green-600 rounded-lg ml-4"></div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-lg mb-2">المقدمة</h4>
-                                    <p class="text-gray-600 mb-2">ابن خلدون</p>
-                                    <div class="stars text-sm mb-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <span class="text-gray-600 mr-1">(4.9)</span>
-                                    </div>
-                                    <p class="text-sm text-gray-700 mb-3">أسس علم الاجتماع والتاريخ</p>
-                                    <button class="bg-dark-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">
-                                        عرض التفاصيل
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="mb-12">
-                <h3 class="text-3xl font-bold text-dark-blue mb-8 font-amiri text-center">كتب مجانية للتحميل</h3>
-                <div class="bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-8">
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-purple-700 to-purple-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">البخلاء</p>
-                            <p class="text-xs text-gray-600">الجاحظ</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-blue-700 to-blue-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">كتاب الحيوان</p>
-                            <p class="text-xs text-gray-600">الجاحظ</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-red-700 to-red-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">الرحلة</p>
-                            <p class="text-xs text-gray-600">ابن بطوطة</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-green-700 to-green-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">ديوان المتنبي</p>
-                            <p class="text-xs text-gray-600">المتنبي</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-yellow-700 to-yellow-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">الأيام</p>
-                            <p class="text-xs text-gray-600">طه حسين</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-24 bg-gradient-to-b from-indigo-700 to-indigo-500 mx-auto mb-2 rounded flex items-center justify-center">
-                                <i class="fas fa-download text-white"></i>
-                            </div>
-                            <p class="text-xs font-medium">زاد المعاد</p>
-                            <p class="text-xs text-gray-600">ابن القيم</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Featured Books Section -->
+<section class="featured-books py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-star text-warning"></i>
+                الكتب المميزة
+            </h2>
+            <p class="section-subtitle">أحدث وأفضل الكتب المختارة خصيصاً لك</p>
         </div>
-    </section>
 
+        <div class="row" id="featuredBooks">
 
-    <section id="books" class="py-12 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-dark-blue mb-12 text-center font-amiri">مكتبة الكتب</h2>
-
-            <div class="flex flex-col lg:flex-row gap-8">
-
-                <div class="lg:w-1/4">
-                    <div class="bg-white rounded-xl p-6 shadow-lg sticky top-24">
-                        <h3 class="text-xl font-bold mb-6 text-dark-blue">فلترة النتائج</h3>
-
-
-                        <div class="mb-6">
-                            <h4 class="font-bold mb-3">التصنيف</h4>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2" checked>
-                                    <span>الروايات العربية</span>
-                                    <span class="mr-auto text-gray-500">(245)</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>الفلسفة والحكمة</span>
-                                    <span class="mr-auto text-gray-500">(132)</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>العلوم والتكنولوجيا</span>
-                                    <span class="mr-auto text-gray-500">(98)</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>التاريخ والسير</span>
-                                    <span class="mr-auto text-gray-500">(76)</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>الشعر والأدب</span>
-                                    <span class="mr-auto text-gray-500">(154)</span>
-                                </label>
-                            </div>
-                        </div>
-
-
-                        <div class="mb-6">
-                            <h4 class="font-bold mb-3">المؤلف</h4>
-                            <input type="text" placeholder="ابحث عن مؤلف..."
-                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood">
-                        </div>
-
-
-                        <div class="mb-6">
-                            <h4 class="font-bold mb-3">اللغة</h4>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="radio" name="language" class="ml-2" checked>
-                                    <span>العربية</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="language" class="ml-2">
-                                    <span>الإنجليزية</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="language" class="ml-2">
-                                    <span>الفرنسية</span>
-                                </label>
-                            </div>
-                        </div>
-
-
-                        <div class="mb-6">
-                            <h4 class="font-bold mb-3">سنة النشر</h4>
-                            <div class="flex gap-2">
-                                <input type="number" placeholder="من" class="w-1/2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood">
-                                <input type="number" placeholder="إلى" class="w-1/2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood">
-                            </div>
-                        </div>
-
-
-                        <div class="mb-6">
-                            <h4 class="font-bold mb-3">التوفر</h4>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>متاح للاستعارة</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>متاح للشراء</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="ml-2">
-                                    <span>كتاب إلكتروني</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <button class="w-full bg-wood text-white py-3 rounded-lg hover:bg-dark-brown transition-colors">
-                            تطبيق الفلاتر
+            <!-- Book Card Template -->
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="book-card">
+                    <div class="position-relative">
+                        <img src="/images/books/sample1.jpg" alt="كتاب مميز" class="book-cover">
+                        <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+                            <i class="fas fa-star"></i> مميز
+                        </span>
+                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
+                            <i class="far fa-heart"></i>
                         </button>
                     </div>
-                </div>
-
-
-                <div class="lg:w-3/4">
-
-                    <div class="flex justify-between items-center mb-8">
-                        <div class="flex items-center gap-4">
-                            <span class="text-gray-700">ترتيب حسب:</span>
-                            <select class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood">
-                                <option>الأحدث</option>
-                                <option>الأكثر مبيعاً</option>
-                                <option>الأعلى تقييماً</option>
-                                <option>السعر: من الأقل للأعلى</option>
-                                <option>السعر: من الأعلى للأقل</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="p-2 border rounded-lg hover:bg-gray-100">
-                                <i class="fas fa-th-large"></i>
-                            </button>
-                            <button class="p-2 border rounded-lg hover:bg-gray-100">
-                                <i class="fas fa-list"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Books Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <!-- Book Card 1 -->
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-red-800 to-red-600 rounded-lg mb-4 relative overflow-hidden">
-                                <div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
-                                    -20%
-                                </div>
-                                <div class="absolute bottom-2 left-2 text-white text-xs">
-                                    <i class="fas fa-eye mr-1"></i> 1,234
-                                </div>
-                            </div>
-                            <h4 class="font-bold text-lg mb-2 line-clamp-2">الأسود يليق بك</h4>
-                            <p class="text-gray-600 mb-2">أحلام مستغانمي</p>
-                            <div class="stars text-sm mb-3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-gray-600 mr-2">(4.8) 156 مراجعة</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <span class="text-lg font-bold text-wood">20 ر.س</span>
-                                    <span class="text-sm text-gray-500 line-through mr-2">25 ر.س</span>
-                                </div>
-                                <span class="text-green-600 font-bold text-sm">متوفر</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-wood text-white py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                    <i class="fas fa-shopping-cart ml-1"></i> إضافة للسلة
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Book Card 2 -->
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-blue-800 to-blue-600 rounded-lg mb-4 relative overflow-hidden">
-                                <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs">
-                                    مجاني
-                                </div>
-                                <div class="absolute bottom-2 left-2 text-white text-xs">
-                                    <i class="fas fa-download mr-1"></i> 567
-                                </div>
-                            </div>
-                            <h4 class="font-bold text-lg mb-2 line-clamp-2">مئة عام من العزلة</h4>
-                            <p class="text-gray-600 mb-2">غابرييل غارسيا ماركيز</p>
-                            <div class="stars text-sm mb-3">
+                    <div class="book-info">
+                        <h5 class="book-title">عنوان الكتاب المميز</h5>
+                        <p class="book-author">
+                            <i class="fas fa-user-edit me-1"></i>
+                            اسم المؤلف
+                        </p>
+                        <div class="book-rating">
+                            <div class="rating-stars">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star-half-alt"></i>
-                                <span class="text-gray-600 mr-2">(4.6) 89 مراجعة</span>
                             </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <span class="text-lg font-bold text-green-600">مجاني</span>
-                                </div>
-                                <span class="text-blue-600 font-bold text-sm">إلكتروني</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <a asp-controller="Payment" asp-action="Checkout" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                                    <i class="fas fa-download ml-1"></i> تحميل مجاني
-                                </a>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                            <small class="text-muted">(4.5)</small>
                         </div>
-
-                        <!-- Book Card 3 -->
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-green-800 to-green-600 rounded-lg mb-4 relative overflow-hidden">
-                                <div class="absolute bottom-2 left-2 text-white text-xs">
-                                    <i class="fas fa-users mr-1"></i> 234 قارئ
-                                </div>
-                            </div>
-                            <h4 class="font-bold text-lg mb-2 line-clamp-2">الخيميائي</h4>
-                            <p class="text-gray-600 mb-2">باولو كويلو</p>
-                            <div class="stars text-sm mb-3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-gray-600 mr-2">(4.9) 312 مراجعة</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <span class="text-lg font-bold text-wood">15 ر.س</span>
-                                </div>
-                                <span class="text-orange-600 font-bold text-sm">قريباً</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-gray-400 text-white py-2 rounded-lg text-sm cursor-not-allowed">
-                                    <i class="fas fa-clock ml-1"></i> قريباً
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-bell"></i>
-                                </button>
-                            </div>
+                        <div class="book-price">
+                            <strong class="text-primary">45.00 ر.س</strong>
                         </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-cart-plus"></i> إضافة للسلة
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <!-- Book Card 4 -->
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-purple-800 to-purple-600 rounded-lg mb-4 relative overflow-hidden">
-                                <div class="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded text-xs">
-                                    الأكثر مبيعاً
-                                </div>
-                            </div>
-                            <h4 class="font-bold text-lg mb-2 line-clamp-2">مدن الملح</h4>
-                            <p class="text-gray-600 mb-2">عبد الرحمن منيف</p>
-                            <div class="stars text-sm mb-3">
+            <!-- المزيد من الكتب -->
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="book-card">
+                    <div class="position-relative">
+                        <img src="/images/books/sample2.jpg" alt="كتاب مميز" class="book-cover">
+                        <span class="badge bg-success position-absolute top-0 start-0 m-2">جديد</span>
+                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="book-info">
+                        <h5 class="book-title">كتاب جديد ومثير</h5>
+                        <p class="book-author">
+                            <i class="fas fa-user-edit me-1"></i>
+                            مؤلف مشهور
+                        </p>
+                        <div class="book-rating">
+                            <div class="rating-stars">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="far fa-star"></i>
-                                <span class="text-gray-600 mr-2">(4.3) 98 مراجعة</span>
                             </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <span class="text-lg font-bold text-wood">30 ر.س</span>
-                                </div>
-                                <span class="text-green-600 font-bold text-sm">متوفر للاستعارة</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-dark-blue text-white py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">
-                                    <i class="fas fa-book ml-1"></i> استعارة
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                            <small class="text-muted">(4.0)</small>
                         </div>
-
-                        <!-- More book cards... -->
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-indigo-800 to-indigo-600 rounded-lg mb-4"></div>
-                            <h4 class="font-bold text-lg mb-2">كليلة ودمنة</h4>
-                            <p class="text-gray-600 mb-2">ابن المقفع</p>
-                            <div class="stars text-sm mb-3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-gray-600 mr-2">(4.7)</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-lg font-bold text-wood">12 ر.س</span>
-                                <span class="text-green-600 font-bold text-sm">متوفر</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-wood text-white py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                    إضافة للسلة
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                        <div class="book-price">
+                            <strong class="text-primary">35.00 ر.س</strong>
                         </div>
-
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-teal-800 to-teal-600 rounded-lg mb-4"></div>
-                            <h4 class="font-bold text-lg mb-2">المقدمة</h4>
-                            <p class="text-gray-600 mb-2">ابن خلدون</p>
-                            <div class="stars text-sm mb-3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-gray-600 mr-2">(4.9)</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-lg font-bold text-green-600">مجاني</span>
-                                <span class="text-blue-600 font-bold text-sm">إلكتروني</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                                    تحميل مجاني
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-cart-plus"></i> إضافة للسلة
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </a>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-orange-800 to-orange-600 rounded-lg mb-4"></div>
-                            <h4 class="font-bold text-lg mb-2">الأغاني</h4>
-                            <p class="text-gray-600 mb-2">أبو الفرج الأصفهاني</p>
-                            <div class="stars text-sm mb-3">
+            <!-- يمكن إضافة المزيد من الكتب -->
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="book-card">
+                    <div class="position-relative">
+                        <img src="/images/books/sample3.jpg" alt="كتاب مميز" class="book-cover">
+                        <span class="badge bg-info position-absolute top-0 start-0 m-2">الأكثر مبيعاً</span>
+                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
+                            <i class="fas fa-heart text-danger"></i>
+                        </button>
+                    </div>
+                    <div class="book-info">
+                        <h5 class="book-title">الكتاب الأكثر مبيعاً</h5>
+                        <p class="book-author">
+                            <i class="fas fa-user-edit me-1"></i>
+                            كاتب مبدع
+                        </p>
+                        <div class="book-rating">
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <small class="text-muted">(5.0)</small>
+                        </div>
+                        <div class="book-price">
+                            <strong class="text-primary">55.00 ر.س</strong>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-cart-plus"></i> إضافة للسلة
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="book-card">
+                    <div class="position-relative">
+                        <img src="/images/books/sample4.jpg" alt="كتاب مميز" class="book-cover">
+                        <span class="badge bg-primary position-absolute top-0 start-0 m-2">مجاني</span>
+                        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="book-info">
+                        <h5 class="book-title">كتاب مجاني رائع</h5>
+                        <p class="book-author">
+                            <i class="fas fa-user-edit me-1"></i>
+                            مؤلف معروف
+                        </p>
+                        <div class="book-rating">
+                            <div class="rating-stars">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="far fa-star"></i>
-                                <span class="text-gray-600 mr-2">(4.1)</span>
                             </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-lg font-bold text-wood">45 ر.س</span>
-                                <span class="text-green-600 font-bold text-sm">متوفر</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-wood text-white py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                    إضافة للسلة
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                            <small class="text-muted">(4.2)</small>
                         </div>
-
-                        <div class="book-card p-4">
-                            <div class="w-full h-48 bg-gradient-to-b from-pink-800 to-pink-600 rounded-lg mb-4"></div>
-                            <h4 class="font-bold text-lg mb-2">ألف ليلة وليلة</h4>
-                            <p class="text-gray-600 mb-2">مجهول</p>
-                            <div class="stars text-sm mb-3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-gray-600 mr-2">(4.5)</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-lg font-bold text-wood">35 ر.س</span>
-                                <span class="text-orange-600 font-bold text-sm">آخر نسخة</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-wood text-white py-2 rounded-lg hover:bg-dark-brown transition-colors text-sm">
-                                    إضافة للسلة
-                                </button>
-                                <button class="px-3 py-2 border border-wood text-wood rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                        <div class="book-price">
+                            <strong class="text-success">مجاني</strong>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success btn-sm">
+                                <i class="fas fa-download"></i> تحميل مجاني
+                            </button>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Pagination -->
-                    <div class="flex justify-center mt-12">
-                        <div class="flex items-center space-x-reverse space-x-2">
-                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100 disabled:opacity-50" disabled>
-                                <i class="fas fa-chevron-right"></i>
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Books")" class="btn btn-primary btn-lg">
+                <i class="fas fa-book-open"></i> عرض جميع الكتب
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-list-ul text-primary"></i>
+                التصنيفات الرئيسية
+            </h2>
+            <p class="section-subtitle">تصفح الكتب حسب الموضوع والاهتمام</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                    <h5 class="category-title">الأدب العربي</h5>
+                    <div class="category-count">
+                        <strong>245</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 1 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h5 class="category-title">العلوم</h5>
+                    <div class="category-count">
+                        <strong>180</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 2 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h5 class="category-title">التاريخ</h5>
+                    <div class="category-count">
+                        <strong>156</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 3 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h5 class="category-title">الفلسفة</h5>
+                    <div class="category-count">
+                        <strong>95</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 4 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h5 class="category-title">التكنولوجيا</h5>
+                    <div class="category-count">
+                        <strong>132</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 5 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h5 class="category-title">الطب</h5>
+                    <div class="category-count">
+                        <strong>89</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 6 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h5 class="category-title">الأطفال</h5>
+                    <div class="category-count">
+                        <strong>167</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 7 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                    <h5 class="category-title">الكتب الدينية</h5>
+                    <div class="category-count">
+                        <strong>201</strong> كتاب متاح
+                    </div>
+                    <div class="category-actions mt-3">
+                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 8 })"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> تصفح الكتب
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Category")" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-list"></i> عرض جميع التصنيفات
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Authors Section -->
+<section class="popular-authors py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-users text-brown"></i>
+                المؤلفون المشهورون
+            </h2>
+            <p class="section-subtitle">تعرف على أبرز الكتاب والمؤلفين في مكتبتنا</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card author-card h-100">
+                    <div class="card-body text-center">
+                        <div class="author-image mb-3">
+                            <img src="/images/authors/sample1.jpg" alt="مؤلف مشهور"
+                                 class="rounded-circle" width="80" height="80"
+                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                        </div>
+                        <h5 class="author-name text-primary mb-2">نجيب محفوظ</h5>
+                        <p class="author-bio text-muted mb-3">
+                            أديب مصري راحل، حاز على جائزة نوبل للآداب عام 1988
+                        </p>
+                        <div class="author-stats mb-3">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <strong class="text-brown">34</strong>
+                                    <br><small class="text-muted">كتاب</small>
+                                </div>
+                                <div class="col-6">
+                                    <strong class="text-brown">1,250</strong>
+                                    <br><small class="text-muted">مراجعة</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="author-actions">
+                            <a href="#" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user"></i> الملف الشخصي
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-books"></i> كتب المؤلف
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card author-card h-100">
+                    <div class="card-body text-center">
+                        <div class="author-image mb-3">
+                            <img src="/images/authors/sample2.jpg" alt="مؤلف مشهور"
+                                 class="rounded-circle" width="80" height="80"
+                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                        </div>
+                        <h5 class="author-name text-primary mb-2">أحلام مستغانمي</h5>
+                        <p class="author-bio text-muted mb-3">
+                            روائية جزائرية، من أشهر الكاتبات العربيات المعاصرات
+                        </p>
+                        <div class="author-stats mb-3">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <strong class="text-brown">12</strong>
+                                    <br><small class="text-muted">كتاب</small>
+                                </div>
+                                <div class="col-6">
+                                    <strong class="text-brown">890</strong>
+                                    <br><small class="text-muted">مراجعة</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="author-actions">
+                            <a href="#" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user"></i> الملف الشخصي
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-books"></i> كتب المؤلف
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card author-card h-100">
+                    <div class="card-body text-center">
+                        <div class="author-image mb-3">
+                            <img src="/images/authors/sample3.jpg" alt="مؤلف مشهور"
+                                 class="rounded-circle" width="80" height="80"
+                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                        </div>
+                        <h5 class="author-name text-primary mb-2">عباس العقاد</h5>
+                        <p class="author-bio text-muted mb-3">
+                            أديب وصحفي وشاعر مصري، من أبرز أدباء العصر الحديث
+                        </p>
+                        <div class="author-stats mb-3">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <strong class="text-brown">28</strong>
+                                    <br><small class="text-muted">كتاب</small>
+                                </div>
+                                <div class="col-6">
+                                    <strong class="text-brown">675</strong>
+                                    <br><small class="text-muted">مراجعة</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="author-actions">
+                            <a href="#" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user"></i> الملف الشخصي
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-books"></i> كتب المؤلف
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Author")" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-users"></i> عرض جميع المؤلفين
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section class="upcoming-events py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-check text-success"></i>
+                الفعاليات القادمة
+            </h2>
+            <p class="section-subtitle">انضم إلينا في فعالياتنا الثقافية والأدبية</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card event-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="event-date me-3">
+                                <div class="date-box bg-primary text-white text-center p-2 rounded">
+                                    <div class="day">25</div>
+                                    <div class="month">سبتمبر</div>
+                                </div>
+                            </div>
+                            <div class="event-info">
+                                <h5 class="event-title">ندوة الأدب الحديث</h5>
+                                <p class="event-description text-muted">
+                                    ندوة حول تطور الأدب العربي الحديث مع نخبة من الكتاب والنقاد
+                                </p>
+                                <div class="event-meta">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i> 7:00 مساءً
+                                        <i class="fas fa-map-marker-alt ms-3"></i> قاعة المحاضرات
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-actions mt-3">
+                            <a href="@Url.Action("Details", "Event", new { id = 1 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> التفاصيل
+                            </a>
+                            <button class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
                             </button>
-                            <button class="px-4 py-2 bg-wood text-white rounded-lg">1</button>
-                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100">2</button>
-                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100">3</button>
-                            <span class="px-2">...</span>
-                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100">15</button>
-                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100">
-                                <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card event-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="event-date me-3">
+                                <div class="date-box bg-success text-white text-center p-2 rounded">
+                                    <div class="day">30</div>
+                                    <div class="month">سبتمبر</div>
+                                </div>
+                            </div>
+                            <div class="event-info">
+                                <h5 class="event-title">ورشة الكتابة الإبداعية</h5>
+                                <p class="event-description text-muted">
+                                    ورشة تدريبية لتعلم أساسيات الكتابة الإبداعية والسرد
+                                </p>
+                                <div class="event-meta">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i> 6:00 مساءً
+                                        <i class="fas fa-map-marker-alt ms-3"></i> ورشة الكتابة
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-actions mt-3">
+                            <a href="@Url.Action("Details", "Event", new { id = 2 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> التفاصيل
+                            </a>
+                            <button class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Book Details Section -->
-    <section id="book-details" class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="max-w-6xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-                    <!-- Book Cover & Images -->
-                    <div>
-                        <div class="w-full max-w-md mx-auto">
-                            <div class="w-full h-96 bg-gradient-to-b from-red-800 to-red-600 rounded-xl mb-6 relative overflow-hidden">
-                                <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                                    -20%
-                                </div>
-                                <div class="absolute bottom-4 left-4 right-4 text-white text-center">
-                                    <h3 class="text-xl font-bold mb-2">الأسود يليق بك</h3>
-                                    <p class="text-sm">أحلام مستغانمي</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2 justify-center">
-                                <div class="w-16 h-20 bg-red-700 rounded cursor-pointer border-2 border-wood"></div>
-                                <div class="w-16 h-20 bg-red-600 rounded cursor-pointer"></div>
-                                <div class="w-16 h-20 bg-red-500 rounded cursor-pointer"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Book Info -->
-                    <div>
-                        <nav class="text-sm text-gray-600 mb-4">
-                            <a href="#" class="hover:text-wood">الرئيسية</a> /
-                            <a href="#" class="hover:text-wood">الكتب</a> /
-                            <a href="#" class="hover:text-wood">الروايات العربية</a> /
-                            <span class="text-wood">الأسود يليق بك</span>
-                        </nav>
-
-                        <h1 class="text-4xl font-bold text-dark-blue mb-4 font-amiri">الأسود يليق بك</h1>
-
-                        <div class="flex items-center mb-4">
-                            <div class="stars text-lg ml-4">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <span class="text-lg font-bold text-wood">4.8</span>
-                            <span class="text-gray-600 mr-2">(156 مراجعة)</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
-                            <div><strong>المؤلف:</strong> أحلام مستغانمي</div>
-                            <div><strong>دار النشر:</strong> دار الآداب</div>
-                            <div><strong>سنة النشر:</strong> 2012</div>
-                            <div><strong>عدد الصفحات:</strong> 320 صفحة</div>
-                            <div><strong>اللغة:</strong> العربية</div>
-                            <div><strong>ISBN:</strong> 978-9953-76-899-2</div>
-                            <div><strong>التصنيف:</strong> رواية عربية</div>
-                            <div><strong>الحالة:</strong> <span class="text-green-600 font-bold">متوفر</span></div>
-                        </div>
-
-                        <div class="flex items-center gap-4 mb-6">
-                            <div>
-                                <span class="text-3xl font-bold text-wood">20 ر.س</span>
-                                <span class="text-xl text-gray-500 line-through mr-2">25 ر.س</span>
-                            </div>
-                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">وفر 20%</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <button class="bg-wood text-white py-3 rounded-lg hover:bg-dark-brown transition-colors font-bold">
-                                <i class="fas fa-shopping-cart ml-2"></i> إضافة للسلة
-                            </button>
-                            <button class="bg-dark-blue text-white py-3 rounded-lg hover:bg-blue-800 transition-colors font-bold">
-                                <i class="fas fa-book ml-2"></i> استعارة الآن
-                            </button>
-                            <button class="border border-wood text-wood py-3 rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                <i class="fas fa-heart ml-2"></i> إضافة للمفضلة
-                            </button>
-                            <button class="border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-100 transition-colors">
-                                <i class="fas fa-eye ml-2"></i> قراءة عينة
-                            </button>
-                        </div>
-
-                        <div class="border-t pt-6">
-                            <h3 class="font-bold text-lg mb-3">خدمات إضافية:</h3>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex items-center">
-                                    <i class="fas fa-truck text-green-600 ml-2"></i>
-                                    <span>شحن مجاني للطلبات أكثر من 100 ر.س</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-undo text-blue-600 ml-2"></i>
-                                    <span>إمكانية الإرجاع خلال 14 يوم</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-download text-purple-600 ml-2"></i>
-                                    <span>نسخة إلكترونية مجانية مع الكتاب المطبوع</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-gift text-red-600 ml-2"></i>
-                                    <span>10 نقاط مكافآت مع هذا الشراء</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Book Description & Details -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Main Content -->
-                    <div class="lg:col-span-2">
-                        <!-- Tabs -->
-                        <div class="border-b border-gray-200 mb-6">
-                            <nav class="flex space-x-reverse space-x-8">
-                                <button class="tab-button active py-2 border-b-2 border-wood text-wood font-bold">وصف الكتاب</button>
-                                <button class="tab-button py-2 border-b-2 border-transparent hover:text-wood">معلومات إضافية</button>
-                                <button class="tab-button py-2 border-b-2 border-transparent hover:text-wood">المراجعات (156)</button>
-                                <button class="tab-button py-2 border-b-2 border-transparent hover:text-wood">اقتباسات</button>
-                            </nav>
-                        </div>
-
-                        <!-- Tab Content -->
-                        <div id="description" class="tab-content">
-                            <h3 class="text-2xl font-bold mb-4 text-dark-blue">وصف الكتاب</h3>
-                            <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-                                <p class="mb-4">
-                                    رواية "الأسود يليق بك" هي واحدة من أجمل الروايات العربية المعاصرة للكاتبة الجزائرية أحلام مستغانمي.
-                                    تتناول الرواية قصة حب معقدة ومؤثرة تجري أحداثها في أجواء سياسية واجتماعية متوترة.
-                                </p>
-                                <p class="mb-4">
-                                    تحكي الرواية عن امرأة تجد نفسها في مواجهة خيارات صعبة بين الحب والواجب، بين الماضي والحاضر،
-                                    وبين الحلم والواقع. تتميز الرواية بأسلوب سردي جميل يجمع بين الشعرية والواقعية.
-                                </p>
-                                <p class="mb-4">
-                                    نالت الرواية إعجاباً واسعاً من النقاد والقراء على حد سواء، وترجمت إلى عدة لغات.
-                                    تعتبر من أهم الأعمال في الأدب العربي المعاصر.
-                                </p>
-
-                                <h4 class="text-xl font-bold mt-6 mb-3">مقاطع من الكتاب:</h4>
-                                <blockquote class="bg-gray-50 border-r-4 border-wood p-4 italic mb-4">
-                                    "كان الأسود يليق بها كما يليق الحزن بالذاكرة، وكما يليق الصمت بالكلمات غير المقولة..."
-                                </blockquote>
-                                <blockquote class="bg-gray-50 border-r-4 border-wood p-4 italic">
-                                    "في الحب، لا نختار متى نحب، ولا من نحب، ولا كيف نحب. الحب يختارنا..."
-                                </blockquote>
-                            </div>
-                        </div>
-
-                        <!-- Reviews Section -->
-                        <div class="mt-12">
-                            <h3 class="text-2xl font-bold mb-6 text-dark-blue">مراجعات القراء</h3>
-
-                            <!-- Rating Summary -->
-                            <div class="bg-gray-50 rounded-xl p-6 mb-8">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class="text-center">
-                                        <div class="text-5xl font-bold text-wood mb-2">4.8</div>
-                                        <div class="stars text-2xl mb-2">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                        <div class="text-gray-600">156 مراجعة</div>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm w-8">5 ⭐</span>
-                                            <div class="flex-1 bg-gray-200 rounded-full h-3">
-                                                <div class="bg-yellow-400 h-3 rounded-full" style="width: 85%"></div>
-                                            </div>
-                                            <span class="text-sm text-gray-600">133</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm w-8">4 ⭐</span>
-                                            <div class="flex-1 bg-gray-200 rounded-full h-3">
-                                                <div class="bg-yellow-400 h-3 rounded-full" style="width: 10%"></div>
-                                            </div>
-                                            <span class="text-sm text-gray-600">15</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm w-8">3 ⭐</span>
-                                            <div class="flex-1 bg-gray-200 rounded-full h-3">
-                                                <div class="bg-yellow-400 h-3 rounded-full" style="width: 3%"></div>
-                                            </div>
-                                            <span class="text-sm text-gray-600">5</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm w-8">2 ⭐</span>
-                                            <div class="flex-1 bg-gray-200 rounded-full h-3">
-                                                <div class="bg-yellow-400 h-3 rounded-full" style="width: 1%"></div>
-                                            </div>
-                                            <span class="text-sm text-gray-600">2</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm w-8">1 ⭐</span>
-                                            <div class="flex-1 bg-gray-200 rounded-full h-3">
-                                                <div class="bg-yellow-400 h-3 rounded-full" style="width: 1%"></div>
-                                            </div>
-                                            <span class="text-sm text-gray-600">1</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Individual Reviews -->
-                            <div class="space-y-6">
-                                <div class="border rounded-lg p-6">
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 bg-wood text-white rounded-full flex items-center justify-center font-bold">
-                                            س.أ
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <h4 class="font-bold">سارة أحمد</h4>
-                                                <span class="text-sm text-gray-600">منذ أسبوعين</span>
-                                            </div>
-                                            <div class="stars text-sm mb-3">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                            <p class="text-gray-700 mb-3">
-                                                رواية رائعة ومؤثرة جداً. أسلوب أحلام مستغانمي في السرد مميز ويجذبك من الصفحة الأولى.
-                                                الشخصيات محبوكة بعناية والأحداث متدرجة بشكل جميل. أنصح بقراءتها لكل محبي الأدب العربي.
-                                            </p>
-                                            <div class="flex items-center gap-4 text-sm">
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-thumbs-up ml-1"></i> مفيد (23)
-                                                </button>
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-reply ml-1"></i> رد
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="border rounded-lg p-6">
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 bg-dark-blue text-white rounded-full flex items-center justify-center font-bold">
-                                            م.ح
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <h4 class="font-bold">محمد حسن</h4>
-                                                <span class="text-sm text-gray-600">منذ شهر</span>
-                                            </div>
-                                            <div class="stars text-sm mb-3">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            </div>
-                                            <p class="text-gray-700 mb-3">
-                                                قراءة ممتعة ولغة جميلة. الرواية تتناول موضوعات عميقة بطريقة سلسة.
-                                                بعض الأجزاء كانت بطيئة قليلاً لكن بشكل عام تجربة قراءة رائعة.
-                                            </p>
-                                            <div class="flex items-center gap-4 text-sm">
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-thumbs-up ml-1"></i> مفيد (15)
-                                                </button>
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-reply ml-1"></i> رد
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="border rounded-lg p-6">
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
-                                            ل.ع
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <h4 class="font-bold">ليلى عبدالله</h4>
-                                                <span class="text-sm text-gray-600">منذ شهرين</span>
-                                            </div>
-                                            <div class="stars text-sm mb-3">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                            <p class="text-gray-700 mb-3">
-                                                من أجمل الروايات التي قرأتها في السنوات الأخيرة. تجعلك تعيش الأحداث وتتفاعل مع الشخصيات.
-                                                أحلام مستغانمي تؤكد مجدداً أنها من أهم الروائيات العربيات.
-                                            </p>
-                                            <div class="flex items-center gap-4 text-sm">
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-thumbs-up ml-1"></i> مفيد (31)
-                                                </button>
-                                                <button class="text-gray-600 hover:text-wood">
-                                                    <i class="fas fa-reply ml-1"></i> رد
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Add Review -->
-                            <div class="mt-8 border rounded-lg p-6">
-                                <h4 class="text-xl font-bold mb-4">اكتب مراجعتك</h4>
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-bold mb-2">تقييمك</label>
-                                        <div class="flex items-center gap-1">
-                                            <button class="text-gray-300 hover:text-yellow-400 text-2xl">⭐</button>
-                                            <button class="text-gray-300 hover:text-yellow-400 text-2xl">⭐</button>
-                                            <button class="text-gray-300 hover:text-yellow-400 text-2xl">⭐</button>
-                                            <button class="text-gray-300 hover:text-yellow-400 text-2xl">⭐</button>
-                                            <button class="text-gray-300 hover:text-yellow-400 text-2xl">⭐</button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-bold mb-2">عنوان المراجعة</label>
-                                        <input type="text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood"
-                                               placeholder="اكتب عنوان مراجعتك">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-bold mb-2">مراجعتك</label>
-                                        <textarea rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-wood"
-                                                  placeholder="شاركنا رأيك في الكتاب..."></textarea>
-                                    </div>
-                                    <button class="bg-wood text-white px-6 py-3 rounded-lg hover:bg-dark-brown transition-colors">
-                                        نشر المراجعة
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sidebar -->
-                    <div>
-                        <!-- Author Info -->
-                        <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
-                            <h3 class="text-xl font-bold mb-4 text-dark-blue">عن المؤلف</h3>
-                            <div class="text-center mb-4">
-                                <div class="w-24 h-24 bg-gradient-to-br from-wood to-dark-brown rounded-full mx-auto mb-3 flex items-center justify-center">
-                                    <span class="text-white text-2xl font-bold">أ.م</span>
-                                </div>
-                                <h4 class="font-bold text-lg">أحلام مستغانمي</h4>
-                                <p class="text-gray-600 text-sm">روائية جزائرية</p>
-                            </div>
-                            <p class="text-sm text-gray-700 mb-4">
-                                من أشهر الروائيات العربيات، ولدت في تونس وتعيش في لبنان.
-                                لها عدة روايات مشهورة منها "ذاكرة الجسد" و"فوضى الحواس".
-                            </p>
-                            <button class="w-full border border-wood text-wood py-2 rounded-lg hover:bg-wood hover:text-white transition-colors">
-                                عرض كتب المؤلف
-                            </button>
-                        </div>
-
-                        <!-- Related Books -->
-                        <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
-                            <h3 class="text-xl font-bold mb-4 text-dark-blue">كتب مشابهة</h3>
-                            <div class="space-y-4">
-                                <div class="flex gap-3">
-                                    <div class="w-16 h-20 bg-gradient-to-b from-blue-800 to-blue-600 rounded flex-shrink-0"></div>
-                                    <div>
-                                        <h4 class="font-bold text-sm mb-1">ذاكرة الجسد</h4>
-                                        <p class="text-gray-600 text-xs mb-1">أحلام مستغانمي</p>
-                                        <div class="stars text-xs">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span class="text-gray-600 mr-1">(4.6)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex gap-3">
-                                    <div class="w-16 h-20 bg-gradient-to-b from-green-800 to-green-600 rounded flex-shrink-0"></div>
-                                    <div>
-                                        <h4 class="font-bold text-sm mb-1">فوضى الحواس</h4>
-                                        <p class="text-gray-600 text-xs mb-1">أحلام مستغانمي</p>
-                                        <div class="stars text-xs">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <span class="text-gray-600 mr-1">(4.2)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex gap-3">
-                                    <div class="w-16 h-20 bg-gradient-to-b from-purple-800 to-purple-600 rounded flex-shrink-0"></div>
-                                    <div>
-                                        <h4 class="font-bold text-sm mb-1">عابر سرير</h4>
-                                        <p class="text-gray-600 text-xs mb-1">أحلام مستغانمي</p>
-                                        <div class="stars text-xs">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span class="text-gray-600 mr-1">(4.5)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recently Viewed -->
-                        <div class="bg-white rounded-xl p-6 shadow-lg">
-                            <h3 class="text-xl font-bold mb-4 text-dark-blue">شاهدت مؤخراً</h3>
-                            <div class="space-y-3">
-                                <div class="flex gap-3">
-                                    <div class="w-12 h-16 bg-gradient-to-b from-red-700 to-red-500 rounded"></div>
-                                    <div>
-                                        <h4 class="font-bold text-xs">مئة عام من العزلة</h4>
-                                        <p class="text-gray-600 text-xs">غابرييل غارسيا ماركيز</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-3">
-                                    <div class="w-12 h-16 bg-gradient-to-b from-indigo-700 to-indigo-500 rounded"></div>
-                                    <div>
-                                        <h4 class="font-bold text-xs">الخيميائي</h4>
-                                        <p class="text-gray-600 text-xs">باولو كويلو</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Event")" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-calendar-alt"></i> عرض جميع الفعاليات
+            </a>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Authors Section -->
-    <section id="authors" class="py-12 section-bg">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-dark-blue mb-12 text-center font-amiri">أشهر المؤلفين</h2>
+@section Scripts {
+    <script>
+        // تحريك الإحصائيات
+        document.addEventListener('DOMContentLoaded', function() {
+            animateStats();
+        });
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- Author Card 1 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-wood to-dark-brown rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">أ.م</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">أحلام مستغانمي</h3>
-                    <p class="text-gray-600 mb-3">روائية جزائرية</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 8 كتب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 15K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-gray-600 mr-1">(4.6)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        من أشهر الروائيات العربيات، اشتهرت بثلاثيتها "ذاكرة الجسد" و"فوضى الحواس" و"عابر سرير".
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
+        function animateStats() {
+            const stats = [
+                { element: 'booksCount', target: 1250, suffix: '' },
+                { element: 'authorsCount', target: 320, suffix: '' },
+                { element: 'usersCount', target: 5480, suffix: '' },
+                { element: 'downloadsCount', target: 12650, suffix: '' }
+            ];
 
-                <!-- Author Card 2 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-dark-blue to-blue-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">ن.م</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">نجيب محفوظ</h3>
-                    <p class="text-gray-600 mb-3">روائي مصري - نوبل للآداب</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 34 كتاب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 25K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-gray-600 mr-1">(4.8)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        أول عربي يحصل على جائزة نوبل للآداب، له أعمال خالدة مثل "الثلاثية" و"أولاد حارتنا".
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
+            stats.forEach(stat => {
+                animateNumber(stat.element, stat.target, stat.suffix);
+            });
+        }
 
-                <!-- Author Card 3 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-green-700 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">ط.ح</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">طه حسين</h3>
-                    <p class="text-gray-600 mb-3">أديب وناقد مصري</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 21 كتاب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 18K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-gray-600 mr-1">(4.5)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        عميد الأدب العربي، اشتهر بكتابه "الأيام" وإسهاماته في النقد الأدبي والتعليم.
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
+        function animateNumber(elementId, target, suffix) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
 
-                <!-- Author Card 4 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-purple-700 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">ع.م</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">عبد الرحمن منيف</h3>
-                    <p class="text-gray-600 mb-3">روائي سعودي</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 15 كتاب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 12K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="text-gray-600 mr-1">(4.3)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        من أهم الروائيين العرب، اشتهر بخماسية "مدن الملح" التي تصور تاريخ المنطقة العربية.
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
-
-                <!-- Author Card 5 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-red-700 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">غ.م</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">غابرييل غارسيا ماركيز</h3>
-                    <p class="text-gray-600 mb-3">روائي كولومبي - نوبل للآداب</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 12 كتاب مترجم</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 22K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-gray-600 mr-1">(4.9)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        رائد الواقعية السحرية، اشتهر بروايته "مئة عام من العزلة" و"الحب في زمن الكوليرا".
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
-
-                <!-- Author Card 6 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-indigo-700 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">ب.ك</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">باولو كويلو</h3>
-                    <p class="text-gray-600 mb-3">روائي برازيلي</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 8 كتب مترجمة</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 30K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-gray-600 mr-1">(4.7)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        من أشهر الكتاب المعاصرين، اشتهر بروايته "الخيميائي" التي ترجمت لأكثر من 80 لغة.
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
-
-                <!-- Author Card 7 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-teal-700 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">أ.أ</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">أمين معلوف</h3>
-                    <p class="text-gray-600 mb-3">روائي لبناني-فرنسي</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 14 كتاب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 16K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-gray-600 mr-1">(4.4)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        حائز على جائزة الغونكور، له روايات مميزة مثل "ليون الأفريقي" و"حدائق النور".
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
-
-                <!-- Author Card 8 -->
-                <div class="book-card p-6 text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-orange-700 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">إ.ك</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-dark-blue">إبراهيم الكوني</h3>
-                    <p class="text-gray-600 mb-3">روائي ليبي</p>
-                    <div class="text-sm text-gray-700 mb-4">
-                        <div class="flex justify-center items-center gap-4 mb-2">
-                            <span><i class="fas fa-book text-wood ml-1"></i> 18 كتاب</span>
-                            <span><i class="fas fa-users text-wood ml-1"></i> 8K قارئ</span>
-                        </div>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="text-gray-600 mr-1">(4.2)</span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-4">
-                        روائي الصحراء، متخصص في أدب البيئة الصحراوية، له أعمال مثل "التبر" و"المجوس".
-                    </p>
-                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                        عرض الكتب
-                    </button>
-                </div>
-            </div>
-
-            <!-- Authors Stats -->
-            <div class="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                <div class="book-card p-8">
-                    <div class="text-4xl font-bold text-wood mb-2">150+</div>
-                    <div class="text-gray-700">مؤلف عربي</div>
-                </div>
-                <div class="book-card p-8">
-                    <div class="text-4xl font-bold text-wood mb-2">80+</div>
-                    <div class="text-gray-700">مؤلف عالمي</div>
-                </div>
-                <div class="book-card p-8">
-                    <div class="text-4xl font-bold text-wood mb-2">25</div>
-                    <div class="text-gray-700">حائز نوبل</div>
-                </div>
-                <div class="book-card p-8">
-                    <div class="text-4xl font-bold text-wood mb-2">500K+</div>
-                    <div class="text-gray-700">قارئ نشط</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Events Section -->
-    <section id="events" class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-dark-blue mb-12 text-center font-amiri">الفعاليات والأنشطة</h2>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Upcoming Events -->
-                <div class="lg:col-span-2">
-                    <h3 class="text-2xl font-bold mb-6 text-dark-blue">الفعاليات القادمة</h3>
-
-                    <!-- Event Card 1 -->
-                    <div class="book-card p-6 mb-6">
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex-shrink-0">
-                                <div class="w-full md:w-48 h-32 bg-gradient-to-br from-wood to-dark-brown rounded-lg flex items-center justify-center text-white">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold">25</div>
-                                        <div class="text-sm">ديسمبر</div>
-                                        <div class="text-xs">2024</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">ندوة ثقافية</span>
-                                    <span class="text-sm text-gray-600">18:00 - 20:00</span>
-                                </div>
-                                <h4 class="text-xl font-bold mb-3 text-dark-blue">الأدب العربي المعاصر: التحديات والآفاق</h4>
-                                <p class="text-gray-700 mb-4">
-                                    ندوة ثقافية مع نخبة من الأدباء والنقاد العرب لمناقشة واقع الأدب العربي المعاصر
-                                    والتحديات التي تواجهه في عصر الرقمنة.
-                                </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4 text-sm text-gray-600">
-                                        <span><i class="fas fa-map-marker-alt ml-1"></i> قاعة الأدب الرئيسية</span>
-                                        <span><i class="fas fa-users ml-1"></i> 120 مقعد متاح</span>
-                                    </div>
-                                    <button class="bg-wood text-white px-6 py-2 rounded-lg hover:bg-dark-brown transition-colors">
-                                        حجز مقعد مجاني
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Event Card 2 -->
-                    <div class="book-card p-6 mb-6">
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex-shrink-0">
-                                <div class="w-full md:w-48 h-32 bg-gradient-to-br from-dark-blue to-blue-700 rounded-lg flex items-center justify-center text-white">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold">28</div>
-                                        <div class="text-sm">ديسمبر</div>
-                                        <div class="text-xs">2024</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">ورشة عمل</span>
-                                    <span class="text-sm text-gray-600">10:00 - 16:00</span>
-                                </div>
-                                <h4 class="text-xl font-bold mb-3 text-dark-blue">ورشة الكتابة الإبداعية للمبتدئين</h4>
-                                <p class="text-gray-700 mb-4">
-                                    ورشة عملية لتعلم أساسيات الكتابة الإبداعية مع الكاتبة المعروفة سارة الجوهري.
-                                    تشمل تمارين عملية وتطبيقات متنوعة.
-                                </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4 text-sm text-gray-600">
-                                        <span><i class="fas fa-map-marker-alt ml-1"></i> قاعة التدريب</span>
-                                        <span><i class="fas fa-users ml-1"></i> 8 من أصل 20 مقعد</span>
-                                    </div>
-                                    <button class="bg-dark-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors">
-                                        حجز - 50 ر.س
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Event Card 3 -->
-                    <div class="book-card p-6 mb-6">
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex-shrink-0">
-                                <div class="w-full md:w-48 h-32 bg-gradient-to-br from-purple-700 to-purple-500 rounded-lg flex items-center justify-center text-white">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold">02</div>
-                                        <div class="text-sm">يناير</div>
-                                        <div class="text-xs">2025</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-bold">حفل توقيع</span>
-                                    <span class="text-sm text-gray-600">19:00 - 21:00</span>
-                                </div>
-                                <h4 class="text-xl font-bold mb-3 text-dark-blue">حفل توقيع رواية "ظلال الذاكرة"</h4>
-                                <p class="text-gray-700 mb-4">
-                                    حفل توقيع الإصدار الجديد للروائي أحمد السيد مع جلسة نقاشية حول الرواية
-                                    وتطور الأدب العربي المعاصر.
-                                </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4 text-sm text-gray-600">
-                                        <span><i class="fas fa-map-marker-alt ml-1"></i> الردهة الرئيسية</span>
-                                        <span><i class="fas fa-users ml-1"></i> مفتوح للجمهور</span>
-                                    </div>
-                                    <button class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-                                        حضور مجاني
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Event Card 4 -->
-                    <div class="book-card p-6">
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex-shrink-0">
-                                <div class="w-full md:w-48 h-32 bg-gradient-to-br from-green-700 to-green-500 rounded-lg flex items-center justify-center text-white">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold">15</div>
-                                        <div class="text-sm">يناير</div>
-                                        <div class="text-xs">2025</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">معرض كتب</span>
-                                    <span class="text-sm text-gray-600">09:00 - 22:00</span>
-                                </div>
-                                <h4 class="text-xl font-bold mb-3 text-dark-blue">معرض الكتاب السنوي 2025</h4>
-                                <p class="text-gray-700 mb-4">
-                                    معرض ضخم يضم أحدث الإصدارات من دور النشر المحلية والعالمية مع خصومات تصل إلى 50%
-                                    وفعاليات ثقافية متنوعة.
-                                </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4 text-sm text-gray-600">
-                                        <span><i class="fas fa-map-marker-alt ml-1"></i> جميع الطوابق</span>
-                                        <span><i class="fas fa-calendar ml-1"></i> 7 أيام</span>
-                                    </div>
-                                    <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                                        التفاصيل
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div>
-                    <!-- Calendar Widget -->
-                    <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
-                        <h3 class="text-xl font-bold mb-4 text-dark-blue">تقويم الفعاليات</h3>
-                        <div class="calendar-mini">
-                            <div class="text-center mb-4">
-                                <h4 class="font-bold">ديسمبر 2024</h4>
-                            </div>
-                            <div class="grid grid-cols-7 gap-1 text-center text-xs">
-                                <div class="font-bold p-2">س</div>
-                                <div class="font-bold p-2">ح</div>
-                                <div class="font-bold p-2">ن</div>
-                                <div class="font-bold p-2">ث</div>
-                                <div class="font-bold p-2">ر</div>
-                                <div class="font-bold p-2">خ</div>
-                                <div class="font-bold p-2">ج</div>
-
-                                <div class="p-2 text-gray-400">1</div>
-                                <div class="p-2">2</div>
-                                <div class="p-2">3</div>
-                                <div class="p-2">4</div>
-                                <div class="p-2">5</div>
-                                <div class="p-2">6</div>
-                                <div class="p-2">7</div>
-
-                                <div class="p-2">8</div>
-                                <div class="p-2">9</div>
-                                <div class="p-2">10</div>
-                                <div class="p-2">11</div>
-                                <div class="p-2">12</div>
-                                <div class="p-2">13</div>
-                                <div class="p-2">14</div>
-
-                                <div class="p-2">15</div>
-                                <div class="p-2">16</div>
-                                <div class="p-2">17</div>
-                                <div class="p-2">18</div>
-                                <div class="p-2">19</div>
-                                <div class="p-2">20</div>
-                                <div class="p-2">21</div>
-
-                                <div class="p-2">22</div>
-                                <div class="p-2">23</div>
-                                <div class="p-2">24</div>
-                                <div class="p-2 bg-wood text-white rounded">25</div>
-                                <div class="p-2">26</div>
-                                <div class="p-2">27</div>
-                                <div class="p-2 bg-dark-blue text-white rounded">28</div>
-
-                                <div class="p-2">29</div>
-                                <div class="p-2">30</div>
-                                <div class="p-2">31</div>
-                                <div class="p-2 text-gray-400">1</div>
-                                <div class="p-2 text-gray-400">2</div>
-                                <div class="p-2 text-gray-400">3</div>
-                                <div class="p-2 text-gray-400">4</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Event Categories -->
-                    <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
-                        <h3 class="text-xl font-bold mb-4 text-dark-blue">أنواع الفعاليات</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-green-500 rounded-full ml-3"></div>
-                                    <span>ندوات ثقافية</span>
-                                </div>
-                                <span class="text-gray-600">(12)</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-blue-500 rounded-full ml-3"></div>
-                                    <span>ورش عمل</span>
-                                </div>
-                                <span class="text-gray-600">(8)</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-purple-500 rounded-full ml-3"></div>
-                                    <span>حفلات توقيع</span>
-                                </div>
-                                <span class="text-gray-600">(15)</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-red-500 rounded-full ml-3"></div>
-                                    <span>معارض</span>
-                                </div>
-                                <span class="text-gray-600">(3)</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-yellow-500 rounded-full ml-3"></div>
-                                    <span>مسابقات أدبية</span>
-                                </div>
-                                <span class="text-gray-600">(5)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Newsletter -->
-                    <div class="bg-gradient-to-br from-wood to-dark-brown rounded-xl p-6 text-white">
-                        <h3 class="text-xl font-bold mb-4">النشرة البريدية</h3>
-                        <p class="text-sm mb-4">اشترك لتصلك أحدث الفعاليات والأنشطة الثقافية</p>
-                        <div class="space-y-3">
-                            <input type="email" placeholder="بريدك الإلكتروني"
-                                   class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none">
-                            <button class="w-full bg-white text-wood py-2 rounded-lg hover:bg-gray-100 transition-colors font-bold">
-                                اشترك الآن
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Section -->
-    <section id="blog" class="py-12 section-bg">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-dark-blue mb-12 text-center font-amiri">مدونة المكتبة</h2>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Main Blog Posts -->
-
-</body>
-</html>
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString('ar-SA') + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString('ar-SA') + suffix;
+                }
+            }, 50);
+        }
+    </script>
+}

@@ -46,8 +46,8 @@ namespace MindShelf_PL
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
              sqlOptions => sqlOptions.EnableRetryOnFailure(
-              maxRetryCount: 5, // ??? ??? ????? ??? ?? ????
-              maxRetryDelay: TimeSpan.FromSeconds(10), // ??? ???????? ??? ?????????
+              maxRetryCount: 5,                        
+              maxRetryDelay: TimeSpan.FromSeconds(10), 
               errorNumbersToAdd: null
          )
      )
@@ -68,6 +68,7 @@ namespace MindShelf_PL
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IFavouriteBookService, FavouriteBookService>();
 
 
             //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
@@ -94,6 +95,22 @@ namespace MindShelf_PL
 
             StripeConfiguration.ApiKey = stripeSecretKey;
 
+            //Google Settings
+            builder.Services.AddAuthentication()
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")
+                           ?? builder.Configuration["Authentication:Google:ClientId"];
+
+        options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")
+                               ?? builder.Configuration["Authentication:Google:ClientSecret"];
+
+        options.CallbackPath = "/signin-google";
+    });
 
 
             var app = builder.Build();
