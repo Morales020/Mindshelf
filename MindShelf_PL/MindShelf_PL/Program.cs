@@ -46,8 +46,8 @@ namespace MindShelf_PL
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
              sqlOptions => sqlOptions.EnableRetryOnFailure(
-              maxRetryCount: 5, // ??? ??? ????? ??? ?? ????
-              maxRetryDelay: TimeSpan.FromSeconds(10), // ??? ???????? ??? ?????????
+              maxRetryCount: 5,                        
+              maxRetryDelay: TimeSpan.FromSeconds(10), 
               errorNumbersToAdd: null
          )
      )
