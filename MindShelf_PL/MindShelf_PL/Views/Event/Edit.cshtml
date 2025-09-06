@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحرير الحدث - MindShelf Digital Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+            .input-group input:focus + label,
+            .input-group input:not(:placeholder-shown) + label,
+            .input-group textarea:focus + label,
+            .input-group textarea:not(:placeholder-shown) + label {
+                transform: translateY(-1.5rem);
+                font-size: 0.75rem;
+                color: #3b82f6;
+            }
+
+            .input-group label {
+                position: absolute;
+                right: 0.75rem;
+                top: 0.75rem;
+                transition: all 0.2s;
+                pointer-events: none;
+                color: #6b7280;
+            }
+
+        .custom-checkbox:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+            }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8 text-sm">
+            <a href="#" class="text-blue-600 hover:text-blue-800">الرئيسية</a>
+            <span class="mx-2 text-gray-500">/</span>
+            <a href="#" class="text-blue-600 hover:text-blue-800">الفعاليات</a>
+            <span class="mx-2 text-gray-500">/</span>
+            <span class="text-gray-600">تحرير الحدث</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-8 animate-fade-in">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-edit text-blue-600 ml-3"></i>
+                    تحرير الحدث
+                </h1>
+                <p class="text-gray-600">قم بتحديث بيانات الحدث والمعلومات المتعلقة به</p>
+            </div>
+
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <a href="#" class="btn-secondary text-white px-6 py-2 rounded-lg inline-flex items-center">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للقائمة
+                </a>
+            </div>
+        </div>
+
+        <!-- Edit Event Form -->
+        <div class="form-card rounded-2xl shadow-xl p-8 animate-fade-in">
+            <form method="post" class="space-y-6">
+                <!-- Title -->
+                <div class="input-group">
+                    <input type="text"
+                           id="title"
+                           name="Title"
+                           value="ندوة حول التكنولوجيا الحديثة"
+                           placeholder=" "
+                           required
+                           class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <label for="title">عنوان الحدث</label>
+                </div>
+
+                <!-- Date and Time Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="input-group">
+                        <input type="datetime-local"
+                               id="startingDate"
+                               name="StartingDate"
+                               value="2024-02-15T10:00"
+                               required
+                               class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        <label for="startingDate">تاريخ ووقت البداية</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="datetime-local"
+                               id="endingDate"
+                               name="EndingDate"
+                               value="2024-02-15T12:00"
+                               required
+                               class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        <label for="endingDate">تاريخ ووقت النهاية</label>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="input-group">
+                    <input type="text"
+                           id="location"
+                           name="Location"
+                           value="قاعة المؤتمرات - الطابق الثاني"
+                           placeholder=" "
+                           class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <label for="location">موقع الحدث</label>
+                </div>
+
+                <!-- Description -->
+                <div class="input-group">
+                    <textarea id="description"
+                              name="Description"
+                              rows="4"
+                              placeholder=" "
+                              class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none">ندوة تفاعلية حول أحدث التطورات في مجال التكنولوجيا والذكاء الاصطناعي، مع مناقشة التطبيقات العملية وتأثيرها على المستقبل.</textarea>
+                    <label for="description">وصف الحدث</label>
+                </div>
+
+                <!-- Checkboxes -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-center">
+                        <input type="checkbox"
+                               id="isOnline"
+                               name="IsOnline"
+                               value="true"
+                               class="custom-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="isOnline" class="mr-3 text-gray-700 font-medium">
+                            <i class="fas fa-globe text-green-600 ml-2"></i>
+                            حدث إلكتروني (أونلاين)
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox"
+                               id="isActive"
+                               name="IsActive"
+                               value="true"
+                               checked
+                               class="custom-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="isActive" class="mr-3 text-gray-700 font-medium">
+                            <i class="fas fa-check-circle text-blue-600 ml-2"></i>
+                            الحدث نشط
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Event Stats -->
+                <div class="bg-gray-50 rounded-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">45</div>
+                        <div class="text-sm text-gray-600">المسجلين</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">2</div>
+                        <div class="text-sm text-gray-600">أيام متبقية</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600">4.8</div>
+                        <div class="text-sm text-gray-600">تقييم الحدث</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="submit"
+                            class="btn-primary text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center flex-1">
+                        <i class="fas fa-save ml-2"></i>
+                        حفظ التغييرات
+                    </button>
+
+                    <button type="button"
+                            class="btn-secondary text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center">
+                        <i class="fas fa-eye ml-2"></i>
+                        معاينة الحدث
+                    </button>
+
+                    <a href="#"
+                       class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-times ml-2"></i>
+                        إلغاء
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Additional Actions -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Event Management -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-cogs text-blue-600 ml-2"></i>
+                    إدارة الحدث
+                </h3>
+                <div class="space-y-3">
+                    <button class="w-full text-right bg-blue-50 text-blue-700 px-4 py-3 rounded-lg hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-users ml-2"></i>
+                        عرض المسجلين (45)
+                    </button>
+                    <button class="w-full text-right bg-green-50 text-green-700 px-4 py-3 rounded-lg hover:bg-green-100 transition-colors">
+                        <i class="fas fa-envelope ml-2"></i>
+                        إرسال تذكير
+                    </button>
+                    <button class="w-full text-right bg-purple-50 text-purple-700 px-4 py-3 rounded-lg hover:bg-purple-100 transition-colors">
+                        <i class="fas fa-chart-bar ml-2"></i>
+                        إحصائيات الحدث
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-red-600 mb-4">
+                    <i class="fas fa-exclamation-triangle ml-2"></i>
+                    منطقة الخطر
+                </h3>
+                <div class="space-y-3">
+                    <button class="w-full text-right bg-yellow-50 text-yellow-700 px-4 py-3 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <i class="fas fa-pause ml-2"></i>
+                        إيقاف الحدث مؤقتاً
+                    </button>
+                    <button class="w-full text-right bg-red-50 text-red-700 px-4 py-3 rounded-lg hover:bg-red-100 transition-colors">
+                        <i class="fas fa-ban ml-2"></i>
+                        إلغاء الحدث
+                    </button>
+                    <button class="w-full text-right bg-red-50 text-red-700 px-4 py-3 rounded-lg hover:bg-red-100 transition-colors">
+                        <i class="fas fa-trash ml-2"></i>
+                        حذف الحدث نهائياً
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <div class="text-2xl font-bold mb-4">
+                    <i class="fas fa-book-open ml-2"></i>
+                    MindShelf
+                </div>
+                <p class="text-gray-400 mb-4">مكتبتك الرقمية - بوابتك إلى المعرفة</p>
+                <div class="flex justify-center space-x-4 space-x-reverse">
+                    <i class="fab fa-facebook text-blue-500 text-xl cursor-pointer hover:text-blue-400"></i>
+                    <i class="fab fa-twitter text-blue-400 text-xl cursor-pointer hover:text-blue-300"></i>
+                    <i class="fab fa-instagram text-pink-500 text-xl cursor-pointer hover:text-pink-400"></i>
+                    <i class="fab fa-linkedin text-blue-600 text-xl cursor-pointer hover:text-blue-500"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form validation and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const startDate = document.getElementById('startingDate');
+            const endDate = document.getElementById('endingDate');
+
+            // Validate end date is after start date
+            function validateDates() {
+                if (startDate.value && endDate.value) {
+                    if (new Date(endDate.value) <= new Date(startDate.value)) {
+                        endDate.setCustomValidity('تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
+                    } else {
+                        endDate.setCustomValidity('');
+                    }
+                }
+            }
+
+            startDate.addEventListener('change', validateDates);
+            endDate.addEventListener('change', validateDates);
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i>جاري الحفظ...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    alert('تم تحديث الحدث بنجاح!');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+
+            // Preview button
+            document.querySelector('button[type="button"]').addEventListener('click', function() {
+                alert('سيتم فتح معاينة الحدث في نافذة جديدة');
+            });
+        });
+    </script>
+</body>
+</html>

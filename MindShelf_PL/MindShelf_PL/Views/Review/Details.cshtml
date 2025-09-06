@@ -1,0 +1,379 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model ReviewResponseDto
+
+@{
+    ViewData["Title"] = "تفاصيل المراجعة";
+    ViewBag.BodyClass = "review-details-page";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Section -->
+            <div class="page-header mb-5">
+                <div class="text-center">
+                    <h1 class="page-title">
+                        <i class="fas fa-eye text-primary me-3"></i>
+                        تفاصيل المراجعة
+                    </h1>
+                    <p class="page-subtitle text-muted">مراجعة مفصلة للكتاب</p>
+                </div>
+            </div>
+
+            <!-- Review Details Card -->
+            <div class="review-details-container">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header bg-gradient-primary text-white py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-star me-2"></i>
+                                    مراجعة الكتاب
+                                </h3>
+                                <p class="mb-0 opacity-75">تفاصيل المراجعة والتقييم</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" 
+                                   class="btn btn-light btn-sm">
+                                    <i class="fas fa-book"></i> عرض الكتاب
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <!-- Review Info -->
+                        <div class="review-info mb-5">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-card">
+                                        <div class="info-icon">
+                                            <i class="fas fa-book text-primary"></i>
+                                        </div>
+                                        <div class="info-content">
+                                            <h6 class="info-label">الكتاب</h6>
+                                            <p class="info-value">@Model.BookName</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-card">
+                                        <div class="info-icon">
+                                            <i class="fas fa-user text-primary"></i>
+                                        </div>
+                                        <div class="info-content">
+                                            <h6 class="info-label">المستخدم</h6>
+                                            <p class="info-value">@Model.UserName</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rating Section -->
+                        <div class="rating-section mb-5">
+                            <div class="rating-display">
+                                <div class="rating-stars-large">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Model.Rating)
+                                        {
+                                            <i class="fas fa-star text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star text-warning"></i>
+                                        }
+                                    }
+                                </div>
+                                <div class="rating-info">
+                                    <span class="rating-number">@Model.Rating</span>
+                                    <span class="rating-max">/ 5</span>
+                                </div>
+                            </div>
+                            <div class="rating-date">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                تاريخ المراجعة: @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                        </div>
+
+                        <!-- Comment Section -->
+                        @if (!string.IsNullOrEmpty(Model.Comment))
+                        {
+                            <div class="comment-section mb-5">
+                                <h5 class="section-title">
+                                    <i class="fas fa-comment text-primary me-2"></i>
+                                    التعليق
+                                </h5>
+                                <div class="comment-content">
+                                    <p>@Model.Comment</p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="no-comment-section mb-5">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-comment-slash fa-2x mb-3"></i>
+                                    <p>لا يوجد تعليق مرفق مع هذه المراجعة</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a asp-controller="Review" asp-action="Edit" asp-route-id="@Model.ReviewId" 
+                                       class="btn btn-warning btn-lg w-100">
+                                        <i class="fas fa-edit me-2"></i>
+                                        تعديل المراجعة
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a asp-controller="Review" asp-action="Delete" asp-route-id="@Model.ReviewId" 
+                                       class="btn btn-danger btn-lg w-100">
+                                        <i class="fas fa-trash me-2"></i>
+                                        حذف المراجعة
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
+                                       class="btn btn-secondary btn-lg w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>
+                                        العودة للمراجعات
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Review Details Page Styles */
+    .review-details-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    /* Info Cards */
+    .info-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .info-icon {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    /* Rating Section */
+    .rating-section {
+        text-align: center;
+        background: #f8f9fa;
+        border-radius: 20px;
+        padding: 2rem;
+        border: 2px solid #e9ecef;
+    }
+
+    .rating-display {
+        margin-bottom: 1rem;
+    }
+
+    .rating-stars-large {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .rating-info {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .rating-number {
+        color: #ffc107;
+    }
+
+    .rating-max {
+        color: #6c757d;
+    }
+
+    .rating-date {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    /* Comment Section */
+    .section-title {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .comment-content {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #e9ecef;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .comment-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #495057;
+        margin-bottom: 0;
+    }
+
+    .no-comment-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 2rem;
+        border: 2px dashed #dee2e6;
+    }
+
+    /* Button Styles */
+    .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-warning {
+        background: linear-gradient(45deg, #ffc107, #e0a800);
+        border: none;
+        color: #212529;
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        color: #212529;
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        border: none;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #545b62);
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-light {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .btn-light:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .rating-stars-large {
+            font-size: 2rem;
+        }
+        
+        .rating-info {
+            font-size: 1.5rem;
+        }
+        
+        .btn-lg {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .info-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .info-icon {
+            margin-bottom: 1rem;
+        }
+    }
+</style>

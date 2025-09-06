@@ -1,0 +1,317 @@
+@using MindShelf_BL.Dtos.ReviewDto
+@model GetBookReviewsDto
+
+@{
+    ViewData["Title"] = $"مراجعات {Model.BookName}";
+    ViewBag.BodyClass = "reviews-page";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Book Header -->
+            <div class="book-header-card mb-4">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header bg-gradient-primary text-white py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="mb-2">📚 @Model.BookName</h1>
+                                <p class="mb-0 opacity-75">مراجعات القراء وتقييماتهم</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" 
+                                   class="btn btn-light btn-sm">
+                                    <i class="fas fa-arrow-right"></i> العودة للكتاب
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="rating-summary">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rating-display me-3">
+                                            <span class="rating-number h2 mb-0 text-warning">@Model.AverageRating</span>
+                                            <div class="rating-stars">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= Math.Round(Model.AverageRating))
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="far fa-star text-warning"></i>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="mb-1 text-muted">متوسط التقييم</p>
+                                            <p class="mb-0 h5">@Model.ReviewCount مراجعة</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="action-buttons">
+                                    <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
+                                       class="btn btn-success btn-lg">
+                                        <i class="fas fa-plus"></i> أضف مراجعة
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                @if (Model.Reviews.Any())
+                {
+                    <div class="reviews-container">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <div class="card mb-4 review-card">
+                                <div class="card-body p-4">
+                                    <div class="review-header">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="review-user-info">
+                                                <h5 class="review-user mb-1">
+                                                    <i class="fas fa-user-circle text-primary me-3"></i>
+                                                    @review.UserName
+                                                </h5>
+                                                <small class="review-date">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    @review.CreatedAt.ToString("dd/MM/yyyy")
+                                                </small>
+                                            </div>
+                                            <div class="review-rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= review.Rating)
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="far fa-star text-warning"></i>
+                                                    }
+                                                }
+                                                <span class="rating-value ms-2 fw-bold">@review.Rating</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-comment">
+                                        @if (!string.IsNullOrEmpty(review.Comment))
+                                        {
+                                            <p class="mb-0">@review.Comment</p>
+                                        }
+                                    </div>
+                                    <div class="review-actions mt-3">
+                                        <a asp-controller="Review" asp-action="Details" asp-route-id="@review.ReviewId" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> عرض التفاصيل
+                                        </a>
+                                        <a asp-controller="Review" asp-action="Edit" asp-route-id="@review.ReviewId" 
+                                           class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i> تعديل
+                                        </a>
+                                        <a asp-controller="Review" asp-action="Delete" asp-route-id="@review.ReviewId" 
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="no-reviews">
+                        <i class="fas fa-comment-slash"></i>
+                        <h4>لا توجد مراجعات بعد</h4>
+                        <p>كن أول من يكتب مراجعة لهذا الكتاب</p>
+                        <a asp-controller="Review" asp-action="Create" asp-route-bookId="@Model.BookId" 
+                           class="btn btn-success btn-lg">
+                            <i class="fas fa-plus"></i> أضف مراجعة
+                        </a>
+                    </div>
+                }
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Reviews Page Styles */
+    .reviews-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+
+    .rating-display {
+        text-align: center;
+    }
+
+    .rating-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffc107;
+    }
+
+    .rating-stars {
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+    }
+
+    .action-buttons .btn {
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #1e7e34);
+        border: none;
+    }
+
+    .btn-light {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .btn-light:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    /* Reviews Section Styles */
+    .reviews-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 2rem;
+    }
+
+    .review-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .review-header {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .review-user {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+
+    .review-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .review-rating {
+        font-size: 1.2rem;
+    }
+
+    .rating-value {
+        color: #ffc107;
+        font-size: 1.1rem;
+    }
+
+    .review-comment {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #495057;
+    }
+
+    .review-actions .btn {
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .review-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .no-reviews > i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .no-reviews .btn i {
+        font-size: 1rem;
+        margin-bottom: 0;
+        opacity: 1;
+    }
+
+    .no-reviews h4 {
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+
+    .no-reviews p {
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .reviews-section {
+            padding: 1rem;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-actions .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            margin-right: 0;
+        }
+    }
+</style>

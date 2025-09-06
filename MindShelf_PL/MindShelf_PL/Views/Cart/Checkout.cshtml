@@ -1,0 +1,302 @@
+@model MindShelf_BL.Dtos.CartsDto.CartResponseDto
+
+@using MindShelf_DAL.Models.Stripe;
+@inject Microsoft.Extensions.Options.IOptions<StripeSettings> Stripe
+
+@{
+    ViewData["Title"] = "إتمام الطلب";
+}
+
+<style>
+    .checkout-book-item {
+        transition: all 0.3s ease;
+    }
+    
+    .checkout-book-item:hover {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .book-image-checkout {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .book-image-checkout:hover {
+        transform: scale(1.05);
+    }
+    
+    .checkout-table th {
+        background-color: #f8f9fa;
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        padding: 0.75rem;
+    }
+    
+    .checkout-table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .checkout-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .checkout-summary h5 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .checkout-summary .table {
+        color: white;
+    }
+    
+    .checkout-summary .table-success {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .checkout-summary .table-success th {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        color: #333 !important;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .checkout-summary .table td {
+        color: #333 !important;
+    }
+    
+    .checkout-summary .table th {
+        color: #333 !important;
+    }
+    
+    .checkout-summary small {
+        color: #333 !important;
+    }
+    
+    .checkout-summary a {
+        color: #333 !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease;
+    }
+    
+    .checkout-summary a:hover {
+        color: #007bff !important;
+        text-decoration: none !important;
+    }
+    
+    .checkout-summary a:hover small {
+        color: #007bff !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-credit-card me-2"></i>إتمام الطلب</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.CartItems != null && Model.CartItems.Any())
+                {
+                    <div class="row">
+                        <!-- Cart Summary -->
+                        <div class="col-md-6">
+                            <div class="checkout-summary">
+                                <h5><i class="fas fa-shopping-cart me-2"></i>ملخص الطلب</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm checkout-table">
+                                        <thead>
+                                            <tr>
+                                                <th>الكتاب</th>
+                                                <th>الكمية</th>
+                                                <th>السعر</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.CartItems)
+                                            {
+                                                <tr class="checkout-book-item">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            @if (!string.IsNullOrEmpty(item.BookImageUrl))
+                                                            {
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <img src="@item.BookImageUrl" 
+                                                                         class="img-thumbnail me-2 book-image-checkout" 
+                                                                         alt="@item.BookName"
+                                                                         style="width: 50px; height: 65px; object-fit: cover; cursor: pointer;" 
+                                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                                </a>
+                                                                <div class="book-placeholder me-2" style="width: 50px; height: 65px; background: rgba(255,255,255,0.2); border: 2px dashed rgba(255,255,255,0.5); display: none; text-align: center; line-height: 65px; font-size: 14px; border-radius: 8px;">
+                                                                    <i class="fas fa-book text-white"></i>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <div class="book-placeholder me-2" style="width: 50px; height: 65px; background: rgba(255,255,255,0.2); border: 2px dashed rgba(255,255,255,0.5); text-align: center; line-height: 65px; font-size: 14px; border-radius: 8px;">
+                                                                        <i class="fas fa-book text-white"></i>
+                                                                    </div>
+                                                                </a>
+                                                            }
+                                                            <div>
+                                                                <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
+                                                                    <small class="fw-bold" style="color: #333 !important;">@item.BookName</small>
+                                                                </a><br>
+                                                                <small style="color: #666 !important;">@item.BookAuthor</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color: #333 !important;">@item.Quantity</td>
+                                                    <td style="color: #333 !important;">@item.TotalPrice.ToString("C")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-success">
+                                                <th colspan="2" style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">المجموع الكلي:</th>
+                                                <th style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Form -->
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-credit-card me-2"></i>معلومات الدفع</h5>
+                            <form id="checkout-form">
+                                <div class="mb-3">
+                                    <label class="form-label">اسم حامل البطاقة</label>
+                                    <input type="text" id="cardname" class="form-control" placeholder="أدخل اسم حامل البطاقة" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" id="email" class="form-control" placeholder="example@mail.com" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">العنوان</label>
+                                    <textarea id="address" class="form-control" rows="3" placeholder="أدخل عنوان التسليم الكامل" required></textarea>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" id="checkout-button" class="btn btn-success btn-lg">
+                                        <i class="fas fa-lock me-1"></i>الدفع الآمن
+                                    </button>
+                                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-right me-1"></i>العودة للسلة
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">السلة فارغة</h5>
+                        <p class="text-muted">لا يمكن إتمام الطلب لأن السلة فارغة</p>
+                        <a href="@Url.Action("Index")" class="btn btn-primary">
+                            <i class="fas fa-shopping-cart me-1"></i>عرض السلة
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>معلومات مهمة</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-shipping-fast me-1"></i>مدة التسليم</h6>
+                    <p class="mb-0">3-5 أيام عمل</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-shield-alt me-1"></i>ضمان الجودة</h6>
+                    <p class="mb-0">جميع الكتب أصلية ومضمونة</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-undo me-1"></i>سياسة الإرجاع</h6>
+                    <p class="mb-0">إمكانية الإرجاع خلال 7 أيام</p>
+                </div>
+
+                <div class="alert alert-primary">
+                    <h6><i class="fas fa-lock me-1"></i>الدفع الآمن</h6>
+                    <p class="mb-0">جميع المعاملات محمية بتشفير SSL</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe("@Stripe.Value.PublishableKey");
+
+        document.getElementById("checkout-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const cardname = document.getElementById("cardname").value;
+            const email = document.getElementById("email").value;
+            const address = document.getElementById("address").value;
+
+            if (!cardname || !email || !address) {
+                alert("يرجى ملء جميع الحقول المطلوبة");
+                return;
+            }
+
+            // Show loading state
+            const button = document.getElementById("checkout-button");
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري المعالجة...';
+            button.disabled = true;
+
+            // Create checkout session with cart data
+            fetch("/Payment/CreateCheckoutSession", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cardname: cardname,
+                    email: email,
+                    address: address,
+                    orderItems: @Html.Raw(Json.Serialize(Model.CartItems))
+                })
+            })
+            .then(response => response.json())
+            .then(session => {
+                if (session.id) {
+                    stripe.redirectToCheckout({ sessionId: session.id });
+                } else {
+                    throw new Error('فشل في إنشاء جلسة الدفع');
+                }
+            })
+            .catch(err => {
+                console.error("Stripe Checkout Error:", err);
+                alert("حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى.");
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        });
+    </script>
+}

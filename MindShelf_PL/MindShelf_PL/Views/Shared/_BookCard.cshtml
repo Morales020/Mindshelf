@@ -1,0 +1,98 @@
+﻿@model MindShelf_BL.Dtos.BookDto.BookResponseDto
+
+<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+    <div class="book-card" data-book-id="@Model.BookId">
+        <div class="position-relative">
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/books/default-book.jpg" : Model.ImageUrl)"
+                 alt="@Model.Title" class="book-cover">
+
+            <!-- Book Status Badge -->
+            @if (Model.State == MindShelf_DAL.Models.BookState.Available)
+            {
+                <span class="badge bg-success position-absolute top-0 start-0 m-2">متاح</span>
+            }
+            else if (Model.State == MindShelf_DAL.Models.BookState.Borrowed)
+            {
+                <span class="badge bg-warning position-absolute top-0 start-0 m-2">مستعار</span>
+            }
+            else
+            {
+                <span class="badge bg-danger position-absolute top-0 start-0 m-2">غير متاح</span>
+            }
+
+            <!-- Favorite Button -->
+            <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
+                    onclick="MindShelf.addToFavorites(@Model.BookId)"
+                    title="إضافة للمفضلة">
+                <i class="far fa-heart"></i>
+            </button>
+        </div>
+
+        <div class="book-info">
+            <h5 class="book-title">
+                <a href="@Url.Action("Details", "Books", new { id = Model.BookId })"
+                   class="text-decoration-none">
+                    @Model.Title
+                </a>
+            </h5>
+
+            <p class="book-author">
+                <i class="fas fa-user-edit me-1"></i>
+                @Model.AuthorName
+            </p>
+
+            @if (Model.Rating > 0)
+            {
+                <div class="book-rating">
+                    <div class="rating-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Model.Rating)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else if (i - 0.5 <= Model.Rating)
+                            {
+                                <i class="fas fa-star-half-alt"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+                    <small class="text-muted">(@Model.Rating)</small>
+                </div>
+            }
+
+            @if (Model.Price > 0)
+            {
+                <div class="book-price">
+                    <strong class="text-primary">@Model.Price.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</strong>
+                </div>
+            }
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2">
+                @if (Model.State== MindShelf_DAL.Models.BookState.Available)
+                {
+                    <button class="btn btn-primary btn-sm"
+                            onclick="MindShelf.addToCart(@Model.BookId)">
+                        <i class="fas fa-cart-plus"></i> إضافة للسلة
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                        <i class="fas fa-clock"></i> غير متاح حالياً
+                    </button>
+                }
+
+                <a href="@Url.Action("Details", "Books", new { id = Model.BookId })"
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-eye"></i> التفاصيل
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

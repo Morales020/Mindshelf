@@ -1,0 +1,133 @@
+﻿@model MindShelf_BL.Dtos.BookDto.UpdateBookDto
+
+@{
+    ViewData["Title"] = "تعديل الكتاب";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-purple" style="font-size: 2rem; color: #6f42c1;">تعديل الكتاب</h2>
+    <div class="card p-4 bg-light shadow-lg" style="max-width: 600px; margin: 0 auto; border: 2px solid #6f42c1; border-radius: 15px;">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="BookId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Title -->
+            <div class="col-12">
+                <label asp-for="Title" class="form-label fw-bold text-dark">العنوان</label>
+                <input asp-for="Title" class="form-control border-purple" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="col-12">
+                <label asp-for="Description" class="form-label fw-bold text-dark">الوصف</label>
+                <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- Price -->
+            <div class="col-6">
+                <label asp-for="Price" class="form-label fw-bold text-dark">السعر (ر.س)</label>
+                <input asp-for="Price" class="form-control border-purple" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <!-- PublishedDate -->
+            <div class="col-6">
+                <label asp-for="PublishedDate" class="form-label fw-bold text-dark">تاريخ النشر</label>
+                <input asp-for="PublishedDate" type="date" class="form-control border-purple" />
+                <span asp-validation-for="PublishedDate" class="text-danger"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="col-6">
+                <label asp-for="CategoryId" class="form-label fw-bold text-dark">الفئة</label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control border-purple"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <!-- Author -->
+            <div class="col-6">
+                <label asp-for="AuthorId" class="form-label fw-bold text-dark">المؤلف</label>
+                <select asp-for="AuthorId" asp-items="ViewBag.Authors" class="form-control border-purple"></select>
+                <span asp-validation-for="AuthorId" class="text-danger"></span>
+            </div>
+
+            <!-- Image -->
+            <div class="col-12">
+                <label asp-for="ImageFile" class="form-label fw-bold text-dark">صورة الكتاب</label>
+                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control border-purple" onchange="previewImage(event)" />
+                <img id="preview" src="@Model.ImageUrl" alt="Preview" style="max-width: 150px; margin-top:10px;" />
+            </div>
+
+            <!-- State -->
+            <div class="col-12">
+                <label asp-for="State" class="form-label fw-bold text-dark">الحالة</label>
+                <select asp-for="State" asp-items="Html.GetEnumSelectList<MindShelf_DAL.Models.BookState>()" class="form-control border-purple"></select>
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-purple btn-lg px-4">تحديث <i class="bi bi-check-circle"></i></button>
+                <a asp-action="Index" class="btn btn-secondary btn-lg px-4 ms-2">رجوع <i class="bi bi-arrow-left"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .border-purple {
+        border: 2px solid #6f42c1 !important;
+        border-radius: 10px;
+    }
+
+    .btn-purple {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: white;
+        transition: all 0.3s;
+    }
+
+        .btn-purple:hover {
+            background-color: #5a2e9c;
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        transition: all 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+
+    .bi {
+        margin-left: 5px;
+    }
+
+    .card {
+        transition: all 0.3s;
+    }
+
+        .card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+</style>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('preview');
+            output.src = reader.result;
+            output.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>

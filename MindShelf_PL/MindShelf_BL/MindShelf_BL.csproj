@@ -5,9 +5,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
   </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\MindShelf_DAL\MindShelf_DAL.csproj" />
   </ItemGroup>
+		<ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+	<PackageReference Include="Stripe.net" Version="48.5.0" />
+			</ItemGroup>
 </Project>

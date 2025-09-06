@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الحدث - المكتبة الرقمية</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00a085);
+        }
+
+        .status-online {
+            background: linear-gradient(45deg, #00b894, #00a085);
+        }
+
+        .status-offline {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+        }
+
+        .event-info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <i class="fas fa-calendar-alt text-6xl mb-4 opacity-80"></i>
+                <h1 class="text-4xl font-bold mb-4">تفاصيل الحدث</h1>
+                <p class="text-xl opacity-90">اكتشف المزيد عن هذا الحدث المميز</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <div class="container mx-auto px-4 py-4">
+        <nav class="flex text-gray-500 text-sm">
+            <a href="#" class="hover:text-blue-600">الرئيسية</a>
+            <span class="mx-2">/</span>
+            <a href="#" class="hover:text-blue-600">الفعاليات</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-800">تفاصيل الحدث</span>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Event Details -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-shadow">
+                    <!-- Event Image -->
+                    <div class="h-64 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-8xl text-white opacity-50"></i>
+                    </div>
+
+                    <!-- Event Content -->
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-800 mb-2">ورشة عمل: مقدمة في الذكاء الاصطناعي</h1>
+                                <div class="flex items-center space-x-4 space-x-reverse text-gray-600">
+                                    <span class="status-online text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                        <i class="fas fa-wifi mr-1"></i>
+                                        أونلاين
+                                    </span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        نشط
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Admin Controls -->
+                            <div class="flex space-x-2 space-x-reverse">
+                                <button class="btn-primary text-white px-4 py-2 rounded-lg font-semibold">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    تعديل
+                                </button>
+                                <button class="btn-danger text-white px-4 py-2 rounded-lg font-semibold">
+                                    <i class="fas fa-trash mr-1"></i>
+                                    حذف
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Event Description -->
+                        <div class="prose max-w-none mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">وصف الحدث</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                انضم إلى ورشة عمل شاملة حول مقدمة في الذكاء الاصطناعي، حيث ستتعلم الأساسيات والمفاهيم الأساسية في هذا المجال المثير.
+                                ستغطي الورشة موضوعات متنوعة من تعلم الآلة إلى الشبكات العصبية والتطبيقات العملية.
+                            </p>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                سيقوم خبراء في المجال بتقديم المحتوى بطريقة تفاعلية ومبسطة، مما يجعل المعلومات في متناول الجميع سواء كانوا مبتدئين أو متقدمين.
+                            </p>
+
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4 mt-8">ما ستتعلمه</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>أساسيات الذكاء الاصطناعي ومجالات تطبيقه</li>
+                                <li>مقدمة في تعلم الآلة والخوارزميات الأساسية</li>
+                                <li>الشبكات العصبية وكيفية عملها</li>
+                                <li>أدوات وتقنيات التطوير الحديثة</li>
+                                <li>أمثلة عملية وتطبيقات واقعية</li>
+                            </ul>
+                        </div>
+
+                        <!-- Event Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                <i class="fas fa-users text-2xl text-blue-600 mb-2"></i>
+                                <div class="text-2xl font-bold text-blue-600">120</div>
+                                <div class="text-sm text-gray-600">مسجل</div>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg text-center">
+                                <i class="fas fa-clock text-2xl text-green-600 mb-2"></i>
+                                <div class="text-2xl font-bold text-green-600">3</div>
+                                <div class="text-sm text-gray-600">ساعات</div>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg text-center">
+                                <i class="fas fa-star text-2xl text-purple-600 mb-2"></i>
+                                <div class="text-2xl font-bold text-purple-600">4.8</div>
+                                <div class="text-sm text-gray-600">تقييم</div>
+                            </div>
+                        </div>
+
+                        <!-- Registration Button -->
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <button class="btn-success text-white px-8 py-3 rounded-lg font-bold text-lg transform transition-transform hover:scale-105">
+                                <i class="fas fa-calendar-plus mr-2"></i>
+                                سجل في الحدث الآن
+                            </button>
+                            <p class="text-sm text-gray-600 mt-2">التسجيل مجاني ومتاح للجميع</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Event Info Card -->
+                <div class="event-info-card rounded-lg shadow-lg p-6 mb-6 card-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                        معلومات الحدث
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar text-blue-600 w-5"></i>
+                            <div class="mr-3">
+                                <div class="font-semibold text-gray-800">تاريخ البداية</div>
+                                <div class="text-gray-600">15 ديسمبر 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-check text-green-600 w-5"></i>
+                            <div class="mr-3">
+                                <div class="font-semibold text-gray-800">تاريخ النهاية</div>
+                                <div class="text-gray-600">15 ديسمبر 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-orange-600 w-5"></i>
+                            <div class="mr-3">
+                                <div class="font-semibold text-gray-800">التوقيت</div>
+                                <div class="text-gray-600">6:00 م - 9:00 م</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-red-600 w-5"></i>
+                            <div class="mr-3">
+                                <div class="font-semibold text-gray-800">الموقع</div>
+                                <div class="text-gray-600">أونلاين - Zoom</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <i class="fas fa-tag text-purple-600 w-5"></i>
+                            <div class="mr-3">
+                                <div class="font-semibold text-gray-800">السعر</div>
+                                <div class="text-gray-600">مجاني</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Organizer Card -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6 card-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-user-tie text-blue-600 mr-2"></i>
+                        المنظم
+                    </h3>
+
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            م.أ
+                        </div>
+                        <div class="mr-4">
+                            <div class="font-semibold text-gray-800">محمد أحمد</div>
+                            <div class="text-sm text-gray-600">خبير ذكاء اصطناعي</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <button class="w-full bg-blue-50 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-envelope mr-2"></i>
+                            تواصل مع المنظم
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Similar Events -->
+                <div class="bg-white rounded-lg shadow-lg p-6 card-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
+                        أحداث مشابهة
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center text-white">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="mr-3 flex-1">
+                                <div class="font-semibold text-sm text-gray-800">ورشة البرمجة</div>
+                                <div class="text-xs text-gray-600">20 ديسمبر 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center text-white">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="mr-3 flex-1">
+                                <div class="font-semibold text-sm text-gray-800">مستقبل التقنية</div>
+                                <div class="text-xs text-gray-600">25 ديسمبر 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="mr-3 flex-1">
+                                <div class="font-semibold text-sm text-gray-800">ورشة الإبداع</div>
+                                <div class="text-xs text-gray-600">30 ديسمبر 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 space-x-reverse mb-4">
+                        <i class="fas fa-book-open text-2xl text-blue-400"></i>
+                        <h3 class="text-xl font-bold">المكتبة الرقمية</h3>
+                    </div>
+                    <p class="text-gray-400">بوابتك إلى عالم المعرفة والتعلم المستمر</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">روابط سريعة</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">الرئيسية</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">الكتب</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">الفعاليات</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">المؤلفين</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">الدعم</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">مركز المساعدة</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">اتصل بنا</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">الأسئلة الشائعة</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">الشروط والأحكام</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">تابعنا</h4>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 المكتبة الرقمية. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Registration functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerBtn = document.querySelector('.btn-success');
+
+            registerBtn.addEventListener('click', function() {
+                // Check if user is logged in (simulate)
+                const isLoggedIn = true; // This would come from your authentication system
+
+                if (isLoggedIn) {
+                    // Show success message
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check mr-2"></i>تم التسجيل بنجاح!';
+                    this.classList.remove('btn-success');
+                    this.classList.add('bg-green-600');
+                    this.disabled = true;
+
+                    // Reset after 3 seconds (for demo purposes)
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.add('btn-success');
+                        this.classList.remove('bg-green-600');
+                        this.disabled = false;
+                    }, 3000);
+                } else {
+                    // Redirect to login
+                    alert('يرجى تسجيل الدخول أولاً');
+                    // window.location.href = '/Account/Login';
+                }
+            });
+
+            // Admin controls
+            const editBtn = document.querySelector('.btn-primary');
+            const deleteBtn = document.querySelector('.btn-danger');
+
+            editBtn?.addEventListener('click', function() {
+                // Redirect to edit page
+                // window.location.href = '/Event/Edit/1';
+                console.log('Redirecting to edit page...');
+            });
+
+            deleteBtn?.addEventListener('click', function() {
+                if (confirm('هل أنت متأكد من حذف هذا الحدث؟')) {
+                    // Delete event
+                    console.log('Deleting event...');
+                    // This would typically be a POST request to delete the event
+                }
+            });
+        });
+    </script>
+</body>
+</html>

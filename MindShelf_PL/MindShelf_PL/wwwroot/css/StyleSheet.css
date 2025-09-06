@@ -179,6 +179,40 @@ header .container {
         color: #F5F5DC;
     }
 
+    /* Dark mode header */
+    .dark-mode header.header {
+        background: linear-gradient(135deg, #1A1A1A 0%, var(--dark-brown) 100%);
+    }
+
+    .dark-mode .nav a {
+        color: #F5F5DC !important;
+    }
+
+    .dark-mode .nav a:hover {
+        color: var(--beige) !important;
+    }
+
+    /* Dark mode login button */
+    .dark-mode .login-btn {
+        background: var(--dark-brown);
+        color: #F5F5DC;
+    }
+
+    .dark-mode .login-btn:hover {
+        background: var(--wood-brown);
+    }
+
+    /* Dark mode actions button */
+    .dark-mode .actions button:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Dark mode notification badge */
+    .dark-mode .notification-badge {
+        background: #DC2626;
+        color: white;
+    }
+
 @keyframes slideInRight {
     from {
         transform: translateX(100%);

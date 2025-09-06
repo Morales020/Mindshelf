@@ -1,7 +1,7 @@
 ﻿@model MindShelf_BL.Dtos.BookDto.CreateBookDto
 
 @{
-    ViewData["Title"] = "إضافة كتاب جديد";
+    ViewData["Titlle"] = "إضافة كتاب جديد";
 }
 
 <div class="container mt-5">
@@ -32,6 +32,11 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
+            <div class="col-6">
+                <label asp-for="Rating" class="form-label fw-bold text-dark"> التقيم</label>
+                <input asp-for="Rating" class="form-control border-purple" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
             <!-- PublishedDate -->
             <div class="col-6">
                 <label asp-for="PublishedDate" class="form-label fw-bold text-dark">تاريخ النشر</label>
@@ -53,13 +58,13 @@
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
             </div>
 
-            <!-- Image -->
+            
             <div class="col-12">
                 <label asp-for="ImageFile" class="form-label fw-bold text-dark">صورة الكتاب</label>
-                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control border-purple" onchange="previewImage(event)" />
+                <input asp-for="ImageFile" type="file" accept="image/book" class="form-control border-purple" onchange="previewImage(event)" />
                 <img id="preview" src="#" alt="Preview" style="max-width: 150px; display:none; margin-top:10px;" />
             </div>
-
+            
             <!-- State -->
             <div class="col-12">
                 <label asp-for="State" class="form-label fw-bold text-dark">الحالة</label>
@@ -129,3 +134,5 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>
+
+

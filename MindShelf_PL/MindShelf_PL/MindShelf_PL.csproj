@@ -6,10 +6,12 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MindShelf_BL\MindShelf_BL.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\Images\Book\" />

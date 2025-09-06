@@ -95,6 +95,10 @@ namespace MindShelf_BL.Services
         {
             try
             {
+                if(createBookDto== null)
+                {
+                    return new ResponseMVC<BookResponseDto>(400, "Unvalid payload ");
+                }
                 var book = new Book
                 {
                     Title = createBookDto.Title,
@@ -103,6 +107,7 @@ namespace MindShelf_BL.Services
                     AuthorId = createBookDto.AuthorId,
                     CategoryId = createBookDto.CategoryId,
                     Price = createBookDto.Price,
+                    Rating = createBookDto.Rating,
                     ImageUrl = createBookDto.ImageUrl,
                     State = createBookDto.State
                 };
@@ -117,6 +122,7 @@ namespace MindShelf_BL.Services
                     Description = book.Description,
                     PublishedDate = book.PublishedDate,
                     Price = book.Price,
+                    Rating = book.Rating,
                     State = book.State,
                     ImageUrl = book.ImageUrl
                 };
@@ -162,8 +168,9 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                ImageUrl = b.ImageUrl,
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }
@@ -176,6 +183,7 @@ namespace MindShelf_BL.Services
                 .Where(b => b.CategoryId == categoryId)
                 .Include(b => b.Author)
                 .Include(b => b.Category)
+
                 .ToListAsync();
 
             if (!books.Any())
@@ -187,8 +195,10 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                ImageUrl = b.ImageUrl,
+                
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }
@@ -239,8 +249,13 @@ namespace MindShelf_BL.Services
                 Title = b.Title,
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
-                CategoryName = b.Category?.Name ?? "Unknown"
-            });
+                CategoryName = b.Category?.Name ?? "Unknown",
+                Rating = b.Rating,
+                ImageUrl=b.ImageUrl,
+                 State = b.State,
+                 PublishedDate = b.PublishedDate
+
+            }).ToList();
 
             return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", dtos);
         }
@@ -274,6 +289,45 @@ namespace MindShelf_BL.Services
             };
 
             return new ResponseMVC<BookResponseDto>(200, "Book updated successfully", dto);
+        }
+        #endregion
+
+        #region GetTopRatedBooks
+        public async Task<ResponseMVC<IEnumerable<BookResponseDto>>> GetTopRatedBooksAsync(int count = 4)
+        {
+            var books = await _UnitOfWork.BookRepo
+                .Query()
+                .Include(b => b.Author)
+                .Include(b => b.Category)
+                .Include(b => b.Reviews)
+                .Where(b => b.Rating > 0) // Only books with ratings
+                .OrderByDescending(b => b.Rating)
+                .ThenByDescending(b => b.ReviewCount) // Secondary sort by review count
+                .Take(count)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (books.Count == 0)
+            {
+                return new ResponseMVC<IEnumerable<BookResponseDto>>(404, "No top-rated books found", null);
+            }
+
+            var bookDtos = books.Select(book => new BookResponseDto
+            {
+                BookId = book.BookId,
+                Title = book.Title,
+                Description = book.Description,
+                PublishedDate = book.PublishedDate,
+                ImageUrl = book.ImageUrl,
+                Price = book.Price,
+                Rating = book.Rating,
+                ReviewCount = book.ReviewCount,
+                State = book.State,
+                AuthorName = book.Author?.Name ?? "Unknown Author",
+                CategoryName = book.Category?.Name ?? "Unknown Category"
+            });
+
+            return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Top-rated books retrieved successfully", bookDtos);
         }
         #endregion
 

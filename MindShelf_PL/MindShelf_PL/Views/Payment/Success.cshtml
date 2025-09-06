@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "تم الدفع بنجاح";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                
+                <h3 class="text-success mb-3">تم الدفع بنجاح!</h3>
+                
+                <p class="text-muted mb-4">شكراً لك على شرائك. تم تأكيد طلبك وسيتم شحنه قريباً.</p>
+                
+                @if (!string.IsNullOrEmpty(ViewBag.SessionId))
+                {
+                    <p class="text-muted mb-4">
+                        <small>رقم الجلسة: @ViewBag.SessionId</small>
+                    </p>
+                }
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home me-2"></i>العودة للرئيسية
+                    </a>
+                    <a href="@Url.Action("Index", "Books")" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-book me-2"></i>تصفح المزيد من الكتب
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

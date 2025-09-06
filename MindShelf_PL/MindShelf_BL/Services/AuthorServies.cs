@@ -42,6 +42,7 @@ namespace MindShelf_BL.Services
 
             var AuthorDtos = Authors.Select(Author => new AuthorResponseDto
             {
+                AuthorId=Author.AuthorId,
                 Name = Author.Name,
                 Bio = Author.Bio,
                 DateOfBirth = Author.DateOfBirth,
@@ -52,10 +53,10 @@ namespace MindShelf_BL.Services
                     Description = book.Description,
                     PublishedDate = book.PublishedDate,
                     ImageUrl = book.ImageUrl,
-                    BookStatus = book.State,
+                    State = book.State,
                     ReviewCount = book.Reviews?.Count ?? 0,
                     Price = book.Price,
-                    AvrageRating = book.Rating 
+                    Rating = book.Rating 
                 }).ToList()
             }).ToList();
 
@@ -78,6 +79,7 @@ namespace MindShelf_BL.Services
 
             var authorDto = new AuthorResponseDto
             {
+                AuthorId =author.AuthorId,
                 Name = author.Name,
                 Bio = author.Bio,
                 DateOfBirth = author.DateOfBirth,
@@ -88,10 +90,10 @@ namespace MindShelf_BL.Services
                     Description = book.Description,
                     PublishedDate = book.PublishedDate,
                     ImageUrl = book.ImageUrl,
-                    BookStatus = book.State,
+                    State = book.State,
                     ReviewCount = book.Reviews?.Count ?? 0,
                     Price = book.Price,
-                    AvrageRating = book.Rating
+                    Rating = book.Rating
                 }).ToList()
             };
 
