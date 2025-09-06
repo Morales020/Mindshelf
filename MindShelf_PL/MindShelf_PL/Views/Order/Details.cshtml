@@ -4,12 +4,14 @@
 	ViewData["Title"] = "تفاصيل الطلب";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-	<h2><i class="fas fa-receipt me-2"></i> تفاصيل الطلب #@Model.Id.ToString().PadLeft(6, '0')</h2>
-	<span class="badge @GetStatusBadgeClass(Model.OrderStatus)">
+<div class="d-flex align-items-center mb-4 p-3">
+	<h2 class="mb-0"><i class="fas fa-receipt me-2"></i> تفاصيل الطلب #@Model.Id.ToString().PadLeft(6, '0')</h2>
+	<span class="badge @GetStatusBadgeClass(Model.OrderStatus) m-3 p-3 float-end">
 		@GetStatusText(Model.OrderStatus)
 	</span>
+
 </div>
+
 
 <div class="card mb-4">
 	<div class="card-body">
@@ -67,7 +69,7 @@
 </div>
 
 <!-- Actions -->
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between p-2">
 	@if (User.IsInRole("Admin"))
 	{
 		<a asp-action="Index" class="btn btn-secondary">
