@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: mindshelf-web
+    env: dotnet
+    plan: free
+    buildCommand: cd MindShelf_PL/MindShelf_PL && dotnet publish -c Release -o out
+    startCommand: cd MindShelf_PL/MindShelf_PL/out && dotnet MindShelf_PL.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:$PORT
+      - key: ConnectionStrings__Cs
+        fromDatabase:
+          name: mindshelf-db
+          property: connectionString
+      - key: Authentication__Google__ClientId
+        sync: false
+      - key: Authentication__Google__ClientSecret
+        sync: false
+      - key: Stripe__SecretKey
+        sync: false
+      - key: Stripe__PublishableKey
+        sync: false
+
+databases:
+  - name: mindshelf-db
+    plan: free
+    databaseName: mindshelf
+    user: mindshelf_user
