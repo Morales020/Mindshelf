@@ -51,6 +51,7 @@ namespace MindShelf_PL.Controllers
         // GET: /Event/Create - للأدمن فقط
         [Authorize(Roles = "Admin")]
         [HttpGet]
+        
         public IActionResult Create()
         {
             var response = ResponseMVC<CreateEventDto>.SuccessResponse(new CreateEventDto
