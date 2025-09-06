@@ -87,12 +87,15 @@
                                        class="btn btn-success">
                                         <i class="fas fa-plus"></i> أضف مراجعة
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-warning">
-                                        <i class="fas fa-edit"></i> تعديل الكتاب
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@Model.BookId" class="btn btn-danger">
-                                        <i class="fas fa-trash"></i> حذف الكتاب
-                                    </a>
+                                     @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@Model.BookId" class="btn btn-warning">
+                                            <i class="fas fa-edit"></i> تعديل الكتاب
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@Model.BookId" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> حذف الكتاب
+                                        </a>
+                                    }
                                     <a asp-action="Index" class="btn btn-secondary">
                                         <i class="fas fa-arrow-right"></i> العودة للكتب
                                     </a>
