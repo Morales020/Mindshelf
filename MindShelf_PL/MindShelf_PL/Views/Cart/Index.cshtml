@@ -1,0 +1,109 @@
+﻿@model MindShelf_BL.Dtos.CartsDto.CartResponseDto
+
+@{
+    ViewData["Title"] = "سلة التسوق";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-shopping-cart me-2"></i>سلة التسوق (@(Model.CartItems?.Count ?? 0) عناصر)</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.CartItems != null && Model.CartItems.Any())
+                {
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="cart-item border-bottom py-3" data-book-id="@item.bookId">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="@(string.IsNullOrEmpty(item.BookImageUrl) ? "/images/book-placeholder.jpg" : item.BookImageUrl)"
+                                         class="img-fluid rounded" alt="@item.BookName" style="height: 80px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="mb-1">@item.BookName</h6>
+                                    <p class="text-muted mb-0">@item.BookAuthor</p>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-outline-secondary quantity-btn" type="button"
+                                                onclick="updateQuantity(@item.bookId, @(item.Quantity - 1))">
+                                            -
+                                        </button>
+                                        <input type="number" class="form-control text-center quantity-input"
+                                               value="@item.Quantity" min="1"
+                                               onchange="updateQuantity(@item.bookId, this.value)">
+                                        <button class="btn btn-outline-secondary quantity-btn" type="button"
+                                                onclick="updateQuantity(@item.bookId, @(item.Quantity + 1))">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <span class="fw-bold item-total">@item.bookId.ToString("C")</span>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-outline-danger btn-sm"
+                                            onclick="removeFromCart(@item.bookId, this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">سلة التسوق فارغة</h5>
+                        <p class="text-muted">ابدأ بإضافة بعض الكتب إلى سلتك</p>
+                        <a href="@Url.Action("Index", "Books")" class="btn btn-primary">
+                            <i class="fas fa-book me-1"></i>تصفح الكتب
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (Model.CartItems != null && Model.CartItems.Any())
+    {
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-receipt me-2"></i>ملخص الطلب</h5>
+                </div>
+
+                    <div class="d-grid mt-4">
+                        <a href="@Url.Action("Checkout")" class="btn btn-primary btn-lg">
+                            <i class="fas fa-credit-card me-1"></i>إتمام الشراء
+                        </a>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <a href="@Url.Action("Index", "Books")" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-right me-1"></i>متابعة التسوق
+                        </a>
+                    </div>
+                </div>
+            </div>
+       
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function updateQuantity(bookId, quantity) {
+            if (quantity < 1) return;
+
+            // Find the input and update its value
+            const input = document.querySelector(`[data-book-id="${bookId}"] .quantity-input`);
+            if (input) {
+                input.value = quantity;
+                MindShelf.updateCartQuantity(bookId, quantity, input);
+            }
+        }
+    </script>
+}

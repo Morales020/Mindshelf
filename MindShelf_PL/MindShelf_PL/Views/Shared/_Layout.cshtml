@@ -23,6 +23,9 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/digital-library.css" asp-append-version="true" />
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/site-toast.js"></script>
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="icon" href="~/Images/Small_logo.png" type="image/x-icon">
@@ -133,7 +136,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Cart" asp-action="GetCartByUserName"
+                                        <a class="dropdown-item" asp-controller="Cart" asp-action="Index"
                                            asp-route-userName="@User.Identity.Name">
                                             <i class="fas fa-shopping-cart"></i> السلة
                                         </a>

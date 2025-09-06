@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MindShelf_BL.Services;
 using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Dtos.CategoryDto;
+using MindShelf_DAL.Models;
 
 namespace MindShelf_MVC.Controllers
 {
@@ -59,14 +60,39 @@ namespace MindShelf_MVC.Controllers
             });
         }
 
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 10)
         {
+         
             var response = await _bookService.GetAllBook(page, pageSize);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-            return View(response.Data);
+            var books = response.Data.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                books = books.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            }
+
+          
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            ViewBag.Categories = categoriesResponse.StatusCode == 200 && categoriesResponse.Data != null
+                ? categoriesResponse.Data
+                : new List<CategoryResponseDto>();
+
+            var authorsResponse = await _authorService.GetAllAuthor(1, 100);
+            ViewBag.Authors = authorsResponse.StatusCode == 200 && authorsResponse.Data != null
+                ? authorsResponse.Data
+                : new List<AuthorResponseDto>();
+
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SelectedAuthorId = authorId;
+
+            return View(books.ToList());
         }
+
 
         public async Task<IActionResult> Details(int id)
         {
@@ -270,7 +296,7 @@ namespace MindShelf_MVC.Controllers
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-             return PartialView("_Search",response.Data);
+            return View("Index",response.Data);
         }
 
         public async Task<IActionResult> ByCategory(int categoryId)
