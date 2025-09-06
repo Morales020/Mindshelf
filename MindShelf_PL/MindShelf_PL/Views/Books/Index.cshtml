@@ -1,4 +1,5 @@
 ﻿@model List<BookResponseDto>
+@Html.AntiForgeryToken()
 
 @{
     ViewData["Title"] = "الكتب";
@@ -112,10 +113,10 @@
                                      onclick="viewBookDetails(@(book.BookId ))"
                                      onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
 
-                                <button type="button",
+                                <button type="button"
                                         class="btn btn-outline-danger btn-sm position-absolute"
                                         style="top: 10px; left: 10px;"
-                                        onclick="addToFavourite(@(book.BookId ), this)"
+                                        onclick="addToFavourite(@(book.BookId), this)"
                                         title="إضافة للمفضلة">
                                     <i class="far fa-heart"></i>
                                 </button>
@@ -293,19 +294,58 @@
             alert("وظيفة المفضلة هنا يمكن إضافتها لاحقاً");
         }
 
-         function addToFavourite(bookId, btn) {
+        function addToFavourite(bookId, btn) {
+            // Check if user is logged in
+            @if (!User.Identity?.IsAuthenticated == true)
+            {
+                <text>
+                alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                window.location.href = '@Url.Action("Login", "Account")';
+                return;
+                </text>
+            }
+
             var token = $('input[name="__RequestVerificationToken"]').val();
+            
+            // Disable button to prevent multiple clicks
+            $(btn).prop('disabled', true);
+            
+            // Show loading state
+            var originalIcon = $(btn).find('i').attr('class');
+            $(btn).find('i').removeClass().addClass('fas fa-spinner fa-spin');
 
             $.ajax({
                 url: '@Url.Action("AddToFavourite", "FavouriteBook")',
                 type: 'POST',
-                data: { bookId: bookId, __RequestVerificationToken: token },
-                success: function(response) {
-                    $(btn).find('i').removeClass('far').addClass('fas'); // قلب ممتلئ
-                    alert("تمت الإضافة للمفضلة!");
+                data: { 
+                    bookId: bookId, 
+                    __RequestVerificationToken: token 
                 },
-                error: function() {
-                    alert("حدث خطأ أثناء الإضافة للمفضلة");
+                success: function(response) {
+                    // Change icon to filled heart
+                    $(btn).find('i').removeClass().addClass('fas fa-heart');
+                    $(btn).removeClass('btn-outline-danger').addClass('btn-danger');
+                    
+                    // Show success message
+                    alert('تمت الإضافة للمفضلة بنجاح!');
+                    
+                    // Update button title
+                    $(btn).attr('title', 'في المفضلة');
+                },
+                error: function(xhr, status, error) {
+                    // Restore original state
+                    $(btn).find('i').removeClass().addClass(originalIcon);
+                    $(btn).prop('disabled', false);
+                    
+                    // Show error message
+                    if (xhr.status === 401) {
+                        alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        }, 2000);
+                    } else {
+                        alert('حدث خطأ أثناء الإضافة للمفضلة');
+                    }
                 }
             });
         }
