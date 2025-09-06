@@ -37,7 +37,7 @@ namespace MindShelf_MVC.Controllers
             if (imageFile == null || imageFile.Length == 0)
                 return null;
 
-            var uploadPath = Path.Combine(_env.WebRootPath, "images/books");
+            var uploadPath = Path.Combine(_env.WebRootPath, "Images/books");
             Directory.CreateDirectory(uploadPath);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
@@ -48,7 +48,7 @@ namespace MindShelf_MVC.Controllers
                 await imageFile.CopyToAsync(stream);
             }
 
-            return "/images/books/" + fileName;
+            return "/Images/books/" + fileName;
         }
 
         private IActionResult ErrorResult(string message)
