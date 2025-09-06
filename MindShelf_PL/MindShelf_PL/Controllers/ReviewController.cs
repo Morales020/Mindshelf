@@ -3,6 +3,7 @@ using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Dtos.ReviewDto;
 using MindShelf_PL.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MindShelf_PL.Controllers
 {
@@ -64,6 +65,7 @@ namespace MindShelf_PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create(CreateReviewDto model)
         {
             if (!ModelState.IsValid)
@@ -129,6 +131,7 @@ namespace MindShelf_PL.Controllers
 
         #region DeleteReview
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _reviewService.GetReviewById(id);
@@ -141,6 +144,7 @@ namespace MindShelf_PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int reviewId, string userName)
         {
             var model = new DeleteReviewDto

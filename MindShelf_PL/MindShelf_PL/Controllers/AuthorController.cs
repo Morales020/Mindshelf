@@ -2,6 +2,7 @@
 using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Helper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MindShelf_MVC.Controllers
 {
@@ -35,6 +36,7 @@ namespace MindShelf_MVC.Controllers
         }
 
         // GET: /Author/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -43,6 +45,7 @@ namespace MindShelf_MVC.Controllers
         // POST: /Author/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create(AuthorCreateDto authorDto)
         {
             if (!ModelState.IsValid)
@@ -56,6 +59,7 @@ namespace MindShelf_MVC.Controllers
         }
 
         // GET: /Author/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var result = await _authorService.GetAuthorById(id);
@@ -77,6 +81,7 @@ namespace MindShelf_MVC.Controllers
         // POST: /Author/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, AuthorUpdateDto authorDto)
         {
             if (!ModelState.IsValid)
@@ -90,6 +95,7 @@ namespace MindShelf_MVC.Controllers
         }
 
         // GET: /Author/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _authorService.GetAuthorById(id);
@@ -102,6 +108,7 @@ namespace MindShelf_MVC.Controllers
         // POST: /Author/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _authorService.DeleteAuthor(id);
