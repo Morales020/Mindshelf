@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_DAL.Models;
+using MindShelf_BL.Dtos.CartsDto;
 
 namespace MindShelf_PL.Controllers
 {
@@ -21,15 +22,34 @@ namespace MindShelf_PL.Controllers
 
         [HttpPost]
         [Route("Payment/CreateCheckoutSession")]
-        public async Task<JsonResult> CreateCheckoutSession()
+        public async Task<JsonResult> CreateCheckoutSession([FromBody] CheckoutRequestDto request)
         {
-            
-            decimal amount = 200;
-            int orderId = 123;
+            try
+            {
+                // Calculate total from cart items
+                decimal amount = 0;
+                if (request.OrderItems != null && request.OrderItems.Any())
+                {
+                    // Fix: Use TotalPrice instead of BookId * Quantity
+                    amount = request.OrderItems.Sum(x => x.TotalPrice);
+                }
+                else
+                {
+                    // Fallback to default amount if no cart items
+                    amount = 200;
+                }
 
-            var sessionId = await _paymentService.CreateCheckoutSessionAsync(amount, orderId);
+                // Generate order ID (you might want to save this to database)
+                int orderId = new Random().Next(1000, 9999);
 
-            return Json(new { id = sessionId });
+                var sessionId = await _paymentService.CreateCheckoutSessionAsync(amount, orderId);
+
+                return Json(new { id = sessionId });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
 
         public IActionResult Success(string session_id)

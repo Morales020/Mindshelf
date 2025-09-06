@@ -6,6 +6,7 @@ using MindShelf_BL.Interfaces.IServices;
 using MindShelf_DAL.Models;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MindShelf_PL.Controllers
 {
@@ -100,6 +101,42 @@ namespace MindShelf_PL.Controllers
         {
             dto.UserName = User.Identity.Name;
             await _cartServices.CheckoutAsync(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            var cart = await _cartServices.GetCartByUserName(User.Identity.Name);
+            if (cart.Data == null || !cart.Data.CartItems.Any())
+            {
+                TempData["Error"] = "السلة فارغة، لا يمكن إتمام الطلب";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return View(cart.Data);
+        }
+
+        [HttpGet]
+        public IActionResult AddToCartSuccess()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Manage()
+        {
+            var cart = await _cartServices.GetCartByUserName(User.Identity.Name);
+            return View(cart.Data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearCart()
+        {
+            // This would require implementing a ClearCart method in the service
+            // For now, redirect to index
+            TempData["Info"] = "سيتم تنفيذ هذه الميزة قريباً";
             return RedirectToAction(nameof(Index));
         }
       

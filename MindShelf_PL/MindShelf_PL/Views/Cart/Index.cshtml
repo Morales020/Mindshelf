@@ -15,7 +15,7 @@
                 {
                     @foreach (var item in Model.CartItems)
                     {
-                        <div class="cart-item border-bottom py-3" data-book-id="@item.bookId">
+                        <div class="cart-item border-bottom py-3" data-book-id="@item.BookId">
                             <div class="row align-items-center">
                                 <div class="col-md-2">
                                     <img src="@(string.IsNullOrEmpty(item.BookImageUrl) ? "/images/book-placeholder.jpg" : item.BookImageUrl)"
@@ -28,24 +28,24 @@
                                 <div class="col-md-2 text-center">
                                     <div class="input-group input-group-sm">
                                         <button class="btn btn-outline-secondary quantity-btn" type="button"
-                                                onclick="updateQuantity(@item.bookId, @(item.Quantity - 1))">
+                                                onclick="updateQuantity(@item.BookId, @(item.Quantity - 1))">
                                             -
                                         </button>
                                         <input type="number" class="form-control text-center quantity-input"
                                                value="@item.Quantity" min="1"
-                                               onchange="updateQuantity(@item.bookId, this.value)">
+                                               onchange="updateQuantity(@item.BookId, this.value)">
                                         <button class="btn btn-outline-secondary quantity-btn" type="button"
-                                                onclick="updateQuantity(@item.bookId, @(item.Quantity + 1))">
+                                                onclick="updateQuantity(@item.BookId, @(item.Quantity + 1))">
                                             +
                                         </button>
                                     </div>
                                 </div>
                                 <div class="col-md-2 text-center">
-                                    <span class="fw-bold item-total">@item.bookId.ToString("C")</span>
+                                    <span class="fw-bold item-total">@item.TotalPrice.ToString("C")</span>
                                 </div>
                                 <div class="col-md-2 text-end">
                                     <button class="btn btn-outline-danger btn-sm"
-                                            onclick="removeFromCart(@item.bookId, this)">
+                                            onclick="removeFromCart(@item.BookId, this)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>

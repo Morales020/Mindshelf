@@ -1,5 +1,6 @@
 using MindShelf_DAL.Models;
 using System.ComponentModel.DataAnnotations;
+
 namespace MindShelf_BL.Dtos.CartsDto;
 
 public class CheckoutRequestDto
@@ -12,4 +13,9 @@ public class CheckoutRequestDto
 
     [Required(ErrorMessage = "PaymentMethod is required.")]
     public PaymentMethod PaymentMethod { get; set; }
+
+    // Additional properties for Stripe integration
+    public string Cardname { get; set; }
+    public string Email { get; set; }
+    public List<CartItemResponseDto> OrderItems { get; set; }
 }

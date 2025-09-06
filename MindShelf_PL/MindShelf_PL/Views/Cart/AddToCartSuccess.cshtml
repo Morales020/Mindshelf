@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "تم إضافة الكتاب للسلة";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                
+                <h3 class="text-success mb-3">تم إضافة الكتاب إلى السلة بنجاح!</h3>
+                
+                <p class="text-muted mb-4">يمكنك الآن متابعة التسوق أو الانتقال إلى السلة لإتمام الطلب</p>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="@Url.Action("Index")" class="btn btn-primary btn-lg me-md-2">
+                        <i class="fas fa-shopping-cart me-1"></i>عرض السلة
+                    </a>
+                    <a href="@Url.Action("Index", "Books")" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-book me-1"></i>متابعة التسوق
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

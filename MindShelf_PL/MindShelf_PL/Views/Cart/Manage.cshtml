@@ -1,0 +1,153 @@
+@model MindShelf_BL.Dtos.CartsDto.CartResponseDto
+
+@{
+    ViewData["Title"] = "إدارة السلة";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4><i class="fas fa-cogs me-2"></i>إدارة السلة</h4>
+                <a href="@Url.Action("Index")" class="btn btn-outline-primary">
+                    <i class="fas fa-eye me-1"></i>عرض السلة
+                </a>
+            </div>
+            <div class="card-body">
+                @if (Model.CartItems != null && Model.CartItems.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>اسم الكتاب</th>
+                                    <th>المؤلف</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>المجموع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <tr data-book-id="@item.BookId">
+                                        <td>
+                                            <img src="@(string.IsNullOrEmpty(item.BookImageUrl) ? "/images/book-placeholder.jpg" : item.BookImageUrl)"
+                                                 class="img-thumbnail" alt="@item.BookName" style="width: 60px; height: 80px; object-fit: cover;">
+                                        </td>
+                                        <td>
+                                            <strong>@item.BookName</strong>
+                                        </td>
+                                        <td>@item.BookAuthor</td>
+                                        <td>
+                                            <div class="input-group input-group-sm" style="width: 120px;">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        onclick="updateQuantity(@item.BookId, @(item.Quantity - 1))">
+                                                    -
+                                                </button>
+                                                <input type="number" class="form-control text-center quantity-input"
+                                                       value="@item.Quantity" min="1" max="99"
+                                                       onchange="updateQuantity(@item.BookId, this.value)">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        onclick="updateQuantity(@item.BookId, @(item.Quantity + 1))">
+                                                    +
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>@item.TotalPrice.ToString("C")</td>
+                                        <td class="fw-bold item-total">@((item.TotalPrice).ToString("C"))</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-outline-danger btn-sm" 
+                                                        onclick="removeFromCart(@item.BookId, this)"
+                                                        title="حذف من السلة">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info btn-sm" 
+                                                        onclick="viewBookDetails(@item.BookId)"
+                                                        title="عرض تفاصيل الكتاب">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="d-grid gap-2 d-md-flex">
+                                <button class="btn btn-warning" onclick="clearCart()">
+                                    <i class="fas fa-trash-alt me-1"></i>مسح السلة بالكامل
+                                </button>
+                                <a href="@Url.Action("Index", "Books")" class="btn btn-outline-primary">
+                                    <i class="fas fa-plus me-1"></i>إضافة المزيد
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">ملخص السلة</h5>
+                                    <p class="card-text">
+                                        <strong>عدد العناصر:</strong> @Model.CartItems.Count<br>
+                                        <strong>المجموع الكلي:</strong> <span class="text-success fs-5">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</span>
+                                    </p>
+                                    <a href="@Url.Action("Checkout")" class="btn btn-success btn-lg w-100">
+                                        <i class="fas fa-credit-card me-1"></i>إتمام الطلب
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">السلة فارغة</h5>
+                        <p class="text-muted">لم يتم العثور على أي عناصر في السلة</p>
+                        <a href="@Url.Action("Index", "Books")" class="btn btn-primary">
+                            <i class="fas fa-book me-1"></i>تصفح الكتب
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateQuantity(bookId, quantity) {
+            if (quantity < 1) return;
+
+            const input = document.querySelector(`[data-book-id="${bookId}"] .quantity-input`);
+            if (input) {
+                input.value = quantity;
+                MindShelf.updateCartQuantity(bookId, quantity, input);
+            }
+        }
+
+        function removeFromCart(bookId, button) {
+            if (confirm('هل أنت متأكد من حذف هذا العنصر من السلة؟')) {
+                MindShelf.removeFromCart(bookId, button);
+            }
+        }
+
+        function viewBookDetails(bookId) {
+            window.location.href = '@Url.Action("Details", "Books")' + '/' + bookId;
+        }
+
+        function clearCart() {
+            if (confirm('هل أنت متأكد من مسح السلة بالكامل؟')) {
+                // Implement clear cart functionality
+                alert('سيتم تنفيذ هذه الميزة قريباً');
+            }
+        }
+    </script>
+}
