@@ -355,113 +355,68 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card author-card h-100">
-                    <div class="card-body text-center">
-                        <div class="author-image mb-3">
-                            <img src="/images/authors/sample1.jpg" alt="مؤلف مشهور"
-                                 class="rounded-circle" width="80" height="80"
-                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
-                        </div>
-                        <h5 class="author-name text-primary mb-2">نجيب محفوظ</h5>
-                        <p class="author-bio text-muted mb-3">
-                            أديب مصري راحل، حاز على جائزة نوبل للآداب عام 1988
-                        </p>
-                        <div class="author-stats mb-3">
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <strong class="text-brown">34</strong>
-                                    <br><small class="text-muted">كتاب</small>
+            @if (ViewBag.PopularAuthors != null && ((IEnumerable<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>)ViewBag.PopularAuthors).Any())
+            {
+                @foreach (var author in (IEnumerable<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>)ViewBag.PopularAuthors)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card author-card h-100">
+                            <div class="card-body text-center">
+                                <div class="author-image mb-3">
+                                    @if (!string.IsNullOrEmpty(author.ImageUrl) && (author.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        <img src="@author.ImageUrl" alt="@author.Name"
+                                             class="rounded-circle" width="80" height="80"
+                                             style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                                    }
+                                    else
+                                    {
+                                        <img src="/Images/anon-icon.jpg" alt="@author.Name"
+                                             class="rounded-circle" width="80" height="80"
+                                             style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                                    }
                                 </div>
-                                <div class="col-6">
-                                    <strong class="text-brown">1,250</strong>
-                                    <br><small class="text-muted">مراجعة</small>
+                                <h5 class="author-name text-primary mb-2">@author.Name</h5>
+                                @if (!string.IsNullOrEmpty(author.Bio))
+                                {
+                                    <p class="author-bio text-muted mb-3">
+                                        @(author.Bio.Length > 100 ? author.Bio.Substring(0, 100) + "..." : author.Bio)
+                                    </p>
+                                }
+                                <div class="author-stats mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <strong class="text-brown">@author.bookcount</strong>
+                                            <br><small class="text-muted">كتاب</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong class="text-brown">@author.ReviewsCount</strong>
+                                            <br><small class="text-muted">مراجعة</small>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="author-actions">
-                            <a href="#" class="btn btn-primary btn-sm">
-                                <i class="fas fa-user"></i> الملف الشخصي
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-books"></i> كتب المؤلف
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card author-card h-100">
-                    <div class="card-body text-center">
-                        <div class="author-image mb-3">
-                            <img src="/images/authors/sample2.jpg" alt="مؤلف مشهور"
-                                 class="rounded-circle" width="80" height="80"
-                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
-                        </div>
-                        <h5 class="author-name text-primary mb-2">أحلام مستغانمي</h5>
-                        <p class="author-bio text-muted mb-3">
-                            روائية جزائرية، من أشهر الكاتبات العربيات المعاصرات
-                        </p>
-                        <div class="author-stats mb-3">
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <strong class="text-brown">12</strong>
-                                    <br><small class="text-muted">كتاب</small>
-                                </div>
-                                <div class="col-6">
-                                    <strong class="text-brown">890</strong>
-                                    <br><small class="text-muted">مراجعة</small>
+                                <div class="author-actions">
+                                    <a href="@Url.Action("Details", "Author", new { id = author.AuthorId })" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-user"></i> الملف الشخصي
+                                    </a>
+                                    <a href="@Url.Action("ByAuthor", "Books", new { authorId = author.AuthorId })" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-books"></i> كتب المؤلف
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="author-actions">
-                            <a href="#" class="btn btn-primary btn-sm">
-                                <i class="fas fa-user"></i> الملف الشخصي
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-books"></i> كتب المؤلف
-                            </a>
-                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        لا توجد مؤلفين متاحين حالياً
                     </div>
                 </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card author-card h-100">
-                    <div class="card-body text-center">
-                        <div class="author-image mb-3">
-                            <img src="/images/authors/sample3.jpg" alt="مؤلف مشهور"
-                                 class="rounded-circle" width="80" height="80"
-                                 style="object-fit: cover; border: 3px solid var(--primary-blue);">
-                        </div>
-                        <h5 class="author-name text-primary mb-2">عباس العقاد</h5>
-                        <p class="author-bio text-muted mb-3">
-                            أديب وصحفي وشاعر مصري، من أبرز أدباء العصر الحديث
-                        </p>
-                        <div class="author-stats mb-3">
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <strong class="text-brown">28</strong>
-                                    <br><small class="text-muted">كتاب</small>
-                                </div>
-                                <div class="col-6">
-                                    <strong class="text-brown">675</strong>
-                                    <br><small class="text-muted">مراجعة</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="author-actions">
-                            <a href="#" class="btn btn-primary btn-sm">
-                                <i class="fas fa-user"></i> الملف الشخصي
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-books"></i> كتب المؤلف
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
 
         <div class="text-center mt-4">

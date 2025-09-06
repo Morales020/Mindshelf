@@ -152,5 +152,50 @@ namespace MindShelf_BL.Services
         }
         #endregion
 
+        #region GetPopularAuthors
+        public async Task<ResponseMVC<IEnumerable<AuthorResponseDto>>> GetPopularAuthorsAsync(int count = 3)
+        {
+            var authors = await _UnitOfWork.AuthorRepo
+                .Query()
+                .Include(a => a.Books)
+                .ThenInclude(b => b.Reviews)
+                .Where(a => a.Books.Any()) // Only authors with books
+                .OrderByDescending(a => a.Books.Count) // Order by number of books
+                .ThenByDescending(a => a.Books.Sum(b => b.ReviewCount)) // Then by total reviews
+                .Take(count)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (authors.Count == 0)
+            {
+                return new ResponseMVC<IEnumerable<AuthorResponseDto>>(404, "No popular authors found", null);
+            }
+
+            var authorDtos = authors.Select(author => new AuthorResponseDto
+            {
+                AuthorId = author.AuthorId,
+                Name = author.Name,
+                Bio = author.Bio,
+                DateOfBirth = author.DateOfBirth,
+                ImageUrl = author.ImageUrl,
+                bookcount = author.Books.Count,
+                ReviewsCount = author.Books.Sum(b => b.ReviewCount),
+                BooksResponseDto = author.Books.Select(book => new BookResponseDto
+                {
+                    Title = book.Title,
+                    Description = book.Description,
+                    PublishedDate = book.PublishedDate,
+                    ImageUrl = book.ImageUrl,
+                    State = book.State,
+                    ReviewCount = book.Reviews?.Count ?? 0,
+                    Price = book.Price,
+                    Rating = book.Rating
+                }).ToList()
+            }).ToList();
+
+            return new ResponseMVC<IEnumerable<AuthorResponseDto>>(200, "Popular authors retrieved successfully", authorDtos);
+        }
+        #endregion
+
     }
 }
