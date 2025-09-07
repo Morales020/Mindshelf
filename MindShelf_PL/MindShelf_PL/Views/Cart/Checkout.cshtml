@@ -149,21 +149,21 @@
                                                             }
                                                             <div>
                                                                 <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
-                                                                    <small class="fw-bold" style="color: #333 !important;">@item.BookName</small>
+                                                                    <small class="fw-bold checkout-book-name">@item.BookName</small>
                                                                 </a><br>
-                                                                <small style="color: #666 !important;">@item.BookAuthor</small>
+                                                                <small class="checkout-book-author">@item.BookAuthor</small>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td style="color: #333 !important;">@item.Quantity</td>
-                                                    <td style="color: #333 !important;">@item.TotalPrice.ToString("C")</td>
+                                                    <td class="checkout-quantity">@item.Quantity</td>
+                                                    <td class="checkout-price">@item.TotalPrice.ToString("C")</td>
                                                 </tr>
                                             }
                                         </tbody>
                                         <tfoot>
                                             <tr class="table-success">
-                                                <th colspan="2" style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">المجموع الكلي:</th>
-                                                <th style="color: #333 !important; background-color: rgba(255,255,255,0.8) !important;">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
+                                                <th colspan="2" class="checkout-total-label">المجموع الكلي:</th>
+                                                <th class="checkout-total-value">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</th>
                                             </tr>
                                         </tfoot>
                                     </table>

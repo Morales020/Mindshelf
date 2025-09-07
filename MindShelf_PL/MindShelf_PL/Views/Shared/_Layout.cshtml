@@ -141,11 +141,20 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Order" asp-action="Index"
-                                           asp-route-userName="@User.Identity.Name">
-                                            <i class="fas fa-shopping-bag"></i> طلباتي
-                                        </a>
+	                                    @if (User.IsInRole("Admin"))
+	                                    {
+		                                    <a class="dropdown-item" asp-controller="Order" asp-action="Index">
+			                                    <i class="fas fa-shopping-bag"></i> الطلبات
+		                                    </a>
+	                                    }
+	                                    else if (User.Identity.IsAuthenticated)
+	                                    {
+		                                    <a class="dropdown-item" asp-controller="Order" asp-action="UserOrders" asp-route-userName="@User.Identity.Name">
+			                                    <i class="fas fa-shopping-bag"></i> طلباتي
+		                                    </a>
+	                                    }
                                     </li>
+
                                     <li>
                                         <a class="dropdown-item" asp-controller="Cart" asp-action="Index"
                                            asp-route-userName="@User.Identity.Name">
