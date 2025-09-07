@@ -5,6 +5,23 @@
 
 <style>
     /* Event Details Page Specific Styles */
+    
+    /* Remove all underlines from buttons on this page */
+    .btn-register, .btn-admin, .btn-edit, .btn-delete,
+    button.btn-register, a.btn-register, input.btn-register,
+    button.btn-admin, a.btn-admin, input.btn-admin,
+    button.btn-edit, a.btn-edit, input.btn-edit,
+    button.btn-delete, a.btn-delete, input.btn-delete {
+        text-decoration: none !important;
+    }
+    
+    .btn-register:hover, .btn-admin:hover, .btn-edit:hover, .btn-delete:hover,
+    button.btn-register:hover, a.btn-register:hover, input.btn-register:hover,
+    button.btn-admin:hover, a.btn-admin:hover, input.btn-admin:hover,
+    button.btn-edit:hover, a.btn-edit:hover, input.btn-edit:hover,
+    button.btn-delete:hover, a.btn-delete:hover, input.btn-delete:hover {
+        text-decoration: none !important;
+    }
     .event-details-hero {
         background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
         color: white;
@@ -180,7 +197,7 @@
 
     .btn-register {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: white;
+        color: white !important;
         padding: 1rem 2rem;
         border-radius: 12px;
         font-weight: 600;
@@ -190,11 +207,14 @@
         display: inline-flex;
         align-items: center;
         gap: 0.75rem;
+        text-decoration: none !important;
     }
 
     .btn-register:hover {
         transform: translateY(-2px);
         box-shadow: var(--shadow-md);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     .btn-register:disabled {
@@ -322,26 +342,31 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        text-decoration: none !important;
     }
 
     .btn-edit {
         background: var(--primary-color);
-        color: white;
+        color: white !important;
     }
 
     .btn-edit:hover {
         background: var(--primary-dark);
         transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     .btn-delete {
         background: #ef4444;
-        color: white;
+        color: white !important;
     }
 
     .btn-delete:hover {
         background: #dc2626;
         transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     /* Dark Mode Styles */
@@ -528,9 +553,15 @@
                     <div class="registration-section">
                         @if (Model.IsActive)
                         {
-                            <button class="btn-register" id="registerBtn">
-                                <i class="fas fa-calendar-plus"></i>
-                                سجل في الحدث الآن
+                            var userId = ViewBag?.CurrentUserId as string;
+                            var isRegistered = userId != null && Model.Registrations.Any(r => r.UserId == userId);
+                            <form method="post" asp-controller="Event" asp-action="RegisterForEvent" class="d-inline" id="detailsRegisterForm">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="EventId" value="@Model.EventId" />
+                            </form>
+                            <button class="btn-register" id="registerBtn" data-registered="@isRegistered.ToString().ToLower()">
+                                <i class="fas @(isRegistered ? "fa-times" : "fa-calendar-plus")"></i>
+                                @(isRegistered ? "إلغاء التسجيل" : "سجل في الحدث الآن")
                             </button>
                             <p class="text-muted mt-3 mb-0">التسجيل مجاني ومتاح للجميع</p>
                         }
@@ -605,35 +636,36 @@
                     أحداث مشابهة
                 </h3>
 
-                <div class="similar-event">
-                    <div class="similar-event-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                        <i class="fas fa-code"></i>
+                @if (ViewBag.SimilarEvents != null && ((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents).Any())
+                {
+                    @foreach (var similarEvent in (IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents)
+                    {
+                        var colors = new[] { 
+                            "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                            "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                            "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                        };
+                        var icons = new[] { "fas fa-code", "fas fa-robot", "fas fa-lightbulb" };
+                        var index = Array.IndexOf(((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents).ToArray(), similarEvent);
+                        
+                        <div class="similar-event" onclick="window.location.href='@Url.Action("Details", "Event", new { id = similarEvent.EventId })'">
+                            <div class="similar-event-icon" style="background: @colors[index % colors.Length];">
+                                <i class="@icons[index % icons.Length]"></i>
+                            </div>
+                            <div class="similar-event-info">
+                                <div class="similar-event-title">@similarEvent.Title</div>
+                                <div class="similar-event-date">@similarEvent.StartingDate.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("ar-EG"))</div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-calendar-times mb-2"></i>
+                        <p>لا توجد أحداث مشابهة متاحة</p>
                     </div>
-                    <div class="similar-event-info">
-                        <div class="similar-event-title">ورشة البرمجة</div>
-                        <div class="similar-event-date">20 ديسمبر 2024</div>
-                    </div>
-                </div>
-
-                <div class="similar-event">
-                    <div class="similar-event-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="similar-event-info">
-                        <div class="similar-event-title">مستقبل التقنية</div>
-                        <div class="similar-event-date">25 ديسمبر 2024</div>
-                    </div>
-                </div>
-
-                <div class="similar-event">
-                    <div class="similar-event-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div class="similar-event-info">
-                        <div class="similar-event-title">ورشة الإبداع</div>
-                        <div class="similar-event-date">30 ديسمبر 2024</div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
@@ -646,33 +678,39 @@
             const registerBtn = document.getElementById('registerBtn');
 
             if (registerBtn) {
-                registerBtn.addEventListener('click', function() {
-                    // Check if user is logged in
-                    const isLoggedIn = @(User.Identity.IsAuthenticated ? "true" : "false");
+                registerBtn.addEventListener('click', async function() {
+                    const isLoggedIn = @(ViewBag.IsLoggedIn == true ? "true" : "false");
+                    if (!isLoggedIn) { window.location.href = '/Account/Login'; return; }
 
-                    if (!isLoggedIn) {
-                        // Redirect to login page
-                        window.location.href = '/Account/Login';
-                        return;
-                    }
-
-                    // Show registration confirmation
-                    if (confirm('هل تريد التسجيل في هذا الحدث؟')) {
-                        // Here you would implement the actual registration logic
-                        const originalText = this.innerHTML;
-                        this.innerHTML = '<i class="fas fa-check"></i>تم التسجيل بنجاح!';
-                        this.disabled = true;
-                        this.style.background = '#10b981';
-
-                        // Show success notification
-                        showNotification('تم التسجيل في الحدث بنجاح!', 'success');
-
-                        // Reset button after 3 seconds (for demo purposes)
-                        setTimeout(() => {
-                            this.innerHTML = originalText;
-                            this.disabled = false;
-                            this.style.background = '';
-                        }, 3000);
+                    const isRegistered = this.getAttribute('data-registered') === 'true';
+                    const form = document.getElementById('detailsRegisterForm');
+                    const token = form?.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                    
+                    const endpoint = isRegistered ? '/Event/CancelRegistrationAjax' : '/Event/RegisterForEventAjax';
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token || '' },
+                        body: JSON.stringify({ eventId: @Model.EventId })
+                    });
+                    if (res.ok) {
+                        if (isRegistered) {
+                            // Cancel registration
+                            this.innerHTML = '<i class="fas fa-calendar-plus"></i>سجل في الحدث الآن';
+                            this.setAttribute('data-registered', 'false');
+                            showNotification('تم إلغاء التسجيل بنجاح!', 'success');
+                            // Update participant count
+                            updateDetailsParticipantCount(-1);
+                        } else {
+                            // Register
+                            this.innerHTML = '<i class="fas fa-times"></i>إلغاء التسجيل';
+                            this.setAttribute('data-registered', 'true');
+                            showNotification('تم التسجيل في الحدث بنجاح!', 'success');
+                            // Update participant count
+                            updateDetailsParticipantCount(1);
+                        }
+                    } else {
+                        const txt = await res.text();
+                        showNotification('تعذر إتمام العملية: ' + txt, 'danger');
                     }
                 });
             }
@@ -685,6 +723,15 @@
                 });
             });
 
+            // Function to update participant count on details page
+            function updateDetailsParticipantCount(change) {
+                const statCard = document.querySelector('.stat-card:first-child .stat-number');
+                if (statCard) {
+                    const currentCount = parseInt(statCard.textContent);
+                    const newCount = Math.max(0, currentCount + change);
+                    statCard.textContent = newCount;
+                }
+            }
         });
 
         // Notification function

@@ -46,6 +46,475 @@
     --dark-input-bg: #2d2d2d;
 }
 
+/* ========== Enhanced Button Styles ========== */
+/* Remove all text decorations from buttons and fix text colors */
+.btn, .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-info, .btn-warning,
+.btn-outline-primary, .btn-outline-secondary, .btn-outline-success, .btn-outline-danger, 
+.btn-outline-info, .btn-outline-warning, .btn-register, .btn-details {
+    text-decoration: none !important;
+}
+
+.btn:hover, .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-danger:hover, 
+.btn-info:hover, .btn-warning:hover, .btn-outline-primary:hover, .btn-outline-secondary:hover, 
+.btn-outline-success:hover, .btn-outline-danger:hover, .btn-outline-info:hover, 
+.btn-outline-warning:hover, .btn-register:hover, .btn-details:hover {
+    text-decoration: none !important;
+}
+
+/* Force text colors for all buttons in normal state */
+.btn-primary, .btn-register {
+    color: white !important;
+}
+
+.btn-secondary, .btn-outline-secondary {
+    color: #6c757d !important;
+}
+
+.btn-success, .btn-outline-success {
+    color: white !important;
+}
+
+.btn-danger, .btn-outline-danger {
+    color: white !important;
+}
+
+.btn-info, .btn-outline-info {
+    color: white !important;
+}
+
+.btn-warning, .btn-outline-warning {
+    color: white !important;
+}
+
+/* Primary Buttons */
+.btn-primary, .btn-register {
+    background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.2);
+}
+
+.btn-primary::before, .btn-register::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before, .btn-register:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover, .btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
+    background: linear-gradient(135deg, var(--dark-brown) 0%, var(--primary-brown) 100%);
+    color: white !important;
+}
+
+.btn-primary:active, .btn-register:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+}
+
+/* Secondary/Outline Buttons */
+.btn-secondary, .btn-outline-secondary {
+    background: linear-gradient(135deg, rgba(108, 117, 125, 0.1) 0%, rgba(108, 117, 125, 0.05) 100%);
+    border: 2px solid #6c757d;
+    color: #6c757d !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-secondary::before, .btn-outline-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+}
+
+.btn-secondary:hover::before, .btn-outline-secondary:hover::before {
+    left: 100%;
+}
+
+.btn-secondary:hover, .btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Success Buttons */
+.btn-success, .btn-outline-success {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+    border: 2px solid #198754;
+    color: #198754 !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-success::before, .btn-outline-success::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+}
+
+.btn-success:hover::before, .btn-outline-success:hover::before {
+    left: 100%;
+}
+
+.btn-success:hover, .btn-outline-success:hover {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+/* Danger Buttons */
+.btn-danger, .btn-outline-danger {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+    border: 2px solid #dc3545;
+    color: #dc3545 !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-danger::before, .btn-outline-danger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+}
+
+.btn-danger:hover::before, .btn-outline-danger:hover::before {
+    left: 100%;
+}
+
+.btn-danger:hover, .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Info Buttons */
+.btn-info, .btn-outline-info {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 202, 240, 0.05) 100%);
+    border: 2px solid #0dcaf0;
+    color: #0dcaf0 !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-info::before, .btn-outline-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+}
+
+.btn-info:hover::before, .btn-outline-info:hover::before {
+    left: 100%;
+}
+
+.btn-info:hover, .btn-outline-info:hover {
+    background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(13, 202, 240, 0.3);
+}
+
+/* Warning Buttons */
+.btn-warning, .btn-outline-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+    border: 2px solid #ffc107;
+    color: #ffc107 !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-warning::before, .btn-outline-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+}
+
+.btn-warning:hover::before, .btn-outline-warning:hover::before {
+    left: 100%;
+}
+
+.btn-warning:hover, .btn-outline-warning:hover {
+    background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Dark Mode Button Styles - Force text colors */
+body.dark-mode .btn-primary, body.dark-mode .btn-register {
+    background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+}
+
+body.dark-mode .btn-secondary, body.dark-mode .btn-outline-secondary {
+    color: #6c757d !important;
+}
+
+body.dark-mode .btn-success, body.dark-mode .btn-outline-success {
+    color: white !important;
+}
+
+body.dark-mode .btn-danger, body.dark-mode .btn-outline-danger {
+    color: white !important;
+}
+
+body.dark-mode .btn-info, body.dark-mode .btn-outline-info {
+    color: white !important;
+}
+
+body.dark-mode .btn-warning, body.dark-mode .btn-outline-warning {
+    color: white !important;
+}
+
+/* Override any conflicting button text colors with maximum specificity */
+button.btn, a.btn, input.btn, .btn, 
+button.btn-primary, a.btn-primary, input.btn-primary,
+button.btn-secondary, a.btn-secondary, input.btn-secondary,
+button.btn-success, a.btn-success, input.btn-success,
+button.btn-danger, a.btn-danger, input.btn-danger,
+button.btn-info, a.btn-info, input.btn-info,
+button.btn-warning, a.btn-warning, input.btn-warning,
+button.btn-outline-primary, a.btn-outline-primary, input.btn-outline-primary,
+button.btn-outline-secondary, a.btn-outline-secondary, input.btn-outline-secondary,
+button.btn-outline-success, a.btn-outline-success, input.btn-outline-success,
+button.btn-outline-danger, a.btn-outline-danger, input.btn-outline-danger,
+button.btn-outline-info, a.btn-outline-info, input.btn-outline-info,
+button.btn-outline-warning, a.btn-outline-warning, input.btn-outline-warning {
+    text-decoration: none !important;
+}
+
+/* Force text colors with maximum specificity */
+button.btn-primary, a.btn-primary, input.btn-primary,
+button.btn-register, a.btn-register, input.btn-register {
+    color: white !important;
+}
+
+button.btn-secondary, a.btn-secondary, input.btn-secondary,
+button.btn-outline-secondary, a.btn-outline-secondary, input.btn-outline-secondary {
+    color: #6c757d !important;
+}
+
+button.btn-success, a.btn-success, input.btn-success,
+button.btn-outline-success, a.btn-outline-success, input.btn-outline-success {
+    color: white !important;
+}
+
+button.btn-danger, a.btn-danger, input.btn-danger,
+button.btn-outline-danger, a.btn-outline-danger, input.btn-outline-danger {
+    color: white !important;
+}
+
+button.btn-info, a.btn-info, input.btn-info,
+button.btn-outline-info, a.btn-outline-info, input.btn-outline-info {
+    color: white !important;
+}
+
+button.btn-warning, a.btn-warning, input.btn-warning,
+button.btn-outline-warning, a.btn-outline-warning, input.btn-outline-warning {
+    color: white !important;
+}
+
+/* Additional specificity for dark mode */
+body.dark-mode button.btn-success, body.dark-mode a.btn-success, body.dark-mode input.btn-success,
+body.dark-mode button.btn-outline-success, body.dark-mode a.btn-outline-success, body.dark-mode input.btn-outline-success {
+    color: white !important;
+}
+
+body.dark-mode button.btn-danger, body.dark-mode a.btn-danger, body.dark-mode input.btn-danger,
+body.dark-mode button.btn-outline-danger, body.dark-mode a.btn-outline-danger, body.dark-mode input.btn-outline-danger {
+    color: white !important;
+}
+
+body.dark-mode button.btn-info, body.dark-mode a.btn-info, body.dark-mode input.btn-info,
+body.dark-mode button.btn-outline-info, body.dark-mode a.btn-outline-info, body.dark-mode input.btn-outline-info {
+    color: white !important;
+}
+
+body.dark-mode button.btn-warning, body.dark-mode a.btn-warning, body.dark-mode input.btn-warning,
+body.dark-mode button.btn-outline-warning, body.dark-mode a.btn-outline-warning, body.dark-mode input.btn-outline-warning {
+    color: white !important;
+}
+
+/* Universal button text visibility - ensure ALL buttons have visible text */
+.btn, .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-info, .btn-warning,
+.btn-outline-primary, .btn-outline-secondary, .btn-outline-success, .btn-outline-danger, 
+.btn-outline-info, .btn-outline-warning, .btn-register, .btn-details,
+button.btn, a.btn, input.btn,
+button.btn-primary, a.btn-primary, input.btn-primary,
+button.btn-secondary, a.btn-secondary, input.btn-secondary,
+button.btn-success, a.btn-success, input.btn-success,
+button.btn-danger, a.btn-danger, input.btn-danger,
+button.btn-info, a.btn-info, input.btn-info,
+button.btn-warning, a.btn-warning, input.btn-warning,
+button.btn-outline-primary, a.btn-outline-primary, input.btn-outline-primary,
+button.btn-outline-secondary, a.btn-outline-secondary, input.btn-outline-secondary,
+button.btn-outline-success, a.btn-outline-success, input.btn-outline-success,
+button.btn-outline-danger, a.btn-outline-danger, input.btn-outline-danger,
+button.btn-outline-info, a.btn-outline-info, input.btn-outline-info,
+button.btn-outline-warning, a.btn-outline-warning, input.btn-outline-warning {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dark mode universal button text visibility */
+body.dark-mode .btn, body.dark-mode .btn-primary, body.dark-mode .btn-secondary, 
+body.dark-mode .btn-success, body.dark-mode .btn-danger, body.dark-mode .btn-info, 
+body.dark-mode .btn-warning, body.dark-mode .btn-outline-primary, body.dark-mode .btn-outline-secondary, 
+body.dark-mode .btn-outline-success, body.dark-mode .btn-outline-danger, 
+body.dark-mode .btn-outline-info, body.dark-mode .btn-outline-warning, 
+body.dark-mode .btn-register, body.dark-mode .btn-details,
+body.dark-mode button.btn, body.dark-mode a.btn, body.dark-mode input.btn,
+body.dark-mode button.btn-primary, body.dark-mode a.btn-primary, body.dark-mode input.btn-primary,
+body.dark-mode button.btn-secondary, body.dark-mode a.btn-secondary, body.dark-mode input.btn-secondary,
+body.dark-mode button.btn-success, body.dark-mode a.btn-success, body.dark-mode input.btn-success,
+body.dark-mode button.btn-danger, body.dark-mode a.btn-danger, body.dark-mode input.btn-danger,
+body.dark-mode button.btn-info, body.dark-mode a.btn-info, body.dark-mode input.btn-info,
+body.dark-mode button.btn-warning, body.dark-mode a.btn-warning, body.dark-mode input.btn-warning,
+body.dark-mode button.btn-outline-primary, body.dark-mode a.btn-outline-primary, body.dark-mode input.btn-outline-primary,
+body.dark-mode button.btn-outline-secondary, body.dark-mode a.btn-outline-secondary, body.dark-mode input.btn-outline-secondary,
+body.dark-mode button.btn-outline-success, body.dark-mode a.btn-outline-success, body.dark-mode input.btn-outline-success,
+body.dark-mode button.btn-outline-danger, body.dark-mode a.btn-outline-danger, body.dark-mode input.btn-outline-danger,
+body.dark-mode button.btn-outline-info, body.dark-mode a.btn-outline-info, body.dark-mode input.btn-outline-info,
+body.dark-mode button.btn-outline-warning, body.dark-mode a.btn-outline-warning, body.dark-mode input.btn-outline-warning {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+body.dark-mode .btn-primary:hover, body.dark-mode .btn-register:hover {
+    color: white !important;
+    box-shadow: 0 8px 16px rgba(139, 69, 19, 0.5);
+}
+
+body.dark-mode .btn-secondary, body.dark-mode .btn-outline-secondary {
+    background: linear-gradient(135deg, rgba(108, 117, 125, 0.2) 0%, rgba(108, 117, 125, 0.1) 100%);
+    border-color: #6c757d;
+    color: #6c757d !important;
+}
+
+body.dark-mode .btn-secondary::before, body.dark-mode .btn-outline-secondary::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+body.dark-mode .btn-secondary:hover, body.dark-mode .btn-outline-secondary:hover {
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+body.dark-mode .btn-success, body.dark-mode .btn-outline-success {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.2) 0%, rgba(25, 135, 84, 0.1) 100%);
+    border-color: #198754;
+    color: #198754 !important;
+}
+
+body.dark-mode .btn-success::before, body.dark-mode .btn-outline-success::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+body.dark-mode .btn-success:hover, body.dark-mode .btn-outline-success:hover {
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.4);
+}
+
+body.dark-mode .btn-danger, body.dark-mode .btn-outline-danger {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
+    border-color: #dc3545;
+    color: #dc3545 !important;
+}
+
+body.dark-mode .btn-danger::before, body.dark-mode .btn-outline-danger::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+body.dark-mode .btn-danger:hover, body.dark-mode .btn-outline-danger:hover {
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+}
+
+body.dark-mode .btn-info, body.dark-mode .btn-outline-info {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.2) 0%, rgba(13, 202, 240, 0.1) 100%);
+    border-color: #0dcaf0;
+    color: #0dcaf0 !important;
+}
+
+body.dark-mode .btn-info::before, body.dark-mode .btn-outline-info::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+body.dark-mode .btn-info:hover, body.dark-mode .btn-outline-info:hover {
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(13, 202, 240, 0.4);
+}
+
+body.dark-mode .btn-warning, body.dark-mode .btn-outline-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 193, 7, 0.1) 100%);
+    border-color: #ffc107;
+    color: #ffc107 !important;
+}
+
+body.dark-mode .btn-warning::before, body.dark-mode .btn-outline-warning::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+body.dark-mode .btn-warning:hover, body.dark-mode .btn-outline-warning:hover {
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+}
+
 /* ========== Basic Typography ========== */
 body {
     font-family: var(--font-arabic);

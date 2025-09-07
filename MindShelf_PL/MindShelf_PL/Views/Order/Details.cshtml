@@ -1,4 +1,5 @@
-﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
+﻿@using MindShelf_DAL.Models
+@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
 
 @{
 	ViewData["Title"] = "تفاصيل الطلب";
@@ -158,29 +159,27 @@
 
 
 @functions {
-	string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
-	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
-			MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
-			MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
-			MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
-			MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
-			_ => "bg-secondary"
-		};
-	}
+	string GetStatusBadgeClass(OrderState status) => status switch
+    {
+        OrderState.Pending => "bg-warning",
+        OrderState.Confirmed => "bg-info",
+        OrderState.Shipping => "bg-primary",
+        OrderState.Delivered => "bg-success",
+        OrderState.Cancelled => "bg-danger",
+        OrderState.Processing => "bg-secondary",
+        OrderState.Returned => "bg-dark",
+        _ => "bg-secondary"
+    };
 
-	string GetStatusText(MindShelf_DAL.Models.OrderState status)
-	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
-			MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
-			MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
-			MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
-			MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
-			_ => status.ToString()
-		};
-	}
+    string GetStatusText(OrderState status) => status switch
+    {
+        OrderState.Pending => "موقوف",
+        OrderState.Confirmed => "مؤكد",
+        OrderState.Shipping => "تم الشحن",
+        OrderState.Delivered => "تم التسليم",
+        OrderState.Cancelled => "ملغي",
+        OrderState.Returned => "أرجاع",
+        OrderState.Processing => "في الانتظار",
+        _ => status.ToString()
+    };
 }

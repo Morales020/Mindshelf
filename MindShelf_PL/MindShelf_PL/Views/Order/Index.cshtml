@@ -11,6 +11,51 @@
 	int currentPage = ViewBag.CurrentPage ?? 1;
 }
 
+<style>
+	/* Dark Mode Styles for Order Index */
+	body.dark-mode .modal-content {
+		background-color: var(--dark-card-bg);
+		border-color: var(--dark-border-color);
+	}
+
+	body.dark-mode .modal-body {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-body p {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-body strong {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-footer {
+		border-color: var(--dark-border-color);
+	}
+
+	body.dark-mode .btn-danger {
+		background-color: #dc3545;
+		border-color: #dc3545;
+	}
+
+	body.dark-mode .btn-danger:hover {
+		background-color: #c82333;
+		border-color: #bd2130;
+	}
+
+	body.dark-mode .btn-secondary {
+		background-color: #6c757d;
+		border-color: #6c757d;
+		color: white;
+	}
+
+	body.dark-mode .btn-secondary:hover {
+		background-color: #5a6268;
+		border-color: #545b62;
+	}
+</style>
+
 <div class="card shadow-sm mt-4">
 	<div class="card-header bg-primary text-white">
 		<h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>قائمة الطلبات</h5>
@@ -39,12 +84,10 @@
 			<div class="col-md-3">
 				<label class="form-label">الحالة</label>
 				<select name="status" class="form-select">
-					<option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">
-						جميع الحالات
-					</option>
+					<option value="">جميع الحالات</option>
 					@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
 					{
-						<option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
+						<option value="@state" selected="@(ViewBag.StatusFilter == state.ToString())">
 							@GetStatusText(state)
 						</option>
 					}
@@ -109,14 +152,25 @@
 											<a asp-action="EditStatus" asp-route-id="@order.Id" class="btn btn-outline-secondary">
 												<i class="fas fa-edit"></i>
 											</a>
-											<button type="button"
-													class="btn btn-outline-danger"
-													data-bs-toggle="modal"
-													data-bs-target="#deleteModal"
-													data-order-id="@order.Id"
-													data-order-user="@order.UserName">
-												<i class="fas fa-trash-alt"></i>
-											</button>
+											@if (order.OrderStatus != MindShelf_DAL.Models.OrderState.Confirmed && 
+												 order.OrderStatus != MindShelf_DAL.Models.OrderState.Shipping && 
+												 order.OrderStatus != MindShelf_DAL.Models.OrderState.Delivered)
+											{
+												<button type="button"
+														class="btn btn-outline-danger"
+														data-bs-toggle="modal"
+														data-bs-target="#deleteModal"
+														data-order-id="@order.Id"
+														data-order-user="@order.UserName">
+													<i class="fas fa-trash-alt"></i>
+												</button>
+											}
+											else
+											{
+												<button type="button" class="btn btn-outline-secondary" disabled title="لا يمكن حذف الطلبات المؤكدة أو المشحونة أو المسلمة">
+													<i class="fas fa-lock"></i>
+												</button>
+											}
 										}
 									</div>
 								</td>

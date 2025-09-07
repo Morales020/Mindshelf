@@ -6,6 +6,24 @@
 
 <style>
     /* Author Delete specific styles */
+    
+    /* Remove all underlines from buttons and links */
+    a, a:hover, a:focus, a:visited, a:active,
+    .btn-delete, .btn-delete:hover, .btn-delete:focus, .btn-delete:visited, .btn-delete:active,
+    .btn-cancel, .btn-cancel:hover, .btn-cancel:focus, .btn-cancel:visited, .btn-cancel:active,
+    a.btn-delete, a.btn-delete:hover, a.btn-delete:focus, a.btn-delete:visited, a.btn-delete:active,
+    a.btn-cancel, a.btn-cancel:hover, a.btn-cancel:focus, a.btn-cancel:visited, a.btn-cancel:active {
+        text-decoration: none !important;
+    }
+    
+    /* Force button text colors */
+    .btn-delete, .btn-cancel, a.btn-delete, a.btn-cancel {
+        color: white !important;
+    }
+    
+    .btn-delete:hover, .btn-cancel:hover, a.btn-delete:hover, a.btn-cancel:hover {
+        color: white !important;
+    }
     .author-delete-card {
         background: white;
         border-radius: var(--border-radius);
