@@ -102,6 +102,7 @@ namespace MindShelf_BL.Services
                     Description = ev.Description,
                     StartingDate = ev.StartingDate,
                     EndingDate = ev.EndingDate,
+                    Location = ev.Location,
                     IsOnline = ev.IsOnline,
                     IsActive = ev.IsActive
                 };
