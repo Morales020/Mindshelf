@@ -5,6 +5,23 @@
     ViewData["Title"] = "الكتب";
 }
 
+<style>
+    .book-image-wrapper {
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .book-image {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+</style>
 <div class="page-header">
     <div class="container">
         <h1><i class="fas fa-book-open me-3"></i>مكتبة الكتب</h1>
@@ -103,13 +120,13 @@
         <div class="row" id="books-container">
             @foreach (var book in Model)
             {
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                    <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
+                <div class="col-xl-2 col-lg-4 col-md-3 mb-3 col-8">
+                    <div class="card book-card h-60 w-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
                         <div class="position-relative">
                             @if (!string.IsNullOrEmpty(book.ImageUrl))
                             {
                                 <img src="@book.ImageUrl" alt="@book.Title"
-                                     class="w-100" style="height: 250px; object-fit: cover; cursor: pointer;"
+                                     class="w-100 book-image-wrapper"
                                      onclick="viewBookDetails(@(book.BookId ))"
                                      onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
 
@@ -218,10 +235,10 @@
                                             <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
                                         }
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-7">
                                         <button class="btn btn-outline-primary btn-sm w-100"
                                                 onclick="viewBookDetails(@(book.BookId ))">
-                                            <i class="fas fa-eye me-1"></i> التفاصيل
+                                            التفاصيل
                                         </button>
                                     </div>
                                 </div>

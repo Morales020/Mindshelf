@@ -90,11 +90,11 @@
             {
                 @foreach (var book in (IEnumerable<MindShelf_BL.Dtos.BookDto.BookResponseDto>)ViewBag.TopRatedBooks)
                 {
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="book-card">
+                    <div class="col-xl-3 col-lg-4 col-md-3 mb-3 col-8">
+                        <div class="book-card text-center h-100">
                             <div class="position-relative">
-                                <img src="@(string.IsNullOrEmpty(book.ImageUrl) ? "/Images/books/default.jpg" : book.ImageUrl)" 
-                                     alt="@book.Title" class="book-cover">
+                                <img src="@(string.IsNullOrEmpty(book.ImageUrl) ? "/Images/books/default.jpg" : book.ImageUrl)"
+                                     alt="@book.Title" class="w-100 book-image-wrapper">
                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2">
                                     <i class="fas fa-star"></i> الأعلى تقييماً
                                 </span>
@@ -669,6 +669,21 @@
         gap: 0.5rem;
         color: var(--text-muted);
         font-size: 0.9rem;
+    }
+
+    .book-image-wrapper {
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .book-image {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
     }
 
     .event-meta-item i {
