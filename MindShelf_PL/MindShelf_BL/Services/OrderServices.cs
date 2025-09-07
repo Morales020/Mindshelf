@@ -73,6 +73,7 @@ namespace MindShelf_BL.Services
                     UserName = orderDto.UserName,
                     OrderDate = DateTime.UtcNow,
                     State = OrderState.Pending,
+                    Address = orderDto.ShippingAddress,
                     TotalAmount = 0,
                     Discount = 0,
                     OrderItems = new List<OrderItem>()
@@ -108,6 +109,7 @@ namespace MindShelf_BL.Services
                     OrderDate = order.OrderDate,
                     OrderStatus = order.State,
                     TotalAmount = order.TotalAmount,
+                    ShippingAddress = order.Address,
                     Discount = order.Discount,
                     OrderItems = order.OrderItems.Select(oi => new OrderItemResponseDto
                     {
