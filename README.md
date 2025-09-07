@@ -25,7 +25,6 @@ This project was developed for the **ITI .NET Training Hackathon**, showcasing a
 - **Comprehensive Book Catalog**: Browse thousands of books with detailed information
 - **Advanced Search & Filtering**: Find books by title, author, category, price range, and ratings
 - **Book Details**: Rich book information including descriptions, reviews, ratings, and availability
-- **Book States**: Track book availability (Available, Reserved, Borrowed, Out of Stock)
 - **Stock Management**: Real-time inventory tracking and management
 
 ### 👥 **User Management & Authentication**
@@ -262,17 +261,6 @@ To democratize access to knowledge and create meaningful connections between rea
 - **Learning**: Continuous growth and knowledge sharing
 - **Excellence**: Striving for the highest standards in everything we do
 
-### **Contact Information**
-- **Email**: mindshelf.team@iti.gov.eg
-- **GitHub**: [github.com/mindshelf-team](https://github.com/mindshelf-team)
-- **LinkedIn**: [linkedin.com/company/mindshelf](https://linkedin.com/company/mindshelf)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
 
 ## 🙏 Acknowledgments
@@ -283,14 +271,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Google** for authentication services
 - **Render** for reliable cloud hosting
 - **Our mentors and instructors** for their guidance and support
-
----
-
-## 📞 Support
-
-For support, email mindshelf.support@iti.gov.eg or join our Slack channel.
-
-**Built with ❤️ by the MindShelf Team for the ITI .NET Training Hackathon**
 
 ---
 
