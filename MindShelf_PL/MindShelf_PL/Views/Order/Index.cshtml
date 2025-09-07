@@ -84,12 +84,10 @@
 			<div class="col-md-3">
 				<label class="form-label">الحالة</label>
 				<select name="status" class="form-select">
-					<option value="" selected="@(string.IsNullOrEmpty(statusFilter) ? "selected" : null)">
-						جميع الحالات
-					</option>
+					<option value="">جميع الحالات</option>
 					@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
 					{
-						<option value="@state" selected="@(statusFilter == state.ToString() ? "selected" : null)">
+						<option value="@state" selected="@(ViewBag.StatusFilter == state.ToString())">
 							@GetStatusText(state)
 						</option>
 					}

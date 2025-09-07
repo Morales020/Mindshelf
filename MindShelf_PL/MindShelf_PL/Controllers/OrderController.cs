@@ -42,7 +42,7 @@ namespace MindShelf_PL.Controllers
 
             ViewBag.TotalPages = result.TotalPages;
             ViewBag.CurrentPage = pageNumber;
-            ViewBag.Status = status;
+            ViewBag.StatusFilter = status;
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 
@@ -165,7 +165,7 @@ namespace MindShelf_PL.Controllers
 
             ViewBag.TotalPages = result.TotalPages;
             ViewBag.CurrentPage = pageNumber;
-            ViewBag.Status = status;
+            ViewBag.StatusFilter = status;
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
             ViewBag.UserName = User.Identity?.Name;
