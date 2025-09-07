@@ -6,6 +6,24 @@
 
 <style>
     /* Author Form specific styles */
+    
+    /* Remove all underlines from buttons and links */
+    a, a:hover, a:focus, a:visited, a:active,
+    .btn-save, .btn-save:hover, .btn-save:focus, .btn-save:visited, .btn-save:active,
+    .btn-cancel, .btn-cancel:hover, .btn-cancel:focus, .btn-cancel:visited, .btn-cancel:active,
+    a.btn-save, a.btn-save:hover, a.btn-save:focus, a.btn-save:visited, a.btn-save:active,
+    a.btn-cancel, a.btn-cancel:hover, a.btn-cancel:focus, a.btn-cancel:visited, a.btn-cancel:active {
+        text-decoration: none !important;
+    }
+    
+    /* Force button text colors */
+    .btn-save, .btn-cancel, a.btn-save, a.btn-cancel {
+        color: white !important;
+    }
+    
+    .btn-save:hover, .btn-cancel:hover, a.btn-save:hover, a.btn-cancel:hover {
+        color: white !important;
+    }
     .author-form-card {
         background: white;
         border-radius: var(--border-radius);

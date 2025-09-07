@@ -5,6 +5,23 @@
 
 <style>
     /* Event Details Page Specific Styles */
+    
+    /* Remove all underlines from buttons on this page */
+    .btn-register, .btn-admin, .btn-edit, .btn-delete,
+    button.btn-register, a.btn-register, input.btn-register,
+    button.btn-admin, a.btn-admin, input.btn-admin,
+    button.btn-edit, a.btn-edit, input.btn-edit,
+    button.btn-delete, a.btn-delete, input.btn-delete {
+        text-decoration: none !important;
+    }
+    
+    .btn-register:hover, .btn-admin:hover, .btn-edit:hover, .btn-delete:hover,
+    button.btn-register:hover, a.btn-register:hover, input.btn-register:hover,
+    button.btn-admin:hover, a.btn-admin:hover, input.btn-admin:hover,
+    button.btn-edit:hover, a.btn-edit:hover, input.btn-edit:hover,
+    button.btn-delete:hover, a.btn-delete:hover, input.btn-delete:hover {
+        text-decoration: none !important;
+    }
     .event-details-hero {
         background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
         color: white;
@@ -180,7 +197,7 @@
 
     .btn-register {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: white;
+        color: white !important;
         padding: 1rem 2rem;
         border-radius: 12px;
         font-weight: 600;
@@ -190,11 +207,14 @@
         display: inline-flex;
         align-items: center;
         gap: 0.75rem;
+        text-decoration: none !important;
     }
 
     .btn-register:hover {
         transform: translateY(-2px);
         box-shadow: var(--shadow-md);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     .btn-register:disabled {
@@ -322,26 +342,31 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        text-decoration: none !important;
     }
 
     .btn-edit {
         background: var(--primary-color);
-        color: white;
+        color: white !important;
     }
 
     .btn-edit:hover {
         background: var(--primary-dark);
         transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     .btn-delete {
         background: #ef4444;
-        color: white;
+        color: white !important;
     }
 
     .btn-delete:hover {
         background: #dc2626;
         transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     /* Dark Mode Styles */

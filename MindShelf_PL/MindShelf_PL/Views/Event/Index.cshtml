@@ -5,6 +5,45 @@
 
 <style>
     /* Events Page Specific Styles */
+    
+    /* Universal underline removal for all links and buttons */
+    a, a:hover, a:focus, a:visited, a:active,
+    .create-event-btn, .create-event-btn:hover, .create-event-btn:focus, .create-event-btn:visited, .create-event-btn:active,
+    .btn-register, .btn-register:hover, .btn-register:focus, .btn-register:visited, .btn-register:active,
+    .btn-details, .btn-details:hover, .btn-details:focus, .btn-details:visited, .btn-details:active,
+    .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:visited, .btn-outline-primary:active,
+    .btn-outline-danger, .btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:visited, .btn-outline-danger:active {
+        text-decoration: none !important;
+    }
+    
+    /* Maximum specificity for create event button */
+    a.create-event-btn, a.create-event-btn:hover, a.create-event-btn:focus, a.create-event-btn:visited, a.create-event-btn:active,
+    .events-hero a.create-event-btn, .events-hero a.create-event-btn:hover, .events-hero a.create-event-btn:focus, 
+    .events-hero a.create-event-btn:visited, .events-hero a.create-event-btn:active {
+        text-decoration: none !important;
+        color: white !important;
+    }
+    
+    /* Ultra-specific rules to override any browser defaults */
+    a.create-event-btn *, a.create-event-btn i, a.create-event-btn span,
+    .events-hero a.create-event-btn *, .events-hero a.create-event-btn i, .events-hero a.create-event-btn span {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+    
+    /* Force remove any potential border-bottom or box-shadow underlines */
+    a.create-event-btn, .events-hero a.create-event-btn {
+        border-bottom: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    /* Browser-specific fixes */
+    a.create-event-btn::-moz-focus-inner,
+    a.create-event-btn::-webkit-focus-ring-color {
+        border: none !important;
+        outline: none !important;
+    }
     .events-hero {
         background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
         color: white;
@@ -174,33 +213,86 @@
         transition: var(--transition);
         flex: 1;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.2);
+    }
+
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-register:hover:not(:disabled)::before {
+        left: 100%;
     }
 
     .btn-register:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+    }
+
+    .btn-register:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
     }
 
     .btn-register:disabled {
-        background: #6b7280;
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
         cursor: not-allowed;
         opacity: 0.6;
+        box-shadow: none;
+    }
+
+    .btn-register:disabled::before {
+        display: none;
     }
 
     .btn-details {
-        background: transparent;
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(160, 82, 45, 0.05) 100%);
         color: var(--primary-color);
         padding: 0.75rem 1rem;
         border: 2px solid var(--primary-color);
         border-radius: 12px;
         font-weight: 600;
         transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-details::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-details:hover::before {
+        left: 100%;
     }
 
     .btn-details:hover {
-        background: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(139, 69, 19, 0.3);
+        border-color: var(--primary-dark);
+    }
+
+    .btn-details:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.2);
     }
 
     .filter-buttons {
@@ -208,6 +300,7 @@
         gap: 0.5rem;
         flex-wrap: wrap;
         justify-content: center;
+        max-width: 600px;
     }
 
     .filter-btn {
@@ -236,11 +329,11 @@
 
     .create-event-btn {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        color: white;
+        color: white !important;
         padding: 1rem 2rem;
         border-radius: 12px;
         font-weight: 600;
-        text-decoration: none;
+        text-decoration: none !important;
         transition: var(--transition);
         border: 2px solid rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
@@ -250,9 +343,10 @@
     .create-event-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        color: white;
+        color: white !important;
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
         border-color: rgba(255, 255, 255, 0.3);
+        text-decoration: none !important;
     }
 
     /* Dark Mode Styles */
@@ -292,23 +386,36 @@
 
     body.dark-mode .create-event-btn {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        color: white;
+        color: white !important;
         border-color: rgba(255, 255, 255, 0.2);
+        text-decoration: none !important;
     }
 
     body.dark-mode .create-event-btn:hover {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
         border-color: rgba(255, 255, 255, 0.3);
+        color: white !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode .btn-details {
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.2) 0%, rgba(160, 82, 45, 0.1) 100%);
         color: var(--primary-color);
         border-color: var(--primary-color);
     }
 
+    body.dark-mode .btn-details::before {
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
     body.dark-mode .btn-details:hover {
-        background: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
         color: white;
+        box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
+    }
+
+    body.dark-mode .btn-details:active {
+        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
     }
 
     body.dark-mode .btn-register {
@@ -321,8 +428,110 @@
     }
 
     body.dark-mode .btn-register:disabled {
-        background: #6b7280;
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
         opacity: 0.6;
+        box-shadow: none;
+    }
+
+    body.dark-mode .btn-outline-primary {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.2) 0%, rgba(13, 110, 253, 0.1) 100%);
+        border-color: #0d6efd;
+        color: #0d6efd;
+    }
+
+    body.dark-mode .btn-outline-primary::before {
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    body.dark-mode .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+    }
+
+    body.dark-mode .btn-outline-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+    body.dark-mode .btn-outline-danger::before {
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    body.dark-mode .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+        color: white;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+    }
+
+    /* Admin Buttons Enhancement */
+    .btn-outline-primary {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
+        border: 2px solid #0d6efd;
+        color: #0d6efd;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-outline-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.4s;
+    }
+
+    .btn-outline-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    }
+
+    .btn-outline-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-outline-danger::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.4s;
+    }
+
+    .btn-outline-danger:hover::before {
+        left: 100%;
+    }
+
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
 
     /* Responsive Design */
@@ -382,6 +591,9 @@
                     <button class="filter-btn" data-filter="upcoming">
                         <i class="fas fa-clock ml-2"></i>القادمة
                     </button>
+                    <button class="filter-btn" data-filter="registered">
+                        <i class="fas fa-user-check ml-2"></i>مسجل
+                    </button>
                     <button class="filter-btn" data-filter="online">
                         <i class="fas fa-video ml-2"></i>أونلاين
                     </button>
@@ -399,8 +611,10 @@
     <div class="row g-4" id="eventsGrid">
         @foreach (var ev in Model)
         {
+            var userId = ViewBag.CurrentUserId as string;
+            var isRegistered = userId != null && ev.Registrations.Any(r => r.UserId == userId);
             <div class="col-lg-4 col-md-6">
-                <div class="event-card" data-type="@(ev.IsActive ? "upcoming" : "past") @(ev.IsOnline ? "online" : "offline")">
+                <div class="event-card" data-type="@(ev.IsActive ? "upcoming" : "past") @(ev.IsOnline ? "online" : "offline") @(isRegistered ? "registered" : "not-registered")">
                     <!-- Event Header -->
                     <div class="event-card-header">
                         <i class="fas fa-calendar-alt event-icon"></i>
@@ -445,8 +659,6 @@
                         <div class="event-actions">
                             @if (ev.IsActive)
                             {
-                                var userId = ViewBag.CurrentUserId as string;
-                                var isRegistered = userId != null && ev.Registrations.Any(r => r.UserId == userId);
                                 <form method="post" asp-controller="Event" asp-action="RegisterForEvent" class="d-inline register-form" data-event-id="@ev.EventId">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="EventId" value="@ev.EventId" />
@@ -463,7 +675,7 @@
                                     منتهي
                                 </button>
                             }
-                            <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.EventId" class="btn-details">
+                            <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.EventId" class="btn-details" style="text-decoration: none;">
                                 <i class="fas fa-info-circle ml-2"></i>
                                 التفاصيل
                             </a>
@@ -500,6 +712,30 @@
     <script>
         // Events Page Functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Force remove underlines from create event button
+            const createEventBtn = document.querySelector('.create-event-btn');
+            if (createEventBtn) {
+                createEventBtn.style.textDecoration = 'none';
+                createEventBtn.style.borderBottom = 'none';
+                createEventBtn.style.boxShadow = 'none';
+                
+                // Remove underlines from all child elements
+                const childElements = createEventBtn.querySelectorAll('*');
+                childElements.forEach(element => {
+                    element.style.textDecoration = 'none';
+                });
+                
+                // Add event listeners to maintain no underlines
+                createEventBtn.addEventListener('mouseenter', function() {
+                    this.style.textDecoration = 'none';
+                });
+                createEventBtn.addEventListener('mouseleave', function() {
+                    this.style.textDecoration = 'none';
+                });
+                createEventBtn.addEventListener('focus', function() {
+                    this.style.textDecoration = 'none';
+                });
+            }
             // Filter functionality
             const filterButtons = document.querySelectorAll('.filter-btn');
             const eventCards = document.querySelectorAll('.event-card');
@@ -574,6 +810,8 @@
                                 this.innerHTML = '<i class="fas fa-user-plus ml-2"></i>تسجيل الحضور';
                                 // Update participant count
                                 updateParticipantCount(eventId, -1);
+                                // Update event card data-type for filtering
+                                updateEventCardType(eventId, false);
                             } else {
                                 // Register
                                 this.classList.add('registered');
@@ -581,6 +819,8 @@
                                 this.innerHTML = '<i class="fas fa-times ml-2"></i>إلغاء التسجيل';
                                 // Update participant count
                                 updateParticipantCount(eventId, 1);
+                                // Update event card data-type for filtering
+                                updateEventCardType(eventId, true);
                             }
                         } else {
                             const txt = await res.text();
@@ -601,6 +841,19 @@
                     const currentCount = parseInt(currentText.match(/\d+/)[0]);
                     const newCount = Math.max(0, currentCount + change);
                     countElement.textContent = `${newCount} مشارك`;
+                }
+            }
+
+            // Function to update event card data-type for filtering
+            function updateEventCardType(eventId, isRegistered) {
+                const eventCard = document.querySelector(`[data-event-id="${eventId}"]`).closest('.event-card');
+                if (eventCard) {
+                    const currentTypes = eventCard.dataset.type.split(' ');
+                    // Remove existing registration status
+                    const filteredTypes = currentTypes.filter(type => type !== 'registered' && type !== 'not-registered');
+                    // Add new registration status
+                    filteredTypes.push(isRegistered ? 'registered' : 'not-registered');
+                    eventCard.dataset.type = filteredTypes.join(' ');
                 }
             }
         });
