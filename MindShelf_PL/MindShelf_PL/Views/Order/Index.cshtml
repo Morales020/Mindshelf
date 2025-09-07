@@ -188,16 +188,20 @@
 		OrderState.Shipping => "bg-primary",
 		OrderState.Delivered => "bg-success",
 		OrderState.Cancelled => "bg-danger",
+		OrderState.Processing => "bg-secondary",
+		OrderState.Returned => "bg-dark",
 		_ => "bg-secondary"
 	};
 
 	string GetStatusText(OrderState status) => status switch
 	{
-		OrderState.Pending => "في الانتظار",
+		OrderState.Pending => "موقوف",
 		OrderState.Confirmed => "مؤكد",
 		OrderState.Shipping => "تم الشحن",
 		OrderState.Delivered => "تم التسليم",
 		OrderState.Cancelled => "ملغي",
+		OrderState.Returned => "أرجاع",
+		OrderState.Processing => "في الانتظار",
 		_ => status.ToString()
 	};
 }

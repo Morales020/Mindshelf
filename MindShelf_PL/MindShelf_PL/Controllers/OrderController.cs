@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using MindShelf_BL.Dtos.OrderDtos;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_DAL.Models;
+using MindShelf_PL.Models;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace MindShelf_PL.Controllers
 {
@@ -101,18 +103,34 @@ namespace MindShelf_PL.Controllers
             return RedirectToAction("Details", new { id });
         }
 
-        [HttpPost]
         public async Task<IActionResult> Cancel(int id)
         {
             var result = await _orderServices.CancelOrder(id);
+
             if (!result.Success)
-                return View("Error", result.Message);
+            {
+                var errorModel = new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                    Message = result.Message // assuming your ErrorViewModel has a Message property
+                };
+                return View("Error", errorModel);
+            }
 
             if (User.IsInRole("Admin"))
+            {
                 return RedirectToAction("Index");
-            else
-                return RedirectToAction("UserOrders", new { userName = User.Identity?.Name });
+            }
+
+            if (User.IsInRole("User"))
+            {
+                return RedirectToAction("UserOrders");
+            }
+
+            // fallback just in case
+            return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

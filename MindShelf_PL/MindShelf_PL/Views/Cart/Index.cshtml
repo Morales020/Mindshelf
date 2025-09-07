@@ -187,11 +187,11 @@
                     
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <div class="card bg-light">
+                            <div class="card bg-light order-summary-card">
                                 <div class="card-body">
-                                    <h5>ملخص الطلب</h5>
-                                    <p><strong>إجمالي العناصر:</strong> <span id="total-items">@Model.CartItems.Sum(x => x.Quantity)</span></p>
-                                    <p><strong>المجموع الكلي:</strong> <span id="total-price">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</span></p>
+                                    <h5 class="order-summary-title">ملخص الطلب</h5>
+                                    <p class="order-summary-item"><strong>إجمالي العناصر:</strong> <span id="total-items" class="order-summary-value">@Model.CartItems.Sum(x => x.Quantity)</span></p>
+                                    <p class="order-summary-item"><strong>المجموع الكلي:</strong> <span id="total-price" class="order-summary-value">@Model.CartItems.Sum(x => x.TotalPrice).ToString("C")</span></p>
                                 </div>
                             </div>
                         </div>

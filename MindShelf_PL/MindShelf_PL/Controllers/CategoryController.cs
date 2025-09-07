@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MindShelf_BL.Dtos.CategoryDto;
 using MindShelf_BL.Interfaces.IServices;
@@ -40,12 +41,14 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateCategoryDto model)
         {
             if (!ModelState.IsValid)
@@ -64,6 +67,7 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int Id)
         {
             var Category = await _categoryservice.GetCategoryById(Id);
@@ -82,6 +86,7 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, UpateCategoryDto model)
         {
             if (!ModelState.IsValid)
@@ -100,6 +105,7 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var Category = await _categoryservice.GetCategoryById(id);
@@ -111,6 +117,7 @@ namespace MindShelf_PL.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var Category = await _categoryservice.DeleteCategoryAsync(id);

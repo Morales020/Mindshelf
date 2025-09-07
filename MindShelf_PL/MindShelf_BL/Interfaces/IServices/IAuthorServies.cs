@@ -16,6 +16,7 @@ namespace MindShelf_BL.Interfaces.IServices
         Task<ResponseMVC<string>> CreateAuthor(AuthorCreateDto authorDto);
         Task<ResponseMVC<string>> UpdateAuthor(int id, AuthorUpdateDto authorDto);
         Task<ResponseMVC<string>> DeleteAuthor(int id);
+        Task<ResponseMVC<IEnumerable<AuthorResponseDto>>> GetPopularAuthorsAsync(int count = 3);
 
     }
 }

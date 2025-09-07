@@ -14,5 +14,7 @@ namespace MindShelf_BL.Interfaces.IServices
         Task<ResponseMVC<IEnumerable<FavouriteBookResponseDto>>> GetAllFavouriteBooks( string UserId, int page, int pageSize);
         Task<FavouriteBookResponseDto> AddFavouriteBookAsync(string userId, int bookId);
         Task<bool> RemoveFavouriteBookAsync(int favouriteBookId);
+        Task<bool> IsBookFavouritedAsync(string userId, int bookId);
+        Task<bool> RemoveFavouriteBookByUserAndBookAsync(string userId, int bookId);
     }
 }

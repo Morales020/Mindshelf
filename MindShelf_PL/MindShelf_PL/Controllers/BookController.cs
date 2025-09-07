@@ -1,14 +1,14 @@
-
-﻿using Microsoft.AspNetCore.Mvc;
-using MindShelf_BL.Interfaces.IServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Dtos.BookDto;
+using MindShelf_BL.Dtos.CategoryDto;
+using MindShelf_BL.Interfaces.IServices;
+using MindShelf_BL.Services;
+using MindShelf_DAL.Models;
 using MindShelf_PL.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using MindShelf_BL.Services;
-using MindShelf_BL.Dtos.AuthorDto;
-using MindShelf_BL.Dtos.CategoryDto;
-using MindShelf_DAL.Models;
 
 namespace MindShelf_MVC.Controllers
 {
@@ -62,7 +62,7 @@ namespace MindShelf_MVC.Controllers
 
         public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 10)
         {
-         
+
             var response = await _bookService.GetAllBook(page, pageSize);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
@@ -74,7 +74,7 @@ namespace MindShelf_MVC.Controllers
                 books = books.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
             }
 
-          
+
             var categoriesResponse = await _categoryService.GetAllCategories();
             ViewBag.Categories = categoriesResponse.StatusCode == 200 && categoriesResponse.Data != null
                 ? categoriesResponse.Data
@@ -103,6 +103,7 @@ namespace MindShelf_MVC.Controllers
             return View(response.Data);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             // جلب المؤلفين
@@ -147,6 +148,7 @@ namespace MindShelf_MVC.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateBookDto dto, IFormFile? imageFile)
         {
             // إعادة تحميل الـ ViewBag في حال وجود خطأ في الـ ModelState
@@ -210,8 +212,8 @@ namespace MindShelf_MVC.Controllers
 
 
         [HttpGet]
-      
-        
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _bookService.GetBookByIdAsync(id);
@@ -219,16 +221,16 @@ namespace MindShelf_MVC.Controllers
                 return ErrorResult(response.Message);
             var dto = new UpdateBookDto
             {
-                BookId= id,
-                PublishedDate= response.Data.PublishedDate,
-                ImageUrl= response.Data.ImageUrl,
+                BookId = id,
+                PublishedDate = response.Data.PublishedDate,
+                ImageUrl = response.Data.ImageUrl,
                 Price = response.Data.Price,
                 State = response.Data.State,
                 Title = response.Data.Title,
                 Description = response.Data.Description,
-               Rating =response.Data.Rating,
-               
-
+                Rating = response.Data.Rating,
+                AuthorId = response.Data.AuthorId,
+                CategoryId = response.Data.CategoryId
             };
 
             // Load dropdowns
@@ -251,6 +253,7 @@ namespace MindShelf_MVC.Controllers
 
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(UpdateBookDto dto, IFormFile? imageFile)
         {
             if (!ModelState.IsValid) return View(dto);
@@ -270,6 +273,7 @@ namespace MindShelf_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _bookService.GetBookByIdAsync(id);
@@ -296,7 +300,7 @@ namespace MindShelf_MVC.Controllers
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-            return View("Index",response.Data);
+            return View("Index", response.Data);
         }
 
         public async Task<IActionResult> ByCategory(int categoryId)

@@ -1,4 +1,5 @@
 ﻿@model List<BookResponseDto>
+@Html.AntiForgeryToken()
 
 @{
     ViewData["Title"] = "الكتب";
@@ -112,10 +113,11 @@
                                      onclick="viewBookDetails(@(book.BookId ))"
                                      onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
 
-                                <button type="button",
-                                        class="btn btn-outline-danger btn-sm position-absolute"
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
                                         style="top: 10px; left: 10px;"
-                                        onclick="addToFavourite(@(book.BookId ), this)"
+                                        data-book-id="@(book.BookId)"
+                                        onclick="toggleFavourite(@(book.BookId), this)"
                                         title="إضافة للمفضلة">
                                     <i class="far fa-heart"></i>
                                 </button>
@@ -293,22 +295,107 @@
             alert("وظيفة المفضلة هنا يمكن إضافتها لاحقاً");
         }
 
-         function addToFavourite(bookId, btn) {
+        function toggleFavourite(bookId, btn) {
+            // Check if user is logged in
+            @if (!User.Identity?.IsAuthenticated == true)
+            {
+                <text>
+                alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                window.location.href = '@Url.Action("Login", "Account")';
+                return;
+                </text>
+            }
+
             var token = $('input[name="__RequestVerificationToken"]').val();
+            
+            // Disable button to prevent multiple clicks
+            $(btn).prop('disabled', true);
+            
+            // Show loading state
+            var originalIcon = $(btn).find('i').attr('class');
+            $(btn).find('i').removeClass().addClass('fas fa-spinner fa-spin');
 
             $.ajax({
-                url: '@Url.Action("AddToFavourite", "FavouriteBook")',
+                url: '@Url.Action("ToggleFavourite", "FavouriteBook")',
                 type: 'POST',
-                data: { bookId: bookId, __RequestVerificationToken: token },
-                success: function(response) {
-                    $(btn).find('i').removeClass('far').addClass('fas'); // قلب ممتلئ
-                    alert("تمت الإضافة للمفضلة!");
+                data: { 
+                    bookId: bookId, 
+                    __RequestVerificationToken: token 
                 },
-                error: function() {
-                    alert("حدث خطأ أثناء الإضافة للمفضلة");
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFavourited) {
+                            // Book is now favourited
+                            $(btn).find('i').removeClass().addClass('fas fa-heart');
+                            $(btn).removeClass('btn-outline-danger').addClass('btn-danger');
+                            $(btn).attr('title', 'في المفضلة');
+                        } else {
+                            // Book is no longer favourited
+                            $(btn).find('i').removeClass().addClass('far fa-heart');
+                            $(btn).removeClass('btn-danger').addClass('btn-outline-danger');
+                            $(btn).attr('title', 'إضافة للمفضلة');
+                        }
+                        
+                        // Success - no message needed
+                    } else {
+                        // Restore original state on error
+                        $(btn).find('i').removeClass().addClass(originalIcon);
+                        alert(response.message);
+                        
+                        if (response.redirect) {
+                            setTimeout(() => {
+                                window.location.href = response.redirect;
+                            }, 2000);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Restore original state
+                    $(btn).find('i').removeClass().addClass(originalIcon);
+                    $(btn).prop('disabled', false);
+                    
+                    // Show error message
+                    if (xhr.status === 401) {
+                        alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        }, 2000);
+                    } else {
+                        alert('حدث خطأ أثناء تحديث المفضلة');
+                    }
+                },
+                complete: function() {
+                    // Re-enable button
+                    $(btn).prop('disabled', false);
                 }
             });
         }
+
+        // Check favourite status on page load
+        $(document).ready(function() {
+            $('.favourite-btn').each(function() {
+                var btn = $(this);
+                var bookId = btn.data('book-id');
+                
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <text>
+                    $.ajax({
+                        url: '@Url.Action("CheckFavouriteStatus", "FavouriteBook")',
+                        type: 'GET',
+                        data: { bookId: bookId },
+                        success: function(response) {
+                            if (response.isFavourited) {
+                                btn.find('i').removeClass().addClass('fas fa-heart');
+                                btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                                btn.attr('title', 'في المفضلة');
+                            }
+                        }
+                    });
+                    </text>
+                }
+            });
+        });
 
     </script>
 }

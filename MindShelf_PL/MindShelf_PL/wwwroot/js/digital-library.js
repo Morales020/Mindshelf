@@ -324,38 +324,58 @@ function initFormValidation() {
 
 // ========== Notifications ==========
 function showNotification(message, type = 'info') {
-    // إنشاء عنصر الإشعار
+    // إنشاء عنصر الإشعار المحسن
     const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = `
-        top: 20px;
-        left: 20px;
-        z-index: 9999;
-        max-width: 400px;
-        box-shadow: var(--box-shadow);
-    `;
-
+    notification.className = `notification notification-${type}`;
+    
     const iconMap = {
         'success': 'fas fa-check-circle',
         'warning': 'fas fa-exclamation-triangle',
-        'danger': 'fas fa-exclamation-circle',
+        'danger': 'fas fa-times-circle',
         'info': 'fas fa-info-circle'
     };
 
+    const typeLabels = {
+        'success': 'نجح',
+        'warning': 'تحذير',
+        'danger': 'خطأ',
+        'info': 'معلومات'
+    };
+
     notification.innerHTML = `
-        <i class="${iconMap[type] || iconMap.info}"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="${iconMap[type] || iconMap.info}"></i>
+            </div>
+            <div class="notification-body">
+                <div class="notification-title">${typeLabels[type] || 'إشعار'}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <button type="button" class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notification-progress"></div>
     `;
 
     document.body.appendChild(notification);
 
-    // إزالة الإشعار تلقائياً
+    // إضافة تأثير الظهور
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+
+    // إزالة الإشعار تلقائياً مع تأثير الاختفاء
     setTimeout(() => {
         if (notification.parentNode) {
-            notification.remove();
+            notification.classList.add('hide');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
         }
-    }, 5000);
+    }, 4000);
 }
 
 // ========== AJAX Helpers ==========
