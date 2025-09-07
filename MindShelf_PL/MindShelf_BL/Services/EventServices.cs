@@ -203,5 +203,91 @@ namespace MindShelf_BL.Services
                 return ResponseMVC<bool>.ErrorResponse(ex.Message, 500);
             }
         }
+        public async Task<ResponseMVC<EventRegistrationResponseDto>> GetRegistrationById(int registrationId)
+        {
+            try
+            {
+                var register = await _unitofwork.EventRegistrationRepo.GetById(registrationId);
+                if (register == null)
+                    return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse("Registration not found", 404);
+
+                var responseDto = new EventRegistrationResponseDto
+                {
+                    EventRegistrationId = register.EventRegistrationId,
+                    EventId = register.EventId,
+                    UserId = register.UserId,
+                    UserName = register.UserName,
+                    Notes = register.Notes,
+                    RegistrationDate = register.RegistrationDate
+                };
+
+                return ResponseMVC<EventRegistrationResponseDto>.SuccessResponse(responseDto, "Success", 200);
+            }
+            catch (Exception ex)
+            {
+                return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse(ex.Message, 500);
+            }
+        }
+
+        public async Task<ResponseMVC<bool>> DeleteRegistration(int registrationId)
+        {
+            try
+            {
+                var register = await _unitofwork.EventRegistrationRepo.GetById(registrationId);
+                if (register == null)
+                    return ResponseMVC<bool>.ErrorResponse("Registration not found", 404);
+
+                await _unitofwork.EventRegistrationRepo.Delete(registrationId);
+                await _unitofwork.SaveChangesAsync();
+
+                return ResponseMVC<bool>.SuccessResponse(true, "Registration deleted successfully", 200);
+            }
+            catch (Exception ex)
+            {
+                return ResponseMVC<bool>.ErrorResponse(ex.Message, 500);
+            }
+        }
+        public async Task<ResponseMVC<EventRegistrationResponseDto>> RegisterForEvent(CreateEventRegistrationDto RegistrationDto)
+        {
+            try
+            {
+                
+                var exists = await _unitofwork.EventRegistrationRepo.Query()
+                    .AnyAsync(r => r.EventId == RegistrationDto.EventId && r.UserId == RegistrationDto.UserId);
+
+                if (exists)
+                    return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse("You are already registered for this event", 409);
+
+                var registration = new EventRegistration
+                {
+                    EventId = RegistrationDto.EventId,
+                    UserId = RegistrationDto.UserId,
+                    UserName = RegistrationDto.UserName,
+                    Notes = RegistrationDto.Notes,
+                    RegistrationDate = DateTime.UtcNow
+                };
+
+                await _unitofwork.EventRegistrationRepo.Add(registration);
+                await _unitofwork.SaveChangesAsync();
+
+                var responseDto = new EventRegistrationResponseDto
+                {
+                    EventRegistrationId = registration.EventRegistrationId,
+                    EventId = registration.EventId,
+                    UserId = registration.UserId,
+                    UserName = registration.UserName,
+                    Notes = registration.Notes,
+                    RegistrationDate = registration.RegistrationDate
+                };
+
+                return ResponseMVC<EventRegistrationResponseDto>.SuccessResponse(responseDto, "Registered successfully", 201);
+            }
+            catch (Exception ex)
+            {
+                return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse(ex.Message, 500);
+            }
+        }
+
+
     }
 }

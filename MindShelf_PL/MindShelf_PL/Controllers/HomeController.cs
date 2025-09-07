@@ -10,12 +10,15 @@ namespace MindShelf_PL.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IBookServies _bookServices;
         private readonly IAuthorServies _authorServices;
+        private readonly IEventServices _eventServices;
 
-        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices)
+        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices, IEventServices eventServices)
         {
             _logger = logger;
             _bookServices = bookServices;
             _authorServices = authorServices;
+            _eventServices = eventServices;
+            _eventServices = eventServices;
         }
 
         public async Task<IActionResult> Index()
@@ -25,7 +28,10 @@ namespace MindShelf_PL.Controllers
             
             var popularAuthorsResponse = await _authorServices.GetPopularAuthorsAsync(3);
             ViewBag.PopularAuthors = popularAuthorsResponse.Data ?? new List<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>();
-            
+
+            var upcomingEventsResponse = await _eventServices.GetAllEvents(); // „À·« ‰ÃÌ» 4 ›⁄«·Ì« 
+            ViewBag.UpcomingEvents = upcomingEventsResponse.Data ?? new List<MindShelf_BL.Dtos.EventDtos.EventResponseDto>();
+
             return View();
         }
 

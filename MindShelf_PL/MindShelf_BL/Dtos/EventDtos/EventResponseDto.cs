@@ -10,13 +10,12 @@ namespace MindShelf_BL.Dtos.EventDtos
     {
         public int EventId { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
         public DateTime StartingDate { get; set; }
         public DateTime EndingDate { get; set; }
         public string Location { get; set; }
         public bool IsOnline { get; set; }
         public bool IsActive { get; set; }
-
-        public List<EventRegistrationResponseDto> Registrations { get; set; }
+        public string Description { get; internal set; }
+        public List<EventRegistrationResponseDto> Registrations { get; internal set; }
     }
 }
