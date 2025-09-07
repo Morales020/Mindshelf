@@ -544,11 +544,13 @@
                         <div class="social-login-title">
                             <span>أو</span>
                         </div>
-                        
-                        <button class="btn-social btn-google" type="button">
-                            <i class="fab fa-google ml-2"></i>
-                            التسجيل باستخدام Google
-                        </button>
+
+                        <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                            <input type="hidden" name="provider" value="Google" />
+                            <button type="submit" class="btn btn-google">
+                                <i class="fab fa-google"></i> تسجيل الدخول بـ Google
+                            </button>
+                        </form>
                     </div>
 
                     <!-- Login Link -->
