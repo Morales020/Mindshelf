@@ -254,16 +254,28 @@
         border: 2px solid;
     }
 
-    .btn-google {
-        background: white;
-        border-color: #db4437;
-        color: #db4437;
+     .btn-google {
+        background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        border: none;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        width: 100%;
     }
 
     .btn-google:hover {
-        background: #db4437;
-        color: white;
         transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        background: linear-gradient(135deg, #34a853 0%, #4285f4 100%);
     }
 
 
@@ -365,10 +377,19 @@
         background: var(--dark-card-bg);
     }
 
+    /* Dark mode: make Google button vivid like login page */
     body.dark-mode .btn-google {
-        background: var(--dark-card-bg);
-        border-color: #db4437;
-        color: #db4437;
+        background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+        color: #ffffff !important;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+
+    body.dark-mode .btn-google i { color: #ffffff !important; }
+
+    body.dark-mode .btn-google:hover {
+        background: linear-gradient(135deg, #34a853 0%, #4285f4 100%);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.45);
     }
 
 

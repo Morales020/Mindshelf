@@ -35,7 +35,7 @@
 <body class="@(ViewBag.BodyClass ?? "")">
     <!-- Header -->
     <header class="digital-header sticky-top">
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
@@ -50,12 +50,12 @@
                 </a>
 
                 <!-- Mobile Menu Toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <!-- Navigation Menu -->
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="collapse navbar-collapse align-items-lg-center gap-2" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
@@ -99,8 +99,8 @@
                     </ul>
 
                     <!-- Search Bar -->
-                    <div class="search-container me-3">
-                        <form class="d-flex" asp-controller="Books" asp-action="Search">
+                    <div class="search-container w-100 my-2 my-lg-0 me-0 me-lg-3 order-lg-0">
+                        <form class="d-flex w-100" asp-controller="Books" asp-action="Search">
                             <div class="input-group">
                                 <input class="form-control search-input" type="search" name="term"
                                        placeholder="البحث عن كتاب، مؤلف..." id="smartSearch">
@@ -113,7 +113,7 @@
                     </div>
 
                     <!-- User Menu -->
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-lg-3 align-items-center">
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
@@ -187,8 +187,8 @@
                         }
 
                         <!-- Dark Mode Toggle -->
-                        <li class="nav-item">
-                            <button class="nav-link btn" id="darkModeToggle" title="التبديل للوضع الليلي">
+                        <li class="nav-item d-flex align-items-center">
+                            <button class="nav-link d-flex align-items-center justify-content-center p-0 ms-2" id="darkModeToggle" title="التبديل للوضع الليلي" style="height:40px;width:40px;border-radius:8px;">
                                 <i class="fas fa-moon"></i>
                             </button>
                         </li>
