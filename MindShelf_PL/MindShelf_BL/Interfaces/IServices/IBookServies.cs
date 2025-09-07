@@ -13,6 +13,7 @@ namespace MindShelf_BL.Interfaces.IServices
         Task<ResponseMVC<IEnumerable<BookResponseDto>>> GetNewReleasesAsync();
         Task<ResponseMVC<IEnumerable<BookResponseDto>>> GetTopRatedBooksAsync(int count = 4);
         Task<ResponseMVC<IEnumerable<BookResponseDto>>> SearchBooksAsync(string searchTerm);
+        Task<ResponseMVC<IEnumerable<BookResponseDto>>> FilterBooksAsync(int? categoryId, int? authorId);
 
         // Create, Update, Delete
         Task<ResponseMVC<BookResponseDto>> CreateBookAsync(CreateBookDto createBookDto);

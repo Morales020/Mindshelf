@@ -294,13 +294,13 @@ namespace MindShelf_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Search(string term)
+        public async Task<IActionResult> Search(string searchTerm)
         {
-            var response = await _bookService.SearchBooksAsync(term);
+            var response = await _bookService.SearchBooksAsync(searchTerm);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-            return View("Index", response.Data);
+            return PartialView("_Search", response.Data);
         }
 
         public async Task<IActionResult> ByCategory(int categoryId)
@@ -317,6 +317,25 @@ namespace MindShelf_MVC.Controllers
             var response = await _bookService.GetBooksByAuthorAsync(authorId);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
+
+            return View("Index", response.Data);
+        }
+
+        public async Task<IActionResult> Filter(int? categoryId, int? authorId)
+        {
+            var response = await _bookService.FilterBooksAsync(categoryId, authorId);
+            if (response.StatusCode != 200 || response.Data == null)
+                return ErrorResult(response.Message);
+
+            // repopulate dropdowns
+            var categories = await _categoryService.GetAllCategories();
+            var authors = await _authorService.GetAllAuthor(1,10);
+
+            ViewBag.Categories = categories.Data;
+            ViewBag.Authors = authors.Data;
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SelectedAuthorId = authorId;
+
 
             return View("Index", response.Data);
         }
