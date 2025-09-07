@@ -294,13 +294,13 @@ namespace MindShelf_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Search(string term)
+        public async Task<IActionResult> Search(string searchTerm)
         {
-            var response = await _bookService.SearchBooksAsync(term);
+            var response = await _bookService.SearchBooksAsync(searchTerm);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
-            return View("Index", response.Data);
+            return PartialView("_Search", response.Data);
         }
 
         public async Task<IActionResult> ByCategory(int categoryId)
@@ -319,6 +319,25 @@ namespace MindShelf_MVC.Controllers
                 return ErrorResult(response.Message);
 
             return View("Index", response.Data);
+        }
+
+        public async Task<IActionResult> Filter(int? categoryId, int? authorId)
+        {
+            if (categoryId.HasValue && authorId.HasValue)
+            {
+                var response = await _bookService.GetBooksByCategoryAndAuthorAsync(categoryId.Value, authorId.Value);
+                if (response.StatusCode != 200 || response.Data == null)
+                    return ErrorResult(response.Message);
+
+                return PartialView("_BooksListPartial", response.Data);
+            }
+            else if (categoryId.HasValue)
+                return await ByCategory(categoryId.Value);
+
+            else if (authorId.HasValue)
+                return await ByAuthor(authorId.Value);
+
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> NewReleases()
