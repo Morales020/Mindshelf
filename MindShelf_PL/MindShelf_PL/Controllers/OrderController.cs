@@ -181,6 +181,15 @@ namespace MindShelf_PL.Controllers
             if (!result.Success)
                 return View("Error", result.Message);
 
+            // Check if order can be deleted
+            if (result.Data.OrderStatus == OrderState.Confirmed || 
+                result.Data.OrderStatus == OrderState.Shipping || 
+                result.Data.OrderStatus == OrderState.Delivered)
+            {
+                TempData["Error"] = "لا يمكن حذف الطلبات المؤكدة أو المشحونة أو المسلمة";
+                return RedirectToAction("Index");
+            }
+
             return View(result.Data); // show confirmation page
         }
 
@@ -188,10 +197,27 @@ namespace MindShelf_PL.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Double-check order status before deletion
+            var orderResult = await _orderServices.GetOrderByIdAsync(id);
+            if (!orderResult.Success)
+                return View("Error", orderResult.Message);
+
+            if (orderResult.Data.OrderStatus == OrderState.Confirmed || 
+                orderResult.Data.OrderStatus == OrderState.Shipping || 
+                orderResult.Data.OrderStatus == OrderState.Delivered)
+            {
+                TempData["Error"] = "لا يمكن حذف الطلبات المؤكدة أو المشحونة أو المسلمة";
+                return RedirectToAction("Index");
+            }
+
             var result = await _orderServices.DeleteOrderAsync(id);
             if (!result.Success)
-                return View("Error", result.Message);
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index");
+            }
 
+            TempData["Message"] = "تم حذف الطلب بنجاح";
             return RedirectToAction("Index");
         }
     }
