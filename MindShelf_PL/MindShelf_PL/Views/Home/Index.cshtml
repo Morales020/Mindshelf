@@ -457,75 +457,58 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card event-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="event-date me-3">
-                                <div class="date-box bg-primary text-white text-center p-2 rounded">
-                                    <div class="day">25</div>
-                                    <div class="month">سبتمبر</div>
+            @if (ViewBag.UpcomingEvents != null && ((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.UpcomingEvents).Any())
+            {
+                @foreach (var ev in (IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.UpcomingEvents)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card event-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="event-date me-3">
+                                        <div class="date-box bg-success text-white text-center p-2 rounded">
+                                            <div class="day">@ev.StartingDate.Day</div>
+                                            <div class="month">@ev.StartingDate.ToString("MMMM", new System.Globalization.CultureInfo("ar-EG"))</div>
+                                        </div>
+                                    </div>
+                                    <div class="event-info">
+                                        <h5 class="event-title" style="font-family:cairo;">@ev.Title</h5>
+                                        @if (!string.IsNullOrEmpty(ev.Description))
+                                        {
+                                            <p class="event-description text-muted">
+                                                @(ev.Description.Length > 100 ? ev.Description.Substring(0, 100) + "..." : ev.Description)
+                                            </p>
+                                        }
+                                        <div class="event-meta">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> @ev.EndingDate.ToString("hh:mm tt", new System.Globalization.CultureInfo("ar-EG"))
+                                                <i class="fas fa-map-marker-alt ms-3"></i> @ev.Location
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-actions mt-3">
+                                    <a href="@Url.Action("Index", "Event", new { id = ev.EventId })" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-info-circle"></i> التفاصيل
+                                    </a>
+                                    <a href="@Url.Action("Register", "Event", new { id = ev.EventId })" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-calendar-plus"></i> تسجيل الحضور
+                                    </a>
                                 </div>
                             </div>
-                            <div class="event-info">
-                                <h5 class="event-title">ندوة الأدب الحديث</h5>
-                                <p class="event-description text-muted">
-                                    ندوة حول تطور الأدب العربي الحديث مع نخبة من الكتاب والنقاد
-                                </p>
-                                <div class="event-meta">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 7:00 مساءً
-                                        <i class="fas fa-map-marker-alt ms-3"></i> قاعة المحاضرات
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="event-actions mt-3">
-                            <a href="@Url.Action("Details", "Event", new { id = 1 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> التفاصيل
-                            </a>
-                            <button class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
-                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-4">
-                <div class="card event-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="event-date me-3">
-                                <div class="date-box bg-success text-white text-center p-2 rounded">
-                                    <div class="day">30</div>
-                                    <div class="month">سبتمبر</div>
-                                </div>
-                            </div>
-                            <div class="event-info">
-                                <h5 class="event-title">ورشة الكتابة الإبداعية</h5>
-                                <p class="event-description text-muted">
-                                    ورشة تدريبية لتعلم أساسيات الكتابة الإبداعية والسرد
-                                </p>
-                                <div class="event-meta">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 6:00 مساءً
-                                        <i class="fas fa-map-marker-alt ms-3"></i> ورشة الكتابة
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="event-actions mt-3">
-                            <a href="@Url.Action("Details", "Event", new { id = 2 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> التفاصيل
-                            </a>
-                            <button class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
-                            </button>
-                        </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        لا توجد فعاليات متاحة حالياً
                     </div>
                 </div>
-            </div>
+            }
         </div>
 
         <div class="text-center mt-4">
@@ -535,6 +518,7 @@
         </div>
     </div>
 </section>
+
 
 @section Scripts {
     <script>
