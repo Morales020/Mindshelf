@@ -200,56 +200,70 @@ We are a passionate team of .NET developers from the Information Technology Inst
 
 ### **Team Members**
 
+<div align="center">
+
 #### **Mohamed Khaled Elzalook** - Database Specialist & Lead Developer
-![Mohamed Khaled Elzalook](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/MohamedKhalidZALOOK.jpg)
+<img src="Team_members/Zalook.png" alt="Mohamed Khaled Elzalook" width="200" height="200">
+
 - **Role**: Database design, data modeling, and system development
 - **Expertise**: SQL Server, Entity Framework, Database Architecture, ASP.NET Core
 - **Contribution**: Designed database schema, implemented data models, and optimized database performance
 
 #### **Hossam Ahmed** - Frontend Developer & Integrations
-![Hossam Ahmed](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/HosamAhmed.jpg)
+<img src="Team_members/Ahmed.png" alt="Hossam Ahmed" width="200" height="200" >
+
 - **Role**: User interface design, frontend development
 - **Expertise**: Third-party integrations, Bootstrap, responsive design
 - **Contribution**: Created intuitive user interfaces and enhanced user experience, Integrated Payment system
 
 #### **Zeyad Yasser** - Lead Backend Developer & Architect
-![Zeyad Yasser](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/ZeyadYasser.jpg)
+<img src="Team_members/zeyad.png" alt="Zeyad Yasser" width="200" height="200">
+
 - **Role**: Backend services, Layered Architecture design, API development
 - **Expertise**: Backend, Entity Framework, RESTful APIs
 - **Contribution**: Implemented robust Backend and optimized website performance
 
 #### **Tamem Abdrabou** - Backend Engineer
-![Tamem Abdrabou](MindShelf_PL/MindShelf_PL/wwwroot//Images/OurPhotos/TamemAbdRabou.jpg)
+<img src="Team_members/tamem.png" alt="Tamem Abdrabou" width="200" height="200" >
+
 - **Role**: Backend services, DTOs, Controllers, and Views
 - **Expertise**: ASP.NET Core, Entity Framework, MVC Controllers
 - **Contribution**: Developed services, DTOs, controllers and their corresponding views
 
 #### **Hossam Fathy** - Backend Engineer
-![Hossam Fathy](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/HossamFathy.jpg)
+<img src="Team_members/Fathy.png" alt="Hossam Fathy" width="200" height="200" >
+
 - **Role**: Authentication, Authorization, and Order Management
 - **Expertise**: ASP.NET Core Identity, Authorization, Order Processing
 - **Contribution**: Implemented authentication and authorization with Identity framework and order management across all layers
 
 #### **Osama Aymen** - Backend Engineer
-![Osama Aymen](MindShelf_PL/MindShelf_PL/wwwroot//Images/OurPhotos/osamaAyman.jpg)
+<img src="Team_members/Osama.png" alt="Osama Aymen" width="200" height="200" >
+
 - **Role**: Favourite Book Service Development
 - **Expertise**: ASP.NET Core, Entity Framework, Service Layer
 - **Contribution**: Developed favourite book service, controllers, DTOs and views
 
 #### **Islam Elshahawi** - Integration Specialist & DevOps Engineer
-![Islam Elshahawi](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/islamElshahawi.jpg)
+<img src="Team_members/islam.png" alt="Islam Elshahawi" width="200" height="200" >
+
 - **Role**: Third-party integrations, deployment, DevOps
 - **Expertise**: GitHub Actions, Docker, Render deployment
 - **Contribution**: Integrated payment systems and managed deployment pipeline
 
 #### **Mohamed Marey** - Quality Assurance & Testing Engineer
-![Mohamed Marey](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/MohamedMarey.jpg)
+<img src="Team_members/Marey.png" alt="Mohamed Marey" width="200" height="200">
+
 - **Role**: Testing, quality assurance, documentation
 - **Expertise**: Unit testing, integration testing, user acceptance testing
 - **Contribution**: Ensured code quality and comprehensive testing coverage
 
+</div>
+
 ### **Team Photo**
-![MindShelf Team](MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/MindShelfTeam.jpg)
+<div align="center">
+<img src="MindShelf_PL/MindShelf_PL/wwwroot/Images/OurPhotos/MindShelfTeam.jpg" alt="MindShelf Team" width="400">
+</div>
 
 ### **Our Mission**
 To democratize access to knowledge and create meaningful connections between readers, authors, and the broader literary community through innovative technology solutions.

@@ -6,6 +6,24 @@
 
 <style>
     /* Author Details specific styles */
+    
+    /* Remove all underlines from buttons and links */
+    a, a:hover, a:focus, a:visited, a:active,
+    .btn-back, .btn-back:hover, .btn-back:focus, .btn-back:visited, .btn-back:active,
+    .btn-edit, .btn-edit:hover, .btn-edit:focus, .btn-edit:visited, .btn-edit:active,
+    a.btn-back, a.btn-back:hover, a.btn-back:focus, a.btn-back:visited, a.btn-back:active,
+    a.btn-edit, a.btn-edit:hover, a.btn-edit:focus, a.btn-edit:visited, a.btn-edit:active {
+        text-decoration: none !important;
+    }
+    
+    /* Force button text colors */
+    .btn-back, .btn-edit, a.btn-back, a.btn-edit {
+        color: white !important;
+    }
+    
+    .btn-back:hover, .btn-edit:hover, a.btn-back:hover, a.btn-edit:hover {
+        color: white !important;
+    }
     .author-profile-card {
         background: white;
         border-radius: var(--border-radius);
@@ -97,36 +115,36 @@
     .btn-back {
         background: linear-gradient(135deg, var(--primary-blue), var(--primary-brown));
         border: none;
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
         box-shadow: var(--box-shadow);
+        text-decoration: none !important;
     }
-
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            color: white;
-        }
-
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        color: white !important;
+        text-decoration: none !important;
+    }
     .btn-edit {
         background-color: var(--warning-color);
         border-color: var(--warning-color);
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
+        text-decoration: none !important;
     }
-
-        .btn-edit:hover {
-            background-color: #e0a800;
-            border-color: #d39e00;
-            transform: translateY(-1px);
-            color: white;
-        }
+       .btn-edit:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+        transform: translateY(-1px);
+        color: white !important;
+        text-decoration: none !important;
 
     /* Books Section Styles */
     .books-section {
@@ -324,6 +342,18 @@
         background: #2d3748;
         border-color: #4a5568;
         color: #a0aec0;
+         }
+    /* Dark mode button styles */
+    .dark-mode .btn-back, .dark-mode .btn-edit,
+    .dark-mode a.btn-back, .dark-mode a.btn-edit {
+        color: white !important;
+        text-decoration: none !important;
+    }
+    
+    .dark-mode .btn-back:hover, .dark-mode .btn-edit:hover,
+    .dark-mode a.btn-back:hover, .dark-mode a.btn-edit:hover {
+        color: white !important;
+        text-decoration: none !important;
     }
 </style>
 

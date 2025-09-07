@@ -44,7 +44,8 @@ namespace MindShelf_PL.Controllers
                 // Generate order ID (you might want to save this to database)
                 int orderId = new Random().Next(1000, 9999);
 
-                var sessionId = await _paymentService.CreateCheckoutSessionAsync(amount, orderId);
+                // Pass the address and order items from the checkout request
+                var sessionId = await _paymentService.CreateCheckoutSessionAsync(amount, orderId, request.Address, request.OrderItems);
 
                 return Json(new { id = sessionId });
             }

@@ -126,6 +126,21 @@
         background: linear-gradient(135deg, #34a853 0%, #4285f4 100%);
     }
 
+    /* Dark-mode: keep Google button vivid and readable like main login button */
+    body.dark-mode .btn-google {
+        background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+
+    body.dark-mode .btn-google i { color: #ffffff; }
+
+    body.dark-mode .btn-google:hover {
+        background: linear-gradient(135deg, #34a853 0%, #4285f4 100%);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+    }
+
     .forgot-pass {
         color: var(--primary-color);
         text-decoration: none;
@@ -290,11 +305,6 @@
 </style>
 
 <div class="login-container">
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" id="darkModeToggle" title="التبديل للوضع الليلي">
-        <i class="fas fa-moon"></i>
-    </button>
-
     <div class="login-form">
         <h3>تسجيل الدخول إلى <strong>MindShelf</strong></h3>
         <p>أدخل بياناتك أو استخدم Google لتسجيل الدخول</p>
@@ -344,44 +354,12 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Dark Mode Functionality for Login Page
+        // Respect saved dark mode (no toggle on this page)
         document.addEventListener('DOMContentLoaded', function () {
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const body = document.body;
-            
-            // Check saved dark mode preference
-            let isDarkMode = localStorage.getItem('darkMode') === 'true';
-            
-            // Apply saved mode
-            if (isDarkMode) {
-                body.classList.add('dark-mode');
-                updateDarkModeIcon(true);
-            }
-            
-            // Toggle functionality
-            if (darkModeToggle) {
-                darkModeToggle.addEventListener('click', function () {
-                    isDarkMode = !isDarkMode;
-                    
-                    if (isDarkMode) {
-                        body.classList.add('dark-mode');
-                        localStorage.setItem('darkMode', 'true');
-                    } else {
-                        body.classList.remove('dark-mode');
-                        localStorage.setItem('darkMode', 'false');
-                    }
-                    
-                    updateDarkModeIcon(isDarkMode);
-                });
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
             }
         });
-        
-        function updateDarkModeIcon(isDark) {
-            const icon = document.querySelector('#darkModeToggle i');
-            if (icon) {
-                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            }
-        }
 
         // Password Toggle Functionality
         document.addEventListener('DOMContentLoaded', function () {

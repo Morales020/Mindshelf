@@ -1,8 +1,68 @@
 ﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
-
+@using MindShelf_DAL.Models
 @{
     ViewData["Title"] = "حذف الطلب";
 }
+
+<style>
+    /* Dark Mode Styles for Delete Page */
+    body.dark-mode .alert-warning {
+        background-color: #664d03;
+        border-color: #997404;
+        color: #fff3cd;
+    }
+
+    body.dark-mode .alert-warning h5 {
+        color: #fff3cd;
+    }
+
+    body.dark-mode .card {
+        background-color: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .card-body {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode dt {
+        color: var(--dark-text-primary);
+        font-weight: 600;
+    }
+
+    body.dark-mode dd {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .fw-bold {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .text-danger {
+        color: #ff6b6b !important;
+    }
+
+    body.dark-mode .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    body.dark-mode .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    body.dark-mode .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+
+    body.dark-mode .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-danger"><i class="fas fa-trash-alt me-2"></i>حذف الطلب</h2>
@@ -49,29 +109,28 @@
 </form>
 
 @functions {
-    string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
+    string GetStatusBadgeClass(OrderState status) => status switch
     {
-        return status switch
-        {
-            MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
-            MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
-            MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
-            MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
-            MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
-            _ => "bg-secondary"
-        };
-    }
+        OrderState.Pending => "bg-warning",
+        OrderState.Confirmed => "bg-info",
+        OrderState.Shipping => "bg-primary",
+        OrderState.Delivered => "bg-success",
+        OrderState.Cancelled => "bg-danger",
+        OrderState.Processing => "bg-secondary",
+        OrderState.Returned => "bg-dark",
+        _ => "bg-secondary"
+    };
 
-    string GetStatusText(MindShelf_DAL.Models.OrderState status)
+    string GetStatusText(OrderState status) => status switch
     {
-        return status switch
-        {
-            MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
-            MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
-            MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
-            MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
-            MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
-            _ => status.ToString()
-        };
+        OrderState.Pending => "موقوف",
+        OrderState.Confirmed => "مؤكد",
+        OrderState.Shipping => "تم الشحن",
+        OrderState.Delivered => "تم التسليم",
+        OrderState.Cancelled => "ملغي",
+        OrderState.Returned => "أرجاع",
+        OrderState.Processing => "في الانتظار",
+        _ => status.ToString()
+    };
     }
 }

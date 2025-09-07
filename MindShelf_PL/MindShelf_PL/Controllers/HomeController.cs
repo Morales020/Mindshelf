@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MindShelf_PL.Models;
+using Microsoft.AspNetCore.Identity;
+using MindShelf_DAL.Models;
 using MindShelf_BL.Interfaces.IServices;
 
 namespace MindShelf_PL.Controllers
@@ -11,14 +13,16 @@ namespace MindShelf_PL.Controllers
         private readonly IBookServies _bookServices;
         private readonly IAuthorServies _authorServices;
         private readonly IEventServices _eventServices;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices, IEventServices eventServices)
+        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices, IEventServices eventServices, UserManager<User> userManager)
         {
             _logger = logger;
             _bookServices = bookServices;
             _authorServices = authorServices;
             _eventServices = eventServices;
             _eventServices = eventServices;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -29,8 +33,12 @@ namespace MindShelf_PL.Controllers
             var popularAuthorsResponse = await _authorServices.GetPopularAuthorsAsync(3);
             ViewBag.PopularAuthors = popularAuthorsResponse.Data ?? new List<MindShelf_BL.Dtos.AuthorDto.AuthorResponseDto>();
 
-            var upcomingEventsResponse = await _eventServices.GetAllEvents(); // ãËáÇð äÌíÈ 4 ÝÚÇáíÇÊ
+            var upcomingEventsResponse = await _eventServices.GetAllEvents(); // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 4 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             ViewBag.UpcomingEvents = upcomingEventsResponse.Data ?? new List<MindShelf_BL.Dtos.EventDtos.EventResponseDto>();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.IsLoggedIn = currentUser != null;
+            ViewBag.CurrentUserId = currentUser?.Id;
 
             return View();
         }
