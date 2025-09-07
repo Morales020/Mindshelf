@@ -35,43 +35,52 @@
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <form method="get" asp-action="Index">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">البحث بالعنوان</label>
-                                    <input type="text" id="searchInput" name="searchTerm" class="form-control"
-                                           placeholder="ادخل عنوان الكتاب..." value="@ViewBag.SearchTerm" autocomplete="off" />
-                                </div>
-                            <div class="col-md-4">
-                                <label class="form-label">التصنيف</label>
-                                <select id="categoryFilter" name="categoryId" class="form-select">
-                                    <option value="">جميع التصنيفات</option>
-                                    @foreach (var category in (List<CategoryResponseDto>)ViewBag.Categories)
-                                    {
-                                        <option value="@category.CategoryId">@category.Name</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">المؤلف</label>
-                                <select id="authorFilter" name="authorId" class="form-select">
-                                    <option value="">جميع المؤلفين</option>
-                                    @foreach (var author in (List<AuthorResponseDto>)ViewBag.Authors)
-                                    {
-                                        <option value="@author.AuthorId">@author.Name</option>
-                                    }
-                                </select>
-                            </div>
+                    <form id="filtersForm" asp-action="Filter" asp-controller="Books" method="get" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">البحث بالعنوان</label>
+                            <input type="text" id="searchInput" name="searchTerm" class="form-control"
+                                   placeholder="ادخل عنوان الكتاب..." value="@ViewBag.SearchTerm" autocomplete="off" />
+                        </div>
 
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="fas fa-search me-1"></i> بحث
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        <div class="col-md-4">
+                            <label for="categoryId" class="form-label">التصنيف</label>
+                            <select id="categoryId" name="categoryId" class="form-select">
+                                <option value="">اختر التصنيف</option>
+                                @foreach (var category in ViewBag.Categories as List<CategoryResponseDto>)
+                                {
+                                    <option value="@category.CategoryId"
+                                            selected="@(ViewBag.SelectedCategoryId != null && (int)ViewBag.SelectedCategoryId == category.CategoryId)">
+                                        @category.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="authorId" class="form-label">المؤلف</label>
+                            <select id="authorId" name="authorId" class="form-select">
+                                <option value="">اختر المؤلف</option>
+                                @foreach (var author in ViewBag.Authors as List<AuthorResponseDto>)
+                                {
+                                    <option value="@author.AuthorId"
+                                            selected="@(ViewBag.SelectedAuthorId != null && (int)ViewBag.SelectedAuthorId == author.AuthorId)">
+                                        @author.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> بحث
+                            </button>
+                        </div>
+                        <!-- Reset Button -->
+                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-secondary w-100">
+                            <i class="fas fa-undo me-1"></i> إعادة تعيين
+                        </a>
+                    </form>
                     </div>
                 </div>
             </div>
@@ -402,30 +411,7 @@
                         ).show();
                     }
                 });
-            });
-
-            // 🎯 AJAX filters (category + author only, on button click)
-            $("#filtersForm").on("submit", function (e) {
-                e.preventDefault();
-
-                let formData = $(this).serialize(); // includes categoryId + authorId
-
-                $.ajax({
-                    url: '@Url.Action("Search", "Books")',
-                    type: "GET",
-                    data: formData,
-                    success: function (result) {
-                        $("#books-container").hide();
-                        $("#searchResults").html(result).show();
-                    },
-                    error: function () {
-                        $("#books-container").hide();
-                        $("#searchResults").html(
-                            "<div class='col-12 text-center text-danger py-5'>حدث خطأ أثناء التصفية</div>"
-                        ).show();
-                    }
-                });
-            });
+            });            
         });
     </script>
 }

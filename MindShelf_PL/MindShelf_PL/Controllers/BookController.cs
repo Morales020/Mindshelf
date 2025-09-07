@@ -323,21 +323,21 @@ namespace MindShelf_MVC.Controllers
 
         public async Task<IActionResult> Filter(int? categoryId, int? authorId)
         {
-            if (categoryId.HasValue && authorId.HasValue)
-            {
-                var response = await _bookService.GetBooksByCategoryAndAuthorAsync(categoryId.Value, authorId.Value);
-                if (response.StatusCode != 200 || response.Data == null)
-                    return ErrorResult(response.Message);
+            var response = await _bookService.FilterBooksAsync(categoryId, authorId);
+            if (response.StatusCode != 200 || response.Data == null)
+                return ErrorResult(response.Message);
 
-                return PartialView("_BooksListPartial", response.Data);
-            }
-            else if (categoryId.HasValue)
-                return await ByCategory(categoryId.Value);
+            // repopulate dropdowns
+            var categories = await _categoryService.GetAllCategories();
+            var authors = await _authorService.GetAllAuthor(1,10);
 
-            else if (authorId.HasValue)
-                return await ByAuthor(authorId.Value);
+            ViewBag.Categories = categories.Data;
+            ViewBag.Authors = authors.Data;
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SelectedAuthorId = authorId;
 
-            return RedirectToAction("Index");
+
+            return View("Index", response.Data);
         }
 
         public async Task<IActionResult> NewReleases()
