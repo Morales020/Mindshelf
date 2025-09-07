@@ -446,95 +446,355 @@
 </section>
 
 <!-- Upcoming Events Section -->
-<section class="upcoming-events py-5 bg-light">
+<section class="upcoming-events py-5">
     <div class="container">
-        <div class="section-header">
+        <div class="section-header text-center mb-5">
             <h2 class="section-title">
-                <i class="fas fa-calendar-check text-success"></i>
+                <i class="fas fa-calendar-check text-primary"></i>
                 الفعاليات القادمة
             </h2>
             <p class="section-subtitle">انضم إلينا في فعالياتنا الثقافية والأدبية</p>
         </div>
 
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card event-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="event-date me-3">
-                                <div class="date-box bg-primary text-white text-center p-2 rounded">
-                                    <div class="day">25</div>
-                                    <div class="month">سبتمبر</div>
+        <div class="row g-4">
+            @if (ViewBag.UpcomingEvents != null && ((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.UpcomingEvents).Any())
+            {
+                @foreach (var ev in (IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.UpcomingEvents)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="home-event-card">
+                            <div class="event-card-header">
+                                <div class="event-date-badge">
+                                    <div class="date-day">@ev.StartingDate.Day</div>
+                                    <div class="date-month">@ev.StartingDate.ToString("MMM", new System.Globalization.CultureInfo("ar-EG"))</div>
+                                </div>
+                                <div class="event-status-badge @(ev.IsOnline ? "online" : "offline")">
+                                    <i class="fas @(ev.IsOnline ? "fa-video" : "fa-building")"></i>
+                                    @(ev.IsOnline ? "أونلاين" : "حضوري")
                                 </div>
                             </div>
-                            <div class="event-info">
-                                <h5 class="event-title">ندوة الأدب الحديث</h5>
-                                <p class="event-description text-muted">
-                                    ندوة حول تطور الأدب العربي الحديث مع نخبة من الكتاب والنقاد
-                                </p>
+                            
+                            <div class="event-card-body">
+                                <h5 class="event-title">@ev.Title</h5>
+                                @if (!string.IsNullOrEmpty(ev.Description))
+                                {
+                                    <p class="event-description">
+                                        @(ev.Description.Length > 120 ? ev.Description.Substring(0, 120) + "..." : ev.Description)
+                                    </p>
+                                }
+                                
                                 <div class="event-meta">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 7:00 مساءً
-                                        <i class="fas fa-map-marker-alt ms-3"></i> قاعة المحاضرات
-                                    </small>
+                                    <div class="event-meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>@ev.StartingDate.ToString("HH:mm", new System.Globalization.CultureInfo("ar-EG"))</span>
+                                    </div>
+                                    <div class="event-meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>@ev.Location</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="event-actions mt-3">
-                            <a href="@Url.Action("Details", "Event", new { id = 1 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> التفاصيل
-                            </a>
-                            <button class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
-                            </button>
+                            
+                            <div class="event-card-footer">
+                                <a href="@Url.Action("Details", "Event", new { id = ev.EventId })" class="btn btn-details">
+                                    <i class="fas fa-info-circle"></i>
+                                    التفاصيل
+                                </a>
+                                @if (ev.IsActive)
+                                {
+                                    <a href="@Url.Action("Register", "Event", new { id = ev.EventId })" class="btn btn-register">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        تسجيل الحضور
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-register" disabled>
+                                        <i class="fas fa-times-circle"></i>
+                                        منتهي
+                                    </button>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-4">
-                <div class="card event-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="event-date me-3">
-                                <div class="date-box bg-success text-white text-center p-2 rounded">
-                                    <div class="day">30</div>
-                                    <div class="month">سبتمبر</div>
-                                </div>
-                            </div>
-                            <div class="event-info">
-                                <h5 class="event-title">ورشة الكتابة الإبداعية</h5>
-                                <p class="event-description text-muted">
-                                    ورشة تدريبية لتعلم أساسيات الكتابة الإبداعية والسرد
-                                </p>
-                                <div class="event-meta">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> 6:00 مساءً
-                                        <i class="fas fa-map-marker-alt ms-3"></i> ورشة الكتابة
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="event-actions mt-3">
-                            <a href="@Url.Action("Details", "Event", new { id = 2 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> التفاصيل
-                            </a>
-                            <button class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-calendar-plus"></i> تسجيل الحضور
-                            </button>
-                        </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="no-events-message">
+                        <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h4 class="text-muted">لا توجد فعاليات متاحة حالياً</h4>
+                        <p class="text-muted">تابعنا لمعرفة آخر الفعاليات والأحداث</p>
                     </div>
                 </div>
-            </div>
+            }
         </div>
 
-        <div class="text-center mt-4">
-            <a href="@Url.Action("Index", "Event")" class="btn btn-outline-success btn-lg">
+        <div class="text-center mt-5">
+            <a href="@Url.Action("Index", "Event")" class="btn btn-primary btn-lg">
                 <i class="fas fa-calendar-alt"></i> عرض جميع الفعاليات
             </a>
         </div>
     </div>
 </section>
+
+<style>
+    /* Home Events Section Styles */
+    .upcoming-events {
+        background: var(--light-color);
+        position: relative;
+    }
+
+    .home-event-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: var(--transition);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-event-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .event-card-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+
+    .event-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .event-date-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        color: white;
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .date-day {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .date-month {
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+
+    .event-status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .event-status-badge.online {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .event-status-badge.offline {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .event-card-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+
+    .event-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .event-description {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .event-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .event-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .event-meta-item i {
+        width: 16px;
+        color: var(--primary-color);
+    }
+
+    .event-card-footer {
+        padding: 1rem 1.5rem;
+        background: var(--light-color);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-details {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: var(--transition);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-details:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-register {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: var(--transition);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-register:hover:not(:disabled) {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .btn-register:disabled {
+        background: #6b7280;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .no-events-message {
+        padding: 3rem 2rem;
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode .upcoming-events {
+        background: var(--dark-bg);
+    }
+
+    body.dark-mode .home-event-card {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .event-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .event-description {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .event-meta-item {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .event-card-footer {
+        background: var(--dark-border-color);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .no-events-message {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .no-events-message h4 {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .no-events-message p {
+        color: #b0b0b0;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .event-card-header {
+            padding: 1rem;
+        }
+
+        .event-card-body {
+            padding: 1rem;
+        }
+
+        .event-card-footer {
+            padding: 1rem;
+            flex-direction: column;
+        }
+
+        .btn-details,
+        .btn-register {
+            width: 100%;
+        }
+    }
+</style>
+
 
 @section Scripts {
     <script>
