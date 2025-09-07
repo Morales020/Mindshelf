@@ -1,0 +1,226 @@
+﻿@model EventResponseDto
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حذف حدث - مكتبة رقمية</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-100 py-3">
+        <div class="container mx-auto px-4">
+            <nav class="text-sm">
+                <ol class="list-none p-0 inline-flex space-x-2 space-x-reverse">
+                    <li class="flex items-center">
+                        <a href="#" class="text-blue-600 hover:text-blue-800">الرئيسية</a>
+                        <i class="fas fa-chevron-left mx-2 text-gray-400"></i>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="#" class="text-blue-600 hover:text-blue-800">الفعاليات</a>
+                        <i class="fas fa-chevron-left mx-2 text-gray-400"></i>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-gray-500">حذف فعالية</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-calendar-plus text-red-600 ml-2"></i>
+                        @Model.Title
+                    </h1>
+                </div>
+                <a asp-action="Index" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg flex items-center">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للفعاليات
+                </a>
+            </div>
+        </div>
+
+        <!-- Create Event Form -->
+        <div class="bg-white rounded-xl card-shadow p-8">
+            <form asp-action="DeleteConfirmed" asp-route-id="@Model.EventId" method="post" class="space-y-6">
+                <!-- Event Title -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-heading ml-1 text-blue-500"></i>
+                            عنوان الفعالية *
+                        </label>
+                        <input asp-for="Title" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="أدخل عنوان الفعالية">
+                    </div>
+                </div>
+
+                <!-- Date and Time -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-day ml-1 text-green-500"></i>
+                            تاريخ البداية *
+                        </label>
+                        <input asp-for="StartingDate" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="endDate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-check ml-1 text-red-500"></i>
+                            تاريخ النهاية *
+                        </label>
+                        <input asp-for="EndingDate" required
+                               class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Location Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-4">
+                        <i class="fas fa-map-marker-alt ml-1 text-purple-500"></i>
+                        نوع الفعالية *
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                            <input asp-for="IsOnline" type="radio" value="false" class="text-blue-500 mr-3">
+                            <div style="margin-right:15px">
+                                <div class="font-medium text-gray-800">
+                                    <i class="fas fa-building ml-2 text-blue-500"></i>
+                                    حضورية
+                                </div>
+                                <div class="text-sm text-gray-600">في مكان محدد</div>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                            <input asp-for="IsOnline" disabled type="radio" value="true" class="text-blue-500 mr-3">
+                            <div style="margin-right:15px">
+                                <div class="font-medium text-gray-800">
+                                    <i class="fas fa-laptop ml-2 text-green-500"></i>
+                                    عبر الإنترنت
+                                </div>
+                                <div class="text-sm text-gray-600">اجتماع افتراضي</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Active? -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Active -->
+                    <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-green-500 transition-colors">
+                        <input asp-for="IsActive" disable type="radio" value="true" class="text-green-500 mr-3">
+                        <div style="margin-right:15px">
+                            <div class="font-medium text-gray-800">
+                                <i class="fas fa-check-circle ml-2 text-green-500"></i>
+                                نشط
+                            </div>
+                            <div class="text-sm text-gray-600">الحدث متاح حالياً</div>
+                        </div>
+                    </label>
+
+                    <!-- Inactive -->
+                    <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors">
+                        <input asp-for="IsActive" type="radio" value="false" class="text-red-500 mr-3">
+                        <div style="margin-right:15px">
+                            <div class="font-medium text-gray-800">
+                                <i class="fas fa-times-circle ml-2 text-red-500"></i>
+                                منتهي
+                            </div>
+                            <div class="text-sm text-gray-600">الحدث منتهي أو غير متاح</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Location Details -->
+                <div id="locationDetails">
+                    <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-map-marker-alt ml-1 text-red-500"></i>
+                        مكان الفعالية / رابط الاجتماع *
+                    </label>
+                    <input asp-for="Location" required
+                           class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="أدخل عنوان المكان أو رابط الاجتماع">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-align-right ml-1 text-yellow-500"></i>
+                        وصف الفعالية
+                    </label>
+                    <textarea asp-for="Description" rows="5"
+                              class="form-control w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                              placeholder="اكتب وصفاً تفصيلياً للفعالية، أهدافها، والجمهور المستهدف..."></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle ml-1"></i>
+                        الحقول المميزة بـ (*) مطلوبة
+                    </div>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a asp-action="Index">
+                            <button type="button" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
+                                <i class="fas fa-times ml-1"></i>
+                                إلغاء
+                            </button>
+                        </a>
+                        <input type="hidden" asp-for="EventId" />
+                        <button type="submit" class="px-8 py-3 text-white rounded-lg font-medium"
+                                style="background-image:linear-gradient(45deg, #ff4242, #d60707);">
+                            <i class="fas fa-trash ml-1"></i> حذف الفعالية
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+   
+
+
+</body>
+

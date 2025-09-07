@@ -100,6 +100,7 @@ namespace MindShelf_PL.Controllers
             var dto = new UpdateEventDto
             {
                 Title = result.Data.Title,
+                Description = result.Data.Description,
                 StartingDate = result.Data.StartingDate,
                 EndingDate = result.Data.EndingDate,
                 Location = result.Data.Location,
@@ -152,7 +153,7 @@ namespace MindShelf_PL.Controllers
 
         // POST: /Event/Delete/5 - للأدمن فقط
         [Authorize(Roles = "Admin")]
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
