@@ -148,6 +148,8 @@ namespace MindShelf_BL.Services
             {
                 var order = await _unitOfWork.OrderRepo.Query()
                     .AsNoTracking()
+                    .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
                     .Where(o => o.OrderId == orderId)
                     .Select(o => new OrderResponseDto
                     {
@@ -162,7 +164,9 @@ namespace MindShelf_BL.Services
                         {
                             OrderItemId = item.OrderItemId,
                             BookId = item.BookId,
+                            BookName = item.Book.Title,
                             Quantity = item.Quantity,
+                            Price = item.UnitPrice,
                             TotalPrice = item.TotalPrice
                         }).ToList()
                     }).FirstOrDefaultAsync();

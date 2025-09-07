@@ -1812,3 +1812,66 @@ body.dark-mode {
         border: 1px solid #ddd !important;
     }
 }
+
+/* ========== Order Item Cards ========== */
+.order-item-card {
+    transition: var(--transition);
+    border: 1px solid var(--border-color) !important;
+    background: var(--card-bg) !important;
+}
+
+.order-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.order-item-card .card-title {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+.order-item-card .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Dark mode for order item cards */
+[data-theme="dark"] .order-item-card {
+    background: var(--dark-card-bg) !important;
+    border-color: var(--dark-border-color) !important;
+}
+
+[data-theme="dark"] .order-item-card .card-title {
+    color: var(--dark-text-primary) !important;
+}
+
+[data-theme="dark"] .order-item-card .text-muted {
+    color: #a0a0a0 !important;
+}
+
+[data-theme="dark"] .order-item-card .badge {
+    background-color: var(--primary-blue) !important;
+}
+
+/* Order summary table dark mode */
+[data-theme="dark"] .table-light {
+    background-color: var(--dark-card-bg) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+[data-theme="dark"] .table-light th {
+    border-color: var(--dark-border-color) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+[data-theme="dark"] .table-light td {
+    border-color: var(--dark-border-color) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--dark-card-bg) !important;
+}
+
+[data-theme="dark"] .bg-light .card-title {
+    color: var(--dark-text-primary) !important;
+}
