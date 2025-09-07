@@ -17,5 +17,8 @@ namespace MindShelf_BL.Interfaces.IServices
         Task<ResponseMVC<CreateEventDto>> CreateEvent(CreateEventDto createDto);
         Task<ResponseMVC<bool>> UpdateEventAsync(int id, UpdateEventDto updateDto);
         Task<ResponseMVC<bool>> DeleteEventAsync(int id);
+        Task<ResponseMVC<EventRegistrationResponseDto>> GetRegistrationById(int registrationId);
+        Task<ResponseMVC<bool>> DeleteRegistration(int registrationId);
+        Task<ResponseMVC<EventRegistrationResponseDto>> RegisterForEvent(CreateEventRegistrationDto createEventRegistrationDto);
     }
 }

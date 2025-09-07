@@ -5,6 +5,7 @@ using MindShelf_BL.Dtos.EventDtos;
 using MindShelf_BL.Helper;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_DAL.Models;
+using MindShelf_BL.UnitWork;
 
 namespace MindShelf_PL.Controllers
 {
@@ -168,19 +169,57 @@ namespace MindShelf_PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Event/Register/5 - للمستخدمين المسجلين فقط
+        [HttpGet]
+        public async Task<IActionResult> RegistrationDetails(int id)
+        {
+            var result = await _eventService.GetRegistrationById(id);
+            if (!result.Success)
+                return View("Error", result.Message);
+
+            return View(result.Data);
+        }
+
+        // POST: /Event/Register/5 - تسجيل مستخدم في حدث
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterForEvent(int eventId)
+        public async Task<IActionResult> RegisterForEvent(CreateEventRegistrationDto dto)
         {
             var user = await _userManager.GetUserAsync(User);
-
-            // هنا يمكنك إضافة منطق تسجيل المستخدم في الحدث
-            // مثل إنشاء جدول EventRegistrations
+            if (user == null)
+            {
+                TempData["Error"] = "يجب تسجيل الدخول أولاً";
+                return RedirectToAction("Login", "Account");
+            }
+            dto.UserId = user.Id;
+            dto.UserName = user.UserName;
+            var result = await _eventService.RegisterForEvent( dto);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Details", new { id = dto.EventId});
+            }
 
             TempData["Success"] = "تم تسجيلك في الحدث بنجاح";
+            return RedirectToAction("Details", new { id = dto.EventId });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRegistration(int id, int eventId)
+        {
+            var result = await _eventService.DeleteRegistration(id);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Details", new { id = eventId });
+            }
+
+            TempData["Success"] = "تم حذف التسجيل بنجاح";
             return RedirectToAction("Details", new { id = eventId });
         }
+
+
     }
 }
