@@ -134,9 +134,12 @@
                     </h1>
                     <p class="text-muted mb-0">استكشف مجموعة متنوعة من المؤلفين المتميزين</p>
                 </div>
+                @if (User.IsInRole("Admin"))
+                                {
                 <a asp-action="Create" class="btn-add-author">
                     <i class="fas fa-plus me-2"></i>إضافة مؤلف جديد
                 </a>
+                                }
             </div>
         </div>
     </div>
@@ -179,12 +182,15 @@
                                 <a asp-action="Details" asp-route-id="@author.AuthorId" class="btn btn-outline-primary btn-sm flex-grow-1">
                                     <i class="fas fa-eye me-1"></i>عرض التفاصيل
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn btn-edit btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn btn-delete btn-sm">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn btn-edit btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn btn-delete btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </div>
