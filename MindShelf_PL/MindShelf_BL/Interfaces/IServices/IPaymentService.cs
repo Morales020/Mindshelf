@@ -8,6 +8,7 @@ namespace MindShelf_BL.Interfaces.IServices
 {
     public interface IPaymentService
     {
-        Task<string> CreateCheckoutSessionAsync(decimal amount, int OrderId);
+        Task<string> CreateCheckoutSessionAsync(decimal amount, int OrderId, string address = null, List<MindShelf_BL.Dtos.CartsDto.CartItemResponseDto> orderItems = null);
+        Task<string> CreateCartCheckoutSessionAsync(decimal amount, int orderId, List<MindShelf_BL.Dtos.CartsDto.CartItemResponseDto> cartItems, string address = null);
     }
 }

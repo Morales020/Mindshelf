@@ -7,6 +7,12 @@
 
 <style>
     /* Author-specific styles */
+    
+    /* Remove all underlines from author name links */
+    .author-name a, .author-name a:hover, .author-name a:focus, .author-name a:visited,
+    .dark-mode .author-name a, .dark-mode .author-name a:hover, .dark-mode .author-name a:focus, .dark-mode .author-name a:visited {
+        text-decoration: none !important;
+    }
     .author-card {
         background: white;
         border-radius: var(--border-radius);
@@ -33,8 +39,18 @@
         color: var(--primary-blue);
         font-family: var(--font-arabic-title);
         font-weight: 700;
-        text-decoration: none;
+        text-decoration: none !important;
         transition: var(--transition);
+    }
+    
+    .author-name a {
+        text-decoration: none !important;
+        color: inherit;
+    }
+    
+    .author-name a:hover {
+        text-decoration: none !important;
+        color: inherit;
     }
 
     .author-name:hover {
@@ -108,10 +124,22 @@
 
     .dark-mode .author-name {
         color: #63b3ed;
+        text-decoration: none !important;
+    }
+    
+    .dark-mode .author-name a {
+        text-decoration: none !important;
+        color: inherit;
+    }
+    
+    .dark-mode .author-name a:hover {
+        text-decoration: none !important;
+        color: inherit;
     }
 
     .dark-mode .author-name:hover {
         color: #90cdf4;
+        text-decoration: none !important;
     }
 
     .dark-mode .author-bio {
@@ -214,3 +242,57 @@
         }
     </div>
     </div>
+
+<script>
+    // Force remove underlines from all buttons on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove underlines from add author button
+        const addAuthorBtn = document.querySelector('.btn-add-author');
+        if (addAuthorBtn) {
+            addAuthorBtn.style.textDecoration = 'none';
+            addAuthorBtn.style.borderBottom = 'none';
+            addAuthorBtn.style.boxShadow = 'none';
+            
+            // Remove underlines from all child elements
+            const childElements = addAuthorBtn.querySelectorAll('*');
+            childElements.forEach(element => {
+                element.style.textDecoration = 'none';
+            });
+            
+            // Add event listeners to maintain no underlines
+            addAuthorBtn.addEventListener('mouseenter', function() {
+                this.style.textDecoration = 'none';
+            });
+            addAuthorBtn.addEventListener('mouseleave', function() {
+                this.style.textDecoration = 'none';
+            });
+            addAuthorBtn.addEventListener('focus', function() {
+                this.style.textDecoration = 'none';
+            });
+        }
+        
+        // Remove underlines from all author name links
+        const authorNameLinks = document.querySelectorAll('.author-name a');
+        authorNameLinks.forEach(link => {
+            link.style.textDecoration = 'none';
+            link.addEventListener('mouseenter', function() {
+                this.style.textDecoration = 'none';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.textDecoration = 'none';
+            });
+        });
+        
+        // Remove underlines from all action buttons
+        const actionButtons = document.querySelectorAll('.author-actions a');
+        actionButtons.forEach(button => {
+            button.style.textDecoration = 'none';
+            button.addEventListener('mouseenter', function() {
+                this.style.textDecoration = 'none';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.textDecoration = 'none';
+            });
+        });
+    });
+</script>

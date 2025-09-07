@@ -1,20 +1,402 @@
-﻿@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
+﻿@using MindShelf_DAL.Models
+@model MindShelf_BL.Dtos.OrderDtos.OrderResponseDto
 
 @{
 	ViewData["Title"] = "تفاصيل الطلب";
 }
 
-<div class="d-flex align-items-center mb-4 p-3">
-	<h2 class="mb-0"><i class="fas fa-receipt me-2"></i> تفاصيل الطلب #@Model.Id.ToString().PadLeft(6, '0')</h2>
-	<span class="badge @GetStatusBadgeClass(Model.OrderStatus) m-3 p-3 float-end">
+<style>
+    /* Order Details Page Specific Styles */
+    
+    /* Remove all underlines from buttons and links */
+    a, a:hover, a:focus, a:visited, a:active,
+    .btn, .btn:hover, .btn:focus, .btn:visited, .btn:active,
+    .btn-secondary, .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:visited, .btn-secondary:active,
+    .btn-danger, .btn-danger:hover, .btn-danger:focus, .btn-danger:visited, .btn-danger:active {
+        text-decoration: none !important;
+    }
+    
+    /* Force button text colors */
+    .btn-secondary, .btn-danger {
+        color: white !important;
+    }
+    
+    .btn-secondary:hover, .btn-danger:hover {
+        color: white !important;
+    }
+    
+    .order-details-hero {
+        background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+        color: white;
+        padding: 3rem 0;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .order-details-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .order-details-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .order-info-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        margin-bottom: 2rem;
+    }
+
+    .order-info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .order-items-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        margin-bottom: 2rem;
+    }
+
+    .order-item-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        height: 100%;
+    }
+
+    .order-item-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+    }
+
+    .order-item-card .card-title {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .order-item-card .text-muted {
+        color: var(--text-muted);
+    }
+
+    .order-item-card .fw-bold {
+        color: var(--text-primary);
+    }
+
+    .order-item-card .small {
+        color: var(--text-muted);
+    }
+
+    .summary-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        margin-top: 1.5rem;
+    }
+
+    .status-badge {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .status-badge.bg-warning {
+        background: rgba(255, 193, 7, 0.9);
+        color: #000;
+    }
+
+    .status-badge.bg-info {
+        background: rgba(13, 202, 240, 0.9);
+        color: white;
+    }
+
+    .status-badge.bg-primary {
+        background: rgba(13, 110, 253, 0.9);
+        color: white;
+    }
+
+    .status-badge.bg-success {
+        background: rgba(25, 135, 84, 0.9);
+        color: white;
+    }
+
+    .status-badge.bg-danger {
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+    }
+
+    .status-badge.bg-secondary {
+        background: rgba(108, 117, 125, 0.9);
+        color: white;
+    }
+
+    .status-badge.bg-dark {
+        background: rgba(33, 37, 41, 0.9);
+        color: white;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        border: none;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+    }
+
+    .btn-back::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-back:hover:not(:disabled)::before {
+        left: 100%;
+    }
+
+    .btn-back:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(108, 117, 125, 0.4);
+        background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+        color: white !important;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        border: none;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn-cancel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-cancel:hover:not(:disabled)::before {
+        left: 100%;
+    }
+
+    .btn-cancel:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(135deg, #b02a37 0%, #dc3545 100%);
+        color: white !important;
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode .order-info-card,
+    body.dark-mode .order-items-card,
+    body.dark-mode .order-item-card,
+    body.dark-mode .summary-card {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .order-info-card:hover,
+    body.dark-mode .order-items-card:hover,
+    body.dark-mode .order-item-card:hover {
+        border-color: var(--primary-color);
+    }
+
+    body.dark-mode .summary-card {
+        background: var(--dark-card-bg);
+    }
+
+    body.dark-mode .table {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .table-light {
+        background-color: var(--dark-card-bg);
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .table-light th,
+    body.dark-mode .table-light td {
+        border-color: var(--dark-border-color);
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .text-muted {
+        color: #e0e0e0 !important;
+    }
+
+    body.dark-mode .text-success {
+        color: #4ade80 !important;
+    }
+
+    body.dark-mode .text-truncate {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .card-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .fw-bold {
+        color: var(--dark-text-primary);
+    }
+
+    /* Fix order item card text visibility */
+    body.dark-mode .order-item-card .text-muted {
+        color: #d0d0d0 !important;
+    }
+
+    body.dark-mode .order-item-card .card-title {
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+
+    body.dark-mode .order-item-card .fw-bold {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .order-item-card .small {
+        color: #d0d0d0 !important;
+    }
+
+    body.dark-mode .order-item-card .badge {
+        color: white !important;
+    }
+
+    /* Ensure icons are visible */
+    body.dark-mode .order-item-card i {
+        color: var(--primary-color) !important;
+    }
+
+    /* Improve badge visibility */
+    .order-item-card .badge {
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    /* Ensure all text elements have proper contrast */
+    .order-item-card .card-body {
+        color: var(--text-primary);
+    }
+
+    body.dark-mode .order-item-card .card-body {
+        color: #ffffff;
+    }
+
+    /* Ensure book names display fully */
+    .order-item-card .card-title {
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        line-height: 1.4;
+    }
+
+    .table td {
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        vertical-align: middle;
+    }
+
+    body.dark-mode .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white !important;
+    }
+
+    body.dark-mode .btn-back:hover {
+        background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+        color: white !important;
+    }
+
+    body.dark-mode .btn-cancel {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+        color: white !important;
+    }
+
+    body.dark-mode .btn-cancel:hover {
+        background: linear-gradient(135deg, #b02a37 0%, #dc3545 100%);
+        color: white !important;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .order-details-hero {
+            padding: 2rem 0;
+        }
+        
+        .order-item-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="order-details-hero">
+    <div class="container">
+        <div class="order-details-hero-content text-center">
+            <div class="mb-4">
+                <i class="fas fa-receipt text-5xl mb-3 opacity-90"></i>
+                <h1 class="text-3xl md:text-4xl font-bold mb-3">تفاصيل الطلب</h1>
+                <p class="text-lg opacity-90">طلب رقم #@Model.Id.ToString().PadLeft(6, '0')</p>
+            </div>
+            
+            <div class="d-flex justify-content-center">
+                <span class="status-badge @GetStatusBadgeClass(Model.OrderStatus)">
+                    <i class="fas fa-info-circle ml-2"></i>
 		@GetStatusText(Model.OrderStatus)
 	</span>
-
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div class="card mb-4">
-	<div class="card-body">
+<!-- Order Information -->
+<div class="container">
+    <div class="order-info-card">
+        <div class="card-body p-4">
+            <h5 class="card-title mb-4">
+                <i class="fas fa-info-circle me-2"></i>معلومات الطلب
+            </h5>
 		<dl class="row">
 			<dt class="col-sm-3">تاريخ الطلب</dt>
 			<dd class="col-sm-9">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
@@ -26,98 +408,162 @@
 			<dd class="col-sm-9">@Model.ShippingAddress</dd>
 
 			<dt class="col-sm-3">الإجمالي</dt>
-			<dd class="col-sm-9 fw-bold">@Model.TotalAmount.ToString("C")</dd>
+                <dd class="col-sm-9 fw-bold text-success">@Model.TotalAmount.ToString("C")</dd>
 		</dl>
 	</div>
 </div>
 
-<!-- Items -->
-<div class="card mb-4">
-	<div class="card-header">
-		<i class="fas fa-boxes me-2"></i> عناصر الطلب
+    <!-- Order Items -->
+    <div class="order-items-card">
+        <div class="card-header bg-transparent border-0 p-4">
+            <h5 class="card-title mb-0">
+		<i class="fas fa-boxes me-2"></i> عناصر الطلب (@Model.OrderItems.Count)
+            </h5>
 	</div>
-	<div class="card-body">
+        <div class="card-body p-4">
 		@if (Model.OrderItems != null && Model.OrderItems.Any())
 		{
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>رقم العنصر</th>
-						<th>رقم الكتاب</th>
-						<th>الكمية</th>
-						<th>السعر الكلي</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model.OrderItems)
-					{
-						<tr>
-							<td>@item.OrderItemId</td>
-							<td>@item.BookId</td>
-							<td>@item.Quantity</td>
-							<td>@item.TotalPrice.ToString("C")</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		}
-		else
-		{
-			<p class="text-muted">لا توجد عناصر في هذا الطلب.</p>
-		}
-	</div>
-</div>
+                <div class="row">
+                    @{ int itemIndex = 1; }
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="order-item-card">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h6 class="card-title mb-0" style="flex: 1; margin-right: 1rem;" title="@item.BookName">
+                                            @item.BookName
+                                        </h6>
+                                        <span class="badge bg-primary">#@itemIndex</span>
+                                    </div>
+								
+                                    <div class="row text-muted small mb-3">
+									<div class="col-6">
+										<i class="fas fa-hashtag me-1"></i>
+										<span>العنصر: @item.OrderItemId</span>
+									</div>
+									<div class="col-6">
+										<i class="fas fa-shopping-cart me-1"></i>
+										<span>الكمية: @item.Quantity</span>
+									</div>
+								</div>
+								
+								<div class="d-flex justify-content-between align-items-center">
+									<div class="text-muted small">
+										<span>السعر الوحدة:</span>
+										<span class="fw-bold">@item.Price.ToString("C")</span>
+									</div>
+									<div class="text-success fw-bold">
+										<i class="fas fa-calculator me-1"></i>
+										@item.TotalPrice.ToString("C")
+									</div>
+								</div>
+                                </div>
+                            </div>
+                        </div>
+                        itemIndex++;
+                    }
+                </div>
+                
+                <!-- Summary Table -->
+                <div class="summary-card">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-4">
+                            <i class="fas fa-list-alt me-2"></i> ملخص الطلب
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="text-start">اسم الكتاب</th>
+                                        <th class="text-center">الكمية</th>
+                                        <th class="text-center">السعر الوحدة</th>
+                                        <th class="text-end">المجموع</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td class="text-start" title="@item.BookName">
+                                                @item.BookName
+                                            </td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-center">@item.Price.ToString("C")</td>
+                                            <td class="text-end fw-bold">@item.TotalPrice.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="3" class="text-end">المجموع الكلي:</th>
+                                        <th class="text-end text-success fw-bold">@Model.TotalAmount.ToString("C")</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <p class="text-muted fs-5">لا توجد عناصر في هذا الطلب.</p>
+                </div>
+            }
+        </div>
+    </div>
 
-<!-- Actions -->
-<div class="d-flex justify-content-between p-2">
-	@if (User.IsInRole("Admin"))
-	{
-		<a asp-action="Index" class="btn btn-secondary">
-			<i class="fas fa-arrow-left me-1"></i> رجوع للطلبات
-		</a>
-	}
-	else
-	{
-		<a asp-action="UserOrders" asp-route-userName="@User.Identity.Name" class="btn btn-secondary">
-			<i class="fas fa-arrow-left me-1"></i> رجوع لطلباتي
-		</a>
-	}
+    <!-- Actions -->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Index" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i> رجوع للطلبات
+            </a>
+        }
+        else
+        {
+            <a asp-action="UserOrders" asp-route-userName="@User.Identity.Name" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i> رجوع لطلباتي
+            </a>
+        }
 
-	@if (Model.OrderStatus == MindShelf_DAL.Models.OrderState.Pending)
-	{
-		<form asp-action="Cancel" method="post" asp-route-id="@Model.Id" class="d-inline">
-			<button type="submit" class="btn btn-danger">
-				<i class="fas fa-times me-1"></i> إلغاء الطلب
-			</button>
-		</form>
-	}
+        @if (Model.OrderStatus == MindShelf_DAL.Models.OrderState.Pending)
+        {
+            <form asp-action="Cancel" method="post" asp-route-id="@Model.Id" class="d-inline">
+                <button type="submit" class="btn-cancel">
+                    <i class="fas fa-times me-2"></i> إلغاء الطلب
+                </button>
+            </form>
+        }
+    </div>
 </div>
 
 
 @functions {
-	string GetStatusBadgeClass(MindShelf_DAL.Models.OrderState status)
-	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "bg-warning",
-			MindShelf_DAL.Models.OrderState.Confirmed => "bg-info",
-			MindShelf_DAL.Models.OrderState.Shipping => "bg-primary",
-			MindShelf_DAL.Models.OrderState.Delivered => "bg-success",
-			MindShelf_DAL.Models.OrderState.Cancelled => "bg-danger",
-			_ => "bg-secondary"
-		};
-	}
+	string GetStatusBadgeClass(OrderState status) => status switch
+    {
+        OrderState.Pending => "bg-warning",
+        OrderState.Confirmed => "bg-info",
+        OrderState.Shipping => "bg-primary",
+        OrderState.Delivered => "bg-success",
+        OrderState.Cancelled => "bg-danger",
+        OrderState.Processing => "bg-secondary",
+        OrderState.Returned => "bg-dark",
+        _ => "bg-secondary"
+    };
 
-	string GetStatusText(MindShelf_DAL.Models.OrderState status)
-	{
-		return status switch
-		{
-			MindShelf_DAL.Models.OrderState.Pending => "في الانتظار",
-			MindShelf_DAL.Models.OrderState.Confirmed => "مؤكد",
-			MindShelf_DAL.Models.OrderState.Shipping => "تم الشحن",
-			MindShelf_DAL.Models.OrderState.Delivered => "تم التسليم",
-			MindShelf_DAL.Models.OrderState.Cancelled => "ملغي",
-			_ => status.ToString()
-		};
-	}
+    string GetStatusText(OrderState status) => status switch
+    {
+        OrderState.Pending => "موقوف",
+        OrderState.Confirmed => "مؤكد",
+        OrderState.Shipping => "تم الشحن",
+        OrderState.Delivered => "تم التسليم",
+        OrderState.Cancelled => "ملغي",
+        OrderState.Returned => "أرجاع",
+        OrderState.Processing => "في الانتظار",
+        _ => status.ToString()
+    };
 }

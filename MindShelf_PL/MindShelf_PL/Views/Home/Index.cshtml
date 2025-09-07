@@ -90,11 +90,11 @@
             {
                 @foreach (var book in (IEnumerable<MindShelf_BL.Dtos.BookDto.BookResponseDto>)ViewBag.TopRatedBooks)
                 {
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="book-card">
+                    <div class="col-xl-3 col-lg-4 col-md-3 mb-3 col-8">
+                        <div class="book-card text-center h-100">
                             <div class="position-relative">
-                                <img src="@(string.IsNullOrEmpty(book.ImageUrl) ? "/Images/books/default.jpg" : book.ImageUrl)" 
-                                     alt="@book.Title" class="book-cover">
+                                <img src="@(string.IsNullOrEmpty(book.ImageUrl) ? "/Images/books/default.jpg" : book.ImageUrl)"
+                                     alt="@book.Title" class="w-100 book-image-wrapper">
                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2">
                                     <i class="fas fa-star"></i> الأعلى تقييماً
                                 </span>
@@ -502,10 +502,16 @@
                                 </a>
                                 @if (ev.IsActive)
                                 {
-                                    <a href="@Url.Action("Register", "Event", new { id = ev.EventId })" class="btn btn-register">
-                                        <i class="fas fa-calendar-plus"></i>
-                                        تسجيل الحضور
-                                    </a>
+                                    var userId = ViewBag.CurrentUserId as string;
+                                    var isRegistered = userId != null && ev.Registrations.Any(r => r.UserId == userId);
+                                    <form method="post" asp-controller="Event" asp-action="RegisterForEvent" class="d-inline register-form" data-event-id="@ev.EventId">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="EventId" value="@ev.EventId" />
+                                    </form>
+                                    <button class="btn btn-register register-btn @(isRegistered ? "registered" : "")" data-event-id="@ev.EventId" data-registered="@isRegistered.ToString().ToLower()">
+                                        <i class="fas @(isRegistered ? "fa-times" : "fa-calendar-plus")"></i>
+                                        @(isRegistered ? "إلغاء التسجيل" : "تسجيل الحضور")
+                                    </button>
                                 }
                                 else
                                 {
@@ -663,6 +669,21 @@
         gap: 0.5rem;
         color: var(--text-muted);
         font-size: 0.9rem;
+    }
+
+    .book-image-wrapper {
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .book-image {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
     }
 
     .event-meta-item i {
@@ -909,6 +930,59 @@
                 }
             });
         }
+
+        // Event registration (home cards) same as events index
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = @(ViewBag.IsLoggedIn == true ? "true" : "false");
+            document.querySelectorAll('.register-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (!isLoggedIn) {
+                        window.location.href = '/Account/Login';
+                        return;
+                    }
+                    const eventId = this.getAttribute('data-event-id');
+                    const isRegistered = this.getAttribute('data-registered') === 'true';
+                    if (!eventId) return;
+
+                    const form = document.querySelector(`form.register-form[data-event-id="${eventId}"]`);
+                    const token = form?.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                    
+                    const endpoint = isRegistered ? '/Event/CancelRegistrationAjax' : '/Event/RegisterForEventAjax';
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token || '' },
+                        body: JSON.stringify({ eventId: parseInt(eventId) })
+                    });
+                    if (res.ok) {
+                        if (isRegistered) {
+                            // Cancel registration
+                            this.classList.remove('registered');
+                            this.setAttribute('data-registered', 'false');
+                            this.innerHTML = '<i class="fas fa-calendar-plus"></i>تسجيل الحضور';
+                            // Update participant count
+                            updateHomeParticipantCount(eventId, -1);
+                        } else {
+                            // Register
+                            this.classList.add('registered');
+                            this.setAttribute('data-registered', 'true');
+                            this.innerHTML = '<i class="fas fa-times"></i>إلغاء التسجيل';
+                            // Update participant count
+                            updateHomeParticipantCount(eventId, 1);
+                        }
+                    } else {
+                        const txt = await res.text();
+                        alert('تعذر إتمام العملية: ' + txt);
+                    }
+                });
+            });
+
+            // Function to update participant count on home page
+            function updateHomeParticipantCount(eventId, change) {
+                const eventCard = document.querySelector(`[data-event-id="${eventId}"]`).closest('.home-event-card');
+                // Home page doesn't show participant count, so we'll skip this for now
+                // But we can add it later if needed
+            }
+        });
 
         // Check favourite status on page load
         $(document).ready(function() {

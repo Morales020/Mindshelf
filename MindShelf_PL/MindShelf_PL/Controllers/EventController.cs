@@ -30,6 +30,8 @@ namespace MindShelf_PL.Controllers
             var user = await _userManager.GetUserAsync(User);
             var isAdmin = user != null && await _userManager.IsInRoleAsync(user, "Admin");
             ViewBag.IsAdmin = isAdmin;
+            ViewBag.IsLoggedIn = user != null;
+            ViewBag.CurrentUserId = user?.Id;
 
             return View(result.Data);
         }
@@ -45,6 +47,18 @@ namespace MindShelf_PL.Controllers
             var isAdmin = user != null && await _userManager.IsInRoleAsync(user, "Admin");
             ViewBag.IsAdmin = isAdmin;
             ViewBag.IsLoggedIn = user != null;
+            ViewBag.CurrentUserId = user?.Id;
+
+            // Get similar events (other active events, excluding current one)
+            var allEventsResult = await _eventService.GetAllEvents();
+            if (allEventsResult.Success)
+            {
+                var similarEvents = allEventsResult.Data
+                    .Where(e => e.EventId != id && e.IsActive)
+                    .Take(3)
+                    .ToList();
+                ViewBag.SimilarEvents = similarEvents;
+            }
 
             return View(result.Data);
         }
@@ -202,6 +216,64 @@ namespace MindShelf_PL.Controllers
 
             TempData["Success"] = "تم تسجيلك في الحدث بنجاح";
             return RedirectToAction("Details", new { id = dto.EventId });
+        }
+
+        // AJAX registration endpoint for Events index page
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterForEventAjax([FromBody] CreateEventRegistrationDto dto)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized("يجب تسجيل الدخول أولاً");
+            }
+
+            dto.UserId = user.Id;
+            dto.UserName = user.UserName;
+
+            var result = await _eventService.RegisterForEvent(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(new { success = true });
+        }
+
+        // AJAX cancel registration endpoint
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelRegistrationAjax([FromBody] CreateEventRegistrationDto dto)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized("يجب تسجيل الدخول أولاً");
+            }
+
+            // Find the registration to delete
+            var registrationResult = await _eventService.GetEventDetails(dto.EventId);
+            if (!registrationResult.Success)
+            {
+                return BadRequest("الحدث غير موجود");
+            }
+
+            var registration = registrationResult.Data.Registrations.FirstOrDefault(r => r.UserId == user.Id);
+            if (registration == null)
+            {
+                return BadRequest("لم تكن مسجلاً في هذا الحدث");
+            }
+
+            var deleteResult = await _eventService.DeleteRegistration(registration.EventRegistrationId);
+            if (!deleteResult.Success)
+            {
+                return BadRequest(deleteResult.Message);
+            }
+
+            return Ok(new { success = true });
         }
 
         [Authorize(Roles = "Admin")]

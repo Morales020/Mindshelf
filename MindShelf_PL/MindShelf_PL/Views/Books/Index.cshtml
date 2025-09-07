@@ -1,5 +1,4 @@
-﻿
-    @model List<BookResponseDto>
+﻿@model List<BookResponseDto>
     @Html.AntiForgeryToken()
 
     @{
@@ -94,7 +93,6 @@
                 }
             </div>
         </div>
-
         <!-- Ajax Search Result Here -->
         <div id="searchResults" style="display:none"></div>
 
@@ -154,7 +152,6 @@
                                 <p class="text-muted mb-2 text-truncate">
                                     <i class="fas fa-user me-1"></i>@(book.AuthorName ?? "غير محدد")
                                 </p>
-
                                 <div class="rating-container mb-2">
                                     @if (book.Rating > 0)
                                     {
