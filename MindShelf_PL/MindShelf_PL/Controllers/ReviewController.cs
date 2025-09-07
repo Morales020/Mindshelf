@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MindShelf_PL.Controllers
 {
+    [Authorize]
     public class ReviewController : Controller
     {
         private readonly IReviewServices _reviewService;
@@ -26,6 +27,7 @@ namespace MindShelf_PL.Controllers
         }
 
         #region GetBookReviews
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetBookReviews(int bookId)
         {
@@ -40,6 +42,7 @@ namespace MindShelf_PL.Controllers
         #endregion
 
         #region GetReviewById
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -53,6 +56,7 @@ namespace MindShelf_PL.Controllers
         #endregion
 
         #region CreateReview
+        [Authorize(Roles = "User")]
         [HttpGet]
         public IActionResult Create(int bookId)
         {
@@ -62,7 +66,7 @@ namespace MindShelf_PL.Controllers
             };
             return View(model);
         }
-
+        [Authorize(Roles = "User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         
@@ -87,6 +91,7 @@ namespace MindShelf_PL.Controllers
         #endregion
 
         #region UpdateReview
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -94,6 +99,9 @@ namespace MindShelf_PL.Controllers
             
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
+
+            if (response.Data.UserName != User.Identity?.Name)
+                return Forbid();
 
             var model = new UpdateReviewDto
             {
@@ -107,6 +115,7 @@ namespace MindShelf_PL.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateReviewDto model)
@@ -115,6 +124,10 @@ namespace MindShelf_PL.Controllers
             {
                 return View(model);
             }
+
+            var review = await _reviewService.GetReviewById(model.ReviewId);
+            if (review.Data == null || review.Data.UserName != User.Identity?.Name)
+                return Forbid();
 
             var response = await _reviewService.UpdateReviewAsync(model);
             
@@ -131,7 +144,6 @@ namespace MindShelf_PL.Controllers
 
         #region DeleteReview
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _reviewService.GetReviewById(id);
@@ -139,14 +151,20 @@ namespace MindShelf_PL.Controllers
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
+            if (!User.IsInRole("Admin") && response.Data.UserName != User.Identity?.Name)
+                return Forbid();
+
             return View(response.Data);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int reviewId, string userName)
         {
+
+            if (!User.IsInRole("Admin") && userName != User.Identity?.Name)
+                return Forbid();
+
             var model = new DeleteReviewDto
             {
                 ReviewId = reviewId,
