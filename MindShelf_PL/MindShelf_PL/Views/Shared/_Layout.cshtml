@@ -126,15 +126,6 @@
                                     <span>@(currentUser?.UserName ?? "المستخدم")</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    @if (isAdmin)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="/Admin/Dashboard">
-                                                <i class="fas fa-tachometer-alt"></i> لوحة التحكم
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    }
                                     <li>
                                         <a class="dropdown-item" asp-controller="FavouriteBook" asp-action="Index">
                                             <i class="fas fa-heart"></i> المفضلة

@@ -404,9 +404,15 @@
                         <div class="event-actions">
                             @if (ev.IsActive)
                             {
-                                <button class="btn-register register-btn">
-                                    <i class="fas fa-user-plus ml-2"></i>
-                                    تسجيل الحضور
+                                var userId = ViewBag.CurrentUserId as string;
+                                var isRegistered = userId != null && ev.Registrations.Any(r => r.UserId == userId);
+                                <form method="post" asp-controller="Event" asp-action="RegisterForEvent" class="d-inline register-form" data-event-id="@ev.EventId">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="EventId" value="@ev.EventId" />
+                                </form>
+                                <button class="btn-register register-btn @(isRegistered ? "registered" : "")" data-event-id="@ev.EventId" data-registered="@isRegistered.ToString().ToLower()">
+                                    <i class="fas @(isRegistered ? "fa-times" : "fa-user-plus") ml-2"></i>
+                                    @(isRegistered ? "إلغاء التسجيل" : "تسجيل الحضور")
                                 </button>
                             }
                             else
@@ -490,26 +496,72 @@
                 });
             });
 
-            // Registration functionality
+            // Registration functionality (persist state like favorites)
             const registerButtons = document.querySelectorAll('.register-btn');
-            
+            const isLoggedIn = @(ViewBag.IsLoggedIn == true ? "true" : "false");
+
             registerButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Check if user is logged in (you can implement this check)
-                    const isLoggedIn = @(User.Identity.IsAuthenticated ? "true" : "false");
-                    
+                button.addEventListener('click', async function() {
                     if (!isLoggedIn) {
-                        // Show login modal or redirect to login
                         window.location.href = '/Account/Login';
-                    } else {
-                        // Show registration confirmation
-                        if (confirm('هل تريد التسجيل في هذه الفعالية؟')) {
-                            // Here you would implement the actual registration logic
-                            alert('تم التسجيل بنجاح!');
+                        return;
+                    }
+
+                    const eventId = this.getAttribute('data-event-id');
+                    const isRegistered = this.getAttribute('data-registered') === 'true';
+                    if (!eventId) return;
+
+                    try {
+                        const form = document.querySelector(`form.register-form[data-event-id="${eventId}"]`);
+                        const token = form?.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                        
+                        const endpoint = isRegistered ? '/Event/CancelRegistrationAjax' : '/Event/RegisterForEventAjax';
+                        const res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': token || ''
+                            },
+                            body: JSON.stringify({ eventId: parseInt(eventId) })
+                        });
+
+                        if (res.ok) {
+                            if (isRegistered) {
+                                // Cancel registration
+                                this.classList.remove('registered');
+                                this.setAttribute('data-registered', 'false');
+                                this.innerHTML = '<i class="fas fa-user-plus ml-2"></i>تسجيل الحضور';
+                                // Update participant count
+                                updateParticipantCount(eventId, -1);
+                            } else {
+                                // Register
+                                this.classList.add('registered');
+                                this.setAttribute('data-registered', 'true');
+                                this.innerHTML = '<i class="fas fa-times ml-2"></i>إلغاء التسجيل';
+                                // Update participant count
+                                updateParticipantCount(eventId, 1);
+                            }
+                        } else {
+                            const txt = await res.text();
+                            alert('تعذر إتمام العملية: ' + txt);
                         }
+                    } catch (e) {
+                        alert('حدث خطأ غير متوقع');
                     }
                 });
             });
+
+            // Function to update participant count
+            function updateParticipantCount(eventId, change) {
+                const eventCard = document.querySelector(`[data-event-id="${eventId}"]`).closest('.event-card');
+                const countElement = eventCard.querySelector('.event-meta-item:last-child span');
+                if (countElement) {
+                    const currentText = countElement.textContent;
+                    const currentCount = parseInt(currentText.match(/\d+/)[0]);
+                    const newCount = Math.max(0, currentCount + change);
+                    countElement.textContent = `${newCount} مشارك`;
+                }
+            }
         });
     </script>
 }
