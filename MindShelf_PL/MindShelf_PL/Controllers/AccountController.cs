@@ -167,5 +167,48 @@ namespace MindShelf_PL.Controllers
                 return RedirectToAction(nameof(Login));
             }
         }
+
+
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordEmailDto model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "This user does not exist");
+                return View(model);
+            }
+
+            var resetModel = new ForgetPasswordDto { Email = model.Email };
+            return View("ResetPassword", resetModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveForgetPassword(ForgetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+                return View("ResetPassword", model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "This user does not exist");
+                return View("ResetPassword", model);
+            }
+
+            string hashedPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+            user.PasswordHash = hashedPassword;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Login");
+        }
     }
 }
