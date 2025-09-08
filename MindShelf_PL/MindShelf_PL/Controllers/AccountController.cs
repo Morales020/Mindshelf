@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MindShelf_BL.Dtos.AccountDto;
 using MindShelf_DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MindShelf_PL.Controllers
 {
@@ -119,6 +120,20 @@ namespace MindShelf_PL.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return RedirectToAction(nameof(Login));
+
+            return View(user);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Public(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+                return NotFound();
+
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                return NotFound();
 
             return View(user);
         }

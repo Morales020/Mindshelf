@@ -1,54 +1,95 @@
 @model IEnumerable<MindShelf_DAL.Models.Message>
 
-<div class="container py-4">
-	<h2 class="mb-4"><i class="fas fa-comments"></i> دردشة المجتمع</h2>
+<style>
+	.chat-box{min-height:300px;max-height:60vh;overflow-y:auto;border:1px solid var(--bs-border-color);border-radius:12px;background:var(--bs-body-bg)}
+	.msg{display:flex;gap:.6rem;margin:.6rem;align-items:flex-end}
+	.msg .avatar{width:34px;height:34px;border-radius:50%;background:#e9ecef;display:flex;align-items:center;justify-content:center;font-weight:700;color:#6c757d}
+	.msg .bubble{background:#f8f9fa;border-radius:12px;padding:.5rem .7rem;max-width:70%}
+	.msg.me{flex-direction:row-reverse}
+	.msg.me .bubble{background:#d7efff}
+	.msg .meta{font-size:.75rem;color:#888;margin:.15rem .4rem 0}
+	.composer{position:sticky;bottom:0;background:var(--bs-body-bg);padding-top:.5rem}
 
-	<ul id="messagesList" class="list-unstyled border rounded p-3 bg-light" style="min-height:300px; max-height:60vh; overflow-y:auto;">
+	/* Dark mode overrides */
+	body.dark-mode .chat-box{background:#15171b;border-color:#2a2d33}
+	body.dark-mode .msg .avatar{background:#2a2d33;color:#9aa4b2}
+	body.dark-mode .msg .bubble{background:#1e2228;color:#e6e8eb}
+	body.dark-mode .msg.me .bubble{background:#103245}
+	body.dark-mode .msg .meta{color:#97a3b6}
+	body.dark-mode .composer{background:#15171b}
+</style>
+
+<div class="container py-4">
+	<h2 class="mb-3"><i class="fas fa-comments"></i> دردشة المجتمع</h2>
+
+	<div id="messagesList" class="chat-box">
 		@foreach (var msg in Model)
 		{
-			<li class="mb-2">
-				<strong>@msg.SenderName</strong>
-				<small class="text-muted">(@msg.SentAt.ToLocalTime())</small>:
-				<span>@msg.Content</span>
-			</li>
+			var me = msg.SenderName == (User?.Identity?.Name ?? "");
+			<div class="msg @(me ? "me" : "")">
+				@{
+					var avatars = ViewBag.Avatars as IDictionary<string, string>;
+					var avatarUrl = (avatars != null && avatars.ContainsKey(msg.SenderName)) ? avatars[msg.SenderName] : null;
+				}
+				<a class="avatar text-decoration-none" href="@Url.Action("Public","Account", new { userName = msg.SenderName })" title="عرض الملف">
+					@if (!string.IsNullOrWhiteSpace(avatarUrl))
+					{
+						<img src="@avatarUrl" class="w-100 h-100 rounded-circle" style="object-fit:cover;" onerror="this.parentElement.textContent='@msg.SenderName.First()'" />
+					}
+					else
+					{
+						@msg.SenderName.First()
+					}
+				</a>
+				<div>
+					<div class="bubble">
+						<strong>@msg.SenderName</strong>
+						<div>@msg.Content</div>
+					</div>
+					<div class="meta">@msg.SentAt.ToLocalTime()</div>
+				</div>
+			</div>
 		}
-	</ul>
+	</div>
 
-	<div class="input-group mt-3">
-		<input type="text" id="messageInput" class="form-control" placeholder="اكتب رسالة..." />
-		<button class="btn btn-primary" id="sendBtn">إرسال</button>
+	<div class="composer">
+		<div class="input-group mt-2">
+			<input type="text" id="messageInput" class="form-control" placeholder="اكتب رسالة..." autocomplete="off" />
+			<button class="btn btn-primary" id="sendBtn"><i class="fas fa-paper-plane"></i> إرسال</button>
+		</div>
 	</div>
 </div>
 
 @section Scripts {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 	<script>
-		const connection = new signalR.HubConnectionBuilder()
-			.withUrl("/communityHub")
-			.build();
+		const box=document.getElementById('messagesList');
+		function scrollBottom(){ box.scrollTop=box.scrollHeight; }
+		scrollBottom();
 
-		connection.on("ReceiveMessage", (user, message, time) => {
-			const li = document.createElement("li");
-			li.className = "mb-2";
-			li.innerHTML = `<strong>${user}</strong> <small class="text-muted">(${new Date(time).toLocaleString()})</small>: <span>${message}</span>`;
-			document.getElementById("messagesList").appendChild(li);
-			document.getElementById("messagesList").scrollTop = document.getElementById("messagesList").scrollHeight;
+		const connection=new signalR.HubConnectionBuilder().withUrl('/communityHub').build();
+		connection.on('ReceiveMessage',(user,message,time,avatar)=>{
+			const row=document.createElement('div');
+			row.className='msg'+(user==='@(User?.Identity?.Name ?? "")'?' me':'');
+			const av=document.createElement('div'); av.className='avatar';
+			if(avatar){ const img=document.createElement('img'); img.src=avatar; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(user||'?')[0]; }; av.appendChild(img);} else { av.textContent=(user||'?')[0]; }
+			const body=document.createElement('div');
+			const bubble=document.createElement('div'); bubble.className='bubble'; bubble.innerHTML=`<strong>${user}</strong><div>${message}</div>`;
+			const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(time).toLocaleString();
+			body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
 		});
 
-		connection.start().catch(err => console.error(err.toString()));
+		connection.start().catch(err=>console.error(err.toString()));
 
-		document.getElementById("sendBtn").addEventListener("click", sendMessage);
-		document.getElementById("messageInput").addEventListener("keypress", function (e) {
-			if (e.key === "Enter") sendMessage();
-		});
+		document.getElementById('sendBtn').addEventListener('click',sendMessage);
+		document.getElementById('messageInput').addEventListener('keypress',function(e){ if(e.key==='Enter') sendMessage(); });
 
-		function sendMessage() {
-			const input = document.getElementById("messageInput");
-			const message = input.value.trim();
-			if (!message) return;
-			connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
-			input.value = "";
-			input.focus();
+		function sendMessage(){
+			const input=document.getElementById('messageInput');
+			const message=input.value.trim();
+			if(!message) return;
+			connection.invoke('SendMessage',message).catch(err=>console.error(err.toString()));
+			input.value=''; input.focus();
 		}
 	</script>
 }

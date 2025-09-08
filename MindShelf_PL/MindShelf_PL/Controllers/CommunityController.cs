@@ -22,6 +22,11 @@ namespace MindShelf_PL.Controllers
 				.Take(20)
                 .ToList();
 
+			// Pass avatar urls for initial render (tolerate nulls)
+			ViewBag.Avatars = _dbContext.Users
+				.Select(u => new { u.UserName, u.ProfileImageUrl })
+				.ToDictionary(u => u.UserName, u => u.ProfileImageUrl ?? string.Empty);
+
 			return View(messages);
 		}
 	}

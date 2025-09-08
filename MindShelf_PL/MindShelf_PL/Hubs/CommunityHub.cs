@@ -4,6 +4,7 @@ using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MindShelf_PL.Hubs
 {
@@ -21,6 +22,7 @@ namespace MindShelf_PL.Hubs
 		{
 			var userName = Context?.User?.Identity?.Name ?? "Anonymous";
 			var userId = Context?.UserIdentifier;
+			var avatar = _dbContext.Users.FirstOrDefault(u => u.Id == userId)?.ProfileImageUrl;
 
 			var msg = new Message
 			{
@@ -33,7 +35,7 @@ namespace MindShelf_PL.Hubs
 			_dbContext.Messages.Add(msg);
 			await _dbContext.SaveChangesAsync();
 
-			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt);
+			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt, avatar);
 		}
 	}
 }
