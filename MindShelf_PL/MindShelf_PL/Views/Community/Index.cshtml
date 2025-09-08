@@ -1,0 +1,56 @@
+@model IEnumerable<MindShelf_DAL.Models.Message>
+
+<div class="container py-4">
+	<h2 class="mb-4"><i class="fas fa-comments"></i> دردشة المجتمع</h2>
+
+	<ul id="messagesList" class="list-unstyled border rounded p-3 bg-light" style="min-height:300px; max-height:60vh; overflow-y:auto;">
+		@foreach (var msg in Model)
+		{
+			<li class="mb-2">
+				<strong>@msg.SenderName</strong>
+				<small class="text-muted">(@msg.SentAt.ToLocalTime())</small>:
+				<span>@msg.Content</span>
+			</li>
+		}
+	</ul>
+
+	<div class="input-group mt-3">
+		<input type="text" id="messageInput" class="form-control" placeholder="اكتب رسالة..." />
+		<button class="btn btn-primary" id="sendBtn">إرسال</button>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+	<script>
+		const connection = new signalR.HubConnectionBuilder()
+			.withUrl("/communityHub")
+			.build();
+
+		connection.on("ReceiveMessage", (user, message, time) => {
+			const li = document.createElement("li");
+			li.className = "mb-2";
+			li.innerHTML = `<strong>${user}</strong> <small class="text-muted">(${new Date(time).toLocaleString()})</small>: <span>${message}</span>`;
+			document.getElementById("messagesList").appendChild(li);
+			document.getElementById("messagesList").scrollTop = document.getElementById("messagesList").scrollHeight;
+		});
+
+		connection.start().catch(err => console.error(err.toString()));
+
+		document.getElementById("sendBtn").addEventListener("click", sendMessage);
+		document.getElementById("messageInput").addEventListener("keypress", function (e) {
+			if (e.key === "Enter") sendMessage();
+		});
+
+		function sendMessage() {
+			const input = document.getElementById("messageInput");
+			const message = input.value.trim();
+			if (!message) return;
+			connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
+			input.value = "";
+			input.focus();
+		}
+	</script>
+}
+
+
