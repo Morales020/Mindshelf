@@ -73,6 +73,7 @@ namespace MindShelf_BL.Services
                     UserName = orderDto.UserName,
                     OrderDate = DateTime.UtcNow,
                     State = OrderState.Pending,
+                    Address = orderDto.ShippingAddress,
                     TotalAmount = 0,
                     Discount = 0,
                     OrderItems = new List<OrderItem>()
@@ -108,6 +109,7 @@ namespace MindShelf_BL.Services
                     OrderDate = order.OrderDate,
                     OrderStatus = order.State,
                     TotalAmount = order.TotalAmount,
+                    ShippingAddress = order.Address,
                     Discount = order.Discount,
                     OrderItems = order.OrderItems.Select(oi => new OrderItemResponseDto
                     {
@@ -146,6 +148,8 @@ namespace MindShelf_BL.Services
             {
                 var order = await _unitOfWork.OrderRepo.Query()
                     .AsNoTracking()
+                    .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
                     .Where(o => o.OrderId == orderId)
                     .Select(o => new OrderResponseDto
                     {
@@ -160,7 +164,9 @@ namespace MindShelf_BL.Services
                         {
                             OrderItemId = item.OrderItemId,
                             BookId = item.BookId,
+                            BookName = item.Book.Title,
                             Quantity = item.Quantity,
+                            Price = item.UnitPrice,
                             TotalPrice = item.TotalPrice
                         }).ToList()
                     }).FirstOrDefaultAsync();

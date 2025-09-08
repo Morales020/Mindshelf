@@ -6,6 +6,23 @@
 
 <style>
     /* Author Form specific styles */
+    
+    /* Remove all underlines from buttons and links */
+    .btn-save, .btn-cancel, a.btn-save, a.btn-cancel, button.btn-save, button.btn-cancel,
+    .btn-save:hover, .btn-cancel:hover, a.btn-save:hover, a.btn-cancel:hover, 
+    button.btn-save:hover, button.btn-cancel:hover {
+        text-decoration: none !important;
+    }
+    
+    /* Ensure button text colors are visible */
+    .btn-save, .btn-cancel, a.btn-save, a.btn-cancel, button.btn-save, button.btn-cancel {
+        color: white !important;
+    }
+    
+    .btn-save:hover, .btn-cancel:hover, a.btn-save:hover, a.btn-cancel:hover, 
+    button.btn-save:hover, button.btn-cancel:hover {
+        color: white !important;
+    }
     .author-form-card {
         background: white;
         border-radius: var(--border-radius);
@@ -68,35 +85,39 @@
     .btn-save {
         background: linear-gradient(135deg, var(--primary-blue), var(--primary-brown));
         border: none;
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
         box-shadow: var(--box-shadow);
+        text-decoration: none !important;
     }
 
     .btn-save:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        color: white;
+        color: white !important;
+        text-decoration: none !important;
     }
 
     .btn-cancel {
         background-color: #6c757d;
         border-color: #6c757d;
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
+        text-decoration: none !important;
     }
 
     .btn-cancel:hover {
         background-color: #5a6268;
         border-color: #545b62;
         transform: translateY(-1px);
-        color: white;
+        color: white !important;
+        text-decoration: none !important;
     }
 
     /* Dark mode styles */
@@ -124,6 +145,21 @@
 
     .dark-mode .preview-wrapper:hover {
         border-color: #63b3ed;
+    }
+    
+    /* Dark mode button styles */
+    .dark-mode .btn-save, .dark-mode .btn-cancel,
+    .dark-mode a.btn-save, .dark-mode a.btn-cancel,
+    .dark-mode button.btn-save, .dark-mode button.btn-cancel {
+        color: white !important;
+        text-decoration: none !important;
+    }
+    
+    .dark-mode .btn-save:hover, .dark-mode .btn-cancel:hover,
+    .dark-mode a.btn-save:hover, .dark-mode a.btn-cancel:hover,
+    .dark-mode button.btn-save:hover, .dark-mode button.btn-cancel:hover {
+        color: white !important;
+        text-decoration: none !important;
     }
 </style>
 

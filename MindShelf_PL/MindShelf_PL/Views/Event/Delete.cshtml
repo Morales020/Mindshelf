@@ -1,4 +1,7 @@
 ﻿@model EventResponseDto
+@{
+    Layout = "_Layout";
+}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +39,118 @@
                 transform: translateY(-2px);
                 box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
             }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .bg-gray-50 {
+            background-color: #1a1a1a !important;
+        }
+
+        body.dark-mode .bg-gray-100 {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .bg-white {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .text-gray-800 {
+            color: #f5f5f5 !important;
+        }
+
+        body.dark-mode .text-gray-700 {
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode .text-gray-600 {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-gray-500 {
+            color: #999999 !important;
+        }
+
+        body.dark-mode .border-gray-200 {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .border-gray-300 {
+            border-color: #555555 !important;
+        }
+
+        body.dark-mode .border-t {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .form-control {
+            background-color: #2d2d2d;
+            border-color: #555555;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #2d2d2d;
+            border-color: #667eea;
+            color: #f5f5f5;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        body.dark-mode .form-control::placeholder {
+            color: #999999;
+        }
+
+        body.dark-mode input[type="radio"] {
+            accent-color: #667eea;
+        }
+
+        body.dark-mode .hover\:bg-gray-50:hover {
+            background-color: #404040 !important;
+        }
+
+        body.dark-mode .hover\:border-blue-500:hover {
+            border-color: #667eea !important;
+        }
+
+        body.dark-mode .hover\:border-green-500:hover {
+            border-color: #10b981 !important;
+        }
+
+        body.dark-mode .hover\:border-red-500:hover {
+            border-color: #ef4444 !important;
+        }
+
+        body.dark-mode .hover\:bg-gray-600:hover {
+            background-color: #555555 !important;
+        }
+
+        body.dark-mode .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        body.dark-mode .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Delete button specific styling */
+        body.dark-mode button[style*="background-image:linear-gradient(45deg, #ff4242, #d60707)"] {
+            background: linear-gradient(45deg, #ff4242, #d60707) !important;
+            color: white !important;
+            border: none !important;
+        }
+
+        body.dark-mode button[style*="background-image:linear-gradient(45deg, #ff4242, #d60707)"]:hover {
+            background: linear-gradient(45deg, #d60707, #ff4242) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 66, 66, 0.4);
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">

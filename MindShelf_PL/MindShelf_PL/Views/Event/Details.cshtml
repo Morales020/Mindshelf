@@ -1,401 +1,758 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل الحدث - المكتبة الرقمية</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
+﻿@model EventDetailsDto
+@{
+    ViewData["Title"] = "تفاصيل الحدث";
+}
+
+<style>
+    /* Event Details Page Specific Styles */
+    
+    /* Remove all underlines from buttons on this page */
+    .btn-register, .btn-admin, .btn-edit, .btn-delete,
+    button.btn-register, a.btn-register, input.btn-register,
+    button.btn-admin, a.btn-admin, input.btn-admin,
+    button.btn-edit, a.btn-edit, input.btn-edit,
+    button.btn-delete, a.btn-delete, input.btn-delete {
+        text-decoration: none !important;
+    }
+    
+    .btn-register:hover, .btn-admin:hover, .btn-edit:hover, .btn-delete:hover,
+    button.btn-register:hover, a.btn-register:hover, input.btn-register:hover,
+    button.btn-admin:hover, a.btn-admin:hover, input.btn-admin:hover,
+    button.btn-edit:hover, a.btn-edit:hover, input.btn-edit:hover,
+    button.btn-delete:hover, a.btn-delete:hover, input.btn-delete:hover {
+        text-decoration: none !important;
+    }
+    .event-details-hero {
+        background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+        color: white;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .event-details-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .event-details-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .event-main-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .event-main-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-header-image {
+        height: 300px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .event-header-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        backdrop-filter: blur(1px);
+    }
+
+    .event-header-icon {
+        font-size: 6rem;
+        color: white;
+        z-index: 2;
+        position: relative;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .event-content {
+        padding: 3rem;
+    }
+
+    .event-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .event-description {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+
+    .event-status-badges {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .status-badge {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-badge.online {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        border: 2px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .status-badge.offline {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 2px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 2px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 2px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .event-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--light-color);
+        padding: 1.5rem;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .registration-section {
+        background: var(--light-color);
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none !important;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    .btn-register:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .sidebar-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: var(--transition);
+    }
+
+    .sidebar-card:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar-card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .sidebar-card-title i {
+        color: var(--primary-color);
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.25rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        transition: var(--transition);
+    }
+
+    .info-item:hover {
+        background: var(--light-color);
+    }
+
+    .info-item i {
+        width: 20px;
+        margin-left: 1rem;
+        color: var(--primary-color);
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: var(--text-muted);
+    }
+
+
+    .similar-event {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: var(--light-color);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .similar-event:hover {
+        background: var(--border-color);
+        transform: translateX(-4px);
+    }
+
+    .similar-event-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-left: 1rem;
+    }
+
+    .similar-event-info {
+        flex: 1;
+    }
+
+    .similar-event-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .similar-event-date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+    .admin-controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-admin {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none !important;
+    }
+
+    .btn-edit {
+        background: var(--primary-color);
+        color: white !important;
+    }
+
+    .btn-edit:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white !important;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode .event-main-card {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .event-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .event-description {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .stat-card {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .stat-number {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .stat-label {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .registration-section {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .sidebar-card {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .sidebar-card-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .info-item:hover {
+        background: var(--dark-border-color);
+    }
+
+    body.dark-mode .info-label {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .info-value {
+        color: #b0b0b0;
+    }
+
+
+    body.dark-mode .similar-event {
+        background: var(--dark-border-color);
+    }
+
+    body.dark-mode .similar-event:hover {
+        background: var(--dark-card-bg);
+    }
+
+    body.dark-mode .similar-event-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .similar-event-date {
+        color: #b0b0b0;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .event-details-hero {
+            padding: 2rem 0;
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .event-content {
+            padding: 2rem 1.5rem;
         }
 
-        .card-shadow {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .event-title {
+            font-size: 2rem;
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: all 0.3s ease;
+        .event-stats {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .admin-controls {
+            flex-direction: column;
+        }
+
+        .btn-admin {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+<!-- Hero Section -->
+<div class="event-details-hero">
+    <div class="container">
+        <div class="event-details-hero-content text-center">
+            <i class="fas fa-calendar-check text-6xl mb-4 opacity-90"></i>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">تفاصيل الحدث</h1>
+            <p class="text-xl opacity-90">اكتشف المزيد عن هذا الحدث المميز</p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="container py-8">
+    <div class="row g-4">
+        <!-- Event Details -->
+        <div class="col-lg-8">
+            <div class="event-main-card">
+                <!-- Event Header Image -->
+                <div class="event-header-image">
+                    <i class="fas fa-calendar-alt event-header-icon"></i>
+                </div>
+
+                <!-- Event Content -->
+                <div class="event-content">
+                    <!-- Admin Controls -->
+                    @if (ViewBag.IsAdmin == true)
+                    {
+                        <div class="admin-controls">
+                            <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.EventId" class="btn-admin btn-edit">
+                                <i class="fas fa-edit"></i>
+                                تعديل الحدث
+                            </a>
+                            <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.EventId" class="btn-admin btn-delete">
+                                <i class="fas fa-trash"></i>
+                                حذف الحدث
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Event Title and Status -->
+                    <h1 class="event-title">@Model.Title</h1>
+                    
+                    <div class="event-status-badges">
+                        <span class="status-badge @(Model.IsOnline ? "online" : "offline")">
+                            <i class="fas @(Model.IsOnline ? "fa-video" : "fa-building")"></i>
+                            @(Model.IsOnline ? "أونلاين" : "حضوري")
+                        </span>
+                        <span class="status-badge @(Model.IsActive ? "active" : "inactive")">
+                            <i class="fas @(Model.IsActive ? "fa-check-circle" : "fa-times-circle")"></i>
+                            @(Model.IsActive ? "نشط" : "منتهي")
+                        </span>
+                    </div>
+
+                    <!-- Event Description -->
+                    <div class="event-description">
+                        @Model.Description
+                    </div>
+
+                    <!-- Event Stats -->
+                    <div class="event-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-users stat-icon"></i>
+                            <div class="stat-number">@Model.Registrations.Count()</div>
+                            <div class="stat-label">مشارك مسجل</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar stat-icon"></i>
+                            <div class="stat-number">@Model.StartingDate.ToString("dd")</div>
+                            <div class="stat-label">@Model.StartingDate.ToString("MMMM")</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-clock stat-icon"></i>
+                            <div class="stat-number">@Model.StartingDate.ToString("HH:mm")</div>
+                            <div class="stat-label">وقت البداية</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-star stat-icon"></i>
+                            <div class="stat-number">4.8</div>
+                            <div class="stat-label">تقييم</div>
+                        </div>
+                    </div>
+
+                    <!-- Registration Section -->
+                    <div class="registration-section">
+                        @if (Model.IsActive)
+                        {
+                            var userId = ViewBag?.CurrentUserId as string;
+                            var isRegistered = userId != null && Model.Registrations.Any(r => r.UserId == userId);
+                            <form method="post" asp-controller="Event" asp-action="RegisterForEvent" class="d-inline" id="detailsRegisterForm">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="EventId" value="@Model.EventId" />
+                            </form>
+                            <button class="btn-register" id="registerBtn" data-registered="@isRegistered.ToString().ToLower()">
+                                <i class="fas @(isRegistered ? "fa-times" : "fa-calendar-plus")"></i>
+                                @(isRegistered ? "إلغاء التسجيل" : "سجل في الحدث الآن")
+                            </button>
+                            <p class="text-muted mt-3 mb-0">التسجيل مجاني ومتاح للجميع</p>
+                        }
+                        else
+                        {
+                            <button class="btn-register" disabled>
+                                <i class="fas fa-times-circle"></i>
+                                الحدث منتهي
+                            </button>
+                            <p class="text-muted mt-3 mb-0">لم يعد التسجيل متاحاً لهذا الحدث</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Event Info Card -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-card-title">
+                    <i class="fas fa-info-circle"></i>
+                    معلومات الحدث
+                </h3>
+
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <div class="info-content">
+                        <div class="info-label">تاريخ البداية</div>
+                        <div class="info-value">@Model.StartingDate.ToString("dd MMMM yyyy")</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="info-content">
+                        <div class="info-label">تاريخ النهاية</div>
+                        <div class="info-value">@Model.EndingDate.ToString("dd MMMM yyyy")</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="info-content">
+                        <div class="info-label">التوقيت</div>
+                        <div class="info-value">@Model.StartingDate.ToString("HH:mm") - @Model.EndingDate.ToString("HH:mm")</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="info-content">
+                        <div class="info-label">الموقع</div>
+                        <div class="info-value">@Model.Location</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-tag"></i>
+                    <div class="info-content">
+                        <div class="info-label">السعر</div>
+                        <div class="info-value">مجاني</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Similar Events -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-card-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    أحداث مشابهة
+                </h3>
+
+                @if (ViewBag.SimilarEvents != null && ((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents).Any())
+                {
+                    @foreach (var similarEvent in (IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents)
+                    {
+                        var colors = new[] { 
+                            "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                            "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                            "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                        };
+                        var icons = new[] { "fas fa-code", "fas fa-robot", "fas fa-lightbulb" };
+                        var index = Array.IndexOf(((IEnumerable<MindShelf_BL.Dtos.EventDtos.EventResponseDto>)ViewBag.SimilarEvents).ToArray(), similarEvent);
+                        
+                        <div class="similar-event" onclick="window.location.href='@Url.Action("Details", "Event", new { id = similarEvent.EventId })'">
+                            <div class="similar-event-icon" style="background: @colors[index % colors.Length];">
+                                <i class="@icons[index % icons.Length]"></i>
+                            </div>
+                            <div class="similar-event-info">
+                                <div class="similar-event-title">@similarEvent.Title</div>
+                                <div class="similar-event-date">@similarEvent.StartingDate.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("ar-EG"))</div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-calendar-times mb-2"></i>
+                        <p>لا توجد أحداث مشابهة متاحة</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        // Event Details Page Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerBtn = document.getElementById('registerBtn');
+
+            if (registerBtn) {
+                registerBtn.addEventListener('click', async function() {
+                    const isLoggedIn = @(ViewBag.IsLoggedIn == true ? "true" : "false");
+                    if (!isLoggedIn) { window.location.href = '/Account/Login'; return; }
+
+                    const isRegistered = this.getAttribute('data-registered') === 'true';
+                    const form = document.getElementById('detailsRegisterForm');
+                    const token = form?.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                    
+                    const endpoint = isRegistered ? '/Event/CancelRegistrationAjax' : '/Event/RegisterForEventAjax';
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token || '' },
+                        body: JSON.stringify({ eventId: @Model.EventId })
+                    });
+                    if (res.ok) {
+                        if (isRegistered) {
+                            // Cancel registration
+                            this.innerHTML = '<i class="fas fa-calendar-plus"></i>سجل في الحدث الآن';
+                            this.setAttribute('data-registered', 'false');
+                            showNotification('تم إلغاء التسجيل بنجاح!', 'success');
+                            // Update participant count
+                            updateDetailsParticipantCount(-1);
+                        } else {
+                            // Register
+                            this.innerHTML = '<i class="fas fa-times"></i>إلغاء التسجيل';
+                            this.setAttribute('data-registered', 'true');
+                            showNotification('تم التسجيل في الحدث بنجاح!', 'success');
+                            // Update participant count
+                            updateDetailsParticipantCount(1);
+                        }
+                    } else {
+                        const txt = await res.text();
+                        showNotification('تعذر إتمام العملية: ' + txt, 'danger');
+                    }
+                });
             }
 
-        .btn-danger {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        }
+            // Similar events click handlers
+            document.querySelectorAll('.similar-event').forEach(event => {
+                event.addEventListener('click', function() {
+                    // Here you would navigate to the similar event details
+                    console.log('Navigating to similar event...');
+                });
+            });
 
-        .btn-success {
-            background: linear-gradient(45deg, #00b894, #00a085);
-        }
-
-        .status-online {
-            background: linear-gradient(45deg, #00b894, #00a085);
-        }
-
-        .status-offline {
-            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
-        }
-
-        .event-info-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <!-- Header -->
-
-    <!-- Hero Section -->
-    <section class="gradient-bg text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <i class="fas fa-calendar-alt text-6xl mb-4 opacity-80"></i>
-                <h1 class="text-4xl font-bold mb-4">تفاصيل الحدث</h1>
-                <p class="text-xl opacity-90">اكتشف المزيد عن هذا الحدث المميز</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 py-4">
-        <nav class="flex text-gray-500 text-sm">
-            <a href="#" class="hover:text-blue-600">الرئيسية</a>
-            <span class="mx-2">/</span>
-            <a href="#" class="hover:text-blue-600">الفعاليات</a>
-            <span class="mx-2">/</span>
-            <span class="text-gray-800">تفاصيل الحدث</span>
-        </nav>
-    </div>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Event Details -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-shadow">
-                    <!-- Event Image -->
-                    <div class="h-64 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
-                        <i class="fas fa-calendar-check text-8xl text-white opacity-50"></i>
-                    </div>
-
-                    <!-- Event Content -->
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <h1 class="text-3xl font-bold text-gray-800 mb-2">ورشة عمل: مقدمة في الذكاء الاصطناعي</h1>
-                                <div class="flex items-center space-x-4 space-x-reverse text-gray-600">
-                                    <span class="status-online text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                        <i class="fas fa-wifi mr-1"></i>
-                                        أونلاين
-                                    </span>
-                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                                        <i class="fas fa-check-circle mr-1"></i>
-                                        نشط
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Admin Controls -->
-                            <div class="flex space-x-2 space-x-reverse">
-                                <button class="btn-primary text-white px-4 py-2 rounded-lg font-semibold">
-                                    <i class="fas fa-edit mr-1"></i>
-                                    تعديل
-                                </button>
-                                <button class="btn-danger text-white px-4 py-2 rounded-lg font-semibold">
-                                    <i class="fas fa-trash mr-1"></i>
-                                    حذف
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Event Description -->
-                        <div class="prose max-w-none mb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4">وصف الحدث</h3>
-                            <p class="text-gray-600 leading-relaxed mb-4">
-                                انضم إلى ورشة عمل شاملة حول مقدمة في الذكاء الاصطناعي، حيث ستتعلم الأساسيات والمفاهيم الأساسية في هذا المجال المثير.
-                                ستغطي الورشة موضوعات متنوعة من تعلم الآلة إلى الشبكات العصبية والتطبيقات العملية.
-                            </p>
-                            <p class="text-gray-600 leading-relaxed mb-4">
-                                سيقوم خبراء في المجال بتقديم المحتوى بطريقة تفاعلية ومبسطة، مما يجعل المعلومات في متناول الجميع سواء كانوا مبتدئين أو متقدمين.
-                            </p>
-
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4 mt-8">ما ستتعلمه</h3>
-                            <ul class="list-disc list-inside text-gray-600 space-y-2">
-                                <li>أساسيات الذكاء الاصطناعي ومجالات تطبيقه</li>
-                                <li>مقدمة في تعلم الآلة والخوارزميات الأساسية</li>
-                                <li>الشبكات العصبية وكيفية عملها</li>
-                                <li>أدوات وتقنيات التطوير الحديثة</li>
-                                <li>أمثلة عملية وتطبيقات واقعية</li>
-                            </ul>
-                        </div>
-
-                        <!-- Event Stats -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                            <div class="bg-blue-50 p-4 rounded-lg text-center">
-                                <i class="fas fa-users text-2xl text-blue-600 mb-2"></i>
-                                <div class="text-2xl font-bold text-blue-600">120</div>
-                                <div class="text-sm text-gray-600">مسجل</div>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-lg text-center">
-                                <i class="fas fa-clock text-2xl text-green-600 mb-2"></i>
-                                <div class="text-2xl font-bold text-green-600">3</div>
-                                <div class="text-sm text-gray-600">ساعات</div>
-                            </div>
-                            <div class="bg-purple-50 p-4 rounded-lg text-center">
-                                <i class="fas fa-star text-2xl text-purple-600 mb-2"></i>
-                                <div class="text-2xl font-bold text-purple-600">4.8</div>
-                                <div class="text-sm text-gray-600">تقييم</div>
-                            </div>
-                        </div>
-
-                        <!-- Registration Button -->
-                        <div class="bg-gray-50 p-6 rounded-lg text-center">
-                            <button class="btn-success text-white px-8 py-3 rounded-lg font-bold text-lg transform transition-transform hover:scale-105">
-                                <i class="fas fa-calendar-plus mr-2"></i>
-                                سجل في الحدث الآن
-                            </button>
-                            <p class="text-sm text-gray-600 mt-2">التسجيل مجاني ومتاح للجميع</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="lg:col-span-1">
-                <!-- Event Info Card -->
-                <div class="event-info-card rounded-lg shadow-lg p-6 mb-6 card-shadow">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                        معلومات الحدث
-                    </h3>
-
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-calendar text-blue-600 w-5"></i>
-                            <div class="mr-3">
-                                <div class="font-semibold text-gray-800">تاريخ البداية</div>
-                                <div class="text-gray-600">15 ديسمبر 2024</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fas fa-calendar-check text-green-600 w-5"></i>
-                            <div class="mr-3">
-                                <div class="font-semibold text-gray-800">تاريخ النهاية</div>
-                                <div class="text-gray-600">15 ديسمبر 2024</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fas fa-clock text-orange-600 w-5"></i>
-                            <div class="mr-3">
-                                <div class="font-semibold text-gray-800">التوقيت</div>
-                                <div class="text-gray-600">6:00 م - 9:00 م</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fas fa-map-marker-alt text-red-600 w-5"></i>
-                            <div class="mr-3">
-                                <div class="font-semibold text-gray-800">الموقع</div>
-                                <div class="text-gray-600">أونلاين - Zoom</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <i class="fas fa-tag text-purple-600 w-5"></i>
-                            <div class="mr-3">
-                                <div class="font-semibold text-gray-800">السعر</div>
-                                <div class="text-gray-600">مجاني</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Organizer Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6 mb-6 card-shadow">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-user-tie text-blue-600 mr-2"></i>
-                        المنظم
-                    </h3>
-
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                            م.أ
-                        </div>
-                        <div class="mr-4">
-                            <div class="font-semibold text-gray-800">محمد أحمد</div>
-                            <div class="text-sm text-gray-600">خبير ذكاء اصطناعي</div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <button class="w-full bg-blue-50 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-envelope mr-2"></i>
-                            تواصل مع المنظم
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Similar Events -->
-                <div class="bg-white rounded-lg shadow-lg p-6 card-shadow">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
-                        أحداث مشابهة
-                    </h3>
-
-                    <div class="space-y-4">
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                            <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center text-white">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="mr-3 flex-1">
-                                <div class="font-semibold text-sm text-gray-800">ورشة البرمجة</div>
-                                <div class="text-xs text-gray-600">20 ديسمبر 2024</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                            <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center text-white">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="mr-3 flex-1">
-                                <div class="font-semibold text-sm text-gray-800">مستقبل التقنية</div>
-                                <div class="text-xs text-gray-600">25 ديسمبر 2024</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                            <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <div class="mr-3 flex-1">
-                                <div class="font-semibold text-sm text-gray-800">ورشة الإبداع</div>
-                                <div class="text-xs text-gray-600">30 ديسمبر 2024</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12 mt-16">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 space-x-reverse mb-4">
-                        <i class="fas fa-book-open text-2xl text-blue-400"></i>
-                        <h3 class="text-xl font-bold">المكتبة الرقمية</h3>
-                    </div>
-                    <p class="text-gray-400">بوابتك إلى عالم المعرفة والتعلم المستمر</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold mb-4">روابط سريعة</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">الرئيسية</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">الكتب</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">الفعاليات</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">المؤلفين</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold mb-4">الدعم</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">مركز المساعدة</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">اتصل بنا</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">الأسئلة الشائعة</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">الشروط والأحكام</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold mb-4">تابعنا</h4>
-                    <div class="flex space-x-4 space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-facebook text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-twitter text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-instagram text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-linkedin text-xl"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 المكتبة الرقمية. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Registration functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const registerBtn = document.querySelector('.btn-success');
-
-            registerBtn.addEventListener('click', function() {
-                // Check if user is logged in (simulate)
-                const isLoggedIn = true; // This would come from your authentication system
-
-                if (isLoggedIn) {
-                    // Show success message
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check mr-2"></i>تم التسجيل بنجاح!';
-                    this.classList.remove('btn-success');
-                    this.classList.add('bg-green-600');
-                    this.disabled = true;
-
-                    // Reset after 3 seconds (for demo purposes)
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.classList.add('btn-success');
-                        this.classList.remove('bg-green-600');
-                        this.disabled = false;
-                    }, 3000);
-                } else {
-                    // Redirect to login
-                    alert('يرجى تسجيل الدخول أولاً');
-                    // window.location.href = '/Account/Login';
+            // Function to update participant count on details page
+            function updateDetailsParticipantCount(change) {
+                const statCard = document.querySelector('.stat-card:first-child .stat-number');
+                if (statCard) {
+                    const currentCount = parseInt(statCard.textContent);
+                    const newCount = Math.max(0, currentCount + change);
+                    statCard.textContent = newCount;
                 }
-            });
-
-            // Admin controls
-            const editBtn = document.querySelector('.btn-primary');
-            const deleteBtn = document.querySelector('.btn-danger');
-
-            editBtn?.addEventListener('click', function() {
-                // Redirect to edit page
-                // window.location.href = '/Event/Edit/1';
-                console.log('Redirecting to edit page...');
-            });
-
-            deleteBtn?.addEventListener('click', function() {
-                if (confirm('هل أنت متأكد من حذف هذا الحدث؟')) {
-                    // Delete event
-                    console.log('Deleting event...');
-                    // This would typically be a POST request to delete the event
-                }
-            });
+            }
         });
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} ml-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
     </script>
-</body>
-</html>
+}

@@ -208,6 +208,46 @@ namespace MindShelf_BL.Services
         }
         #endregion
 
+        #region FilterBooks
+        public async Task<ResponseMVC<IEnumerable<BookResponseDto>>> FilterBooksAsync(int? categoryId, int? authorId)
+        {
+            try
+            {
+                var query = _UnitOfWork.BookRepo.Query()
+                    .Include(b => b.Author)
+                    .Include(b => b.Category)
+                    .AsQueryable();
+
+                if (categoryId.HasValue)
+                    query = query.Where(b => b.CategoryId == categoryId.Value);
+
+                if (authorId.HasValue)
+                    query = query.Where(b => b.AuthorId == authorId.Value);
+
+                var books = await query
+                    .Select(b => new BookResponseDto
+                    {
+                        BookId = b.BookId,
+                        Title = b.Title,
+                        AuthorName = b.Author != null ? b.Author.Name : null,
+                        CategoryName = b.Category != null ? b.Category.Name : null,
+                        Price = b.Price,
+                        Rating = b.Rating,
+                        Description = b.Description,
+                        ImageUrl = b.ImageUrl,
+                        State = b.State
+                    })
+                    .ToListAsync();
+
+                return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", books);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMVC<IEnumerable<BookResponseDto>>(500, $"Error: {ex.Message}", null);
+            }
+        }
+        #endregion
+
         #region NewReleases
         public async Task<ResponseMVC<IEnumerable<BookResponseDto>>> GetNewReleasesAsync()
         {

@@ -1,249 +1,259 @@
 ﻿@model List<BookResponseDto>
-@Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-@{
-    ViewData["Title"] = "الكتب";
-}
+    @{
+        ViewData["Title"] = "الكتب";
+    }
 
-<div class="page-header">
-    <div class="container">
-        <h1><i class="fas fa-book-open me-3"></i>مكتبة الكتب</h1>
-        <p class="lead">اكتشف عالماً من المعرفة والثقافة</p>
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-book-open me-3"></i>مكتبة الكتب</h1>
+            <p class="lead">اكتشف عالماً من المعرفة والثقافة</p>
+        </div>
     </div>
-</div>
 
-<div class="container">
-    <!-- رسائل النجاح والخطأ -->
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+    <div class="container">
+        <!-- رسائل النجاح والخطأ -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
-    <!-- Filters and Search -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form method="get" asp-action="Index">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">البحث بالعنوان</label>
-                                <input type="text" name="searchTerm" class="form-control"
-                                       placeholder="ادخل عنوان الكتاب..." value="@ViewBag.SearchTerm">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">التصنيف</label>
-                                <select class="form-select"
-                                        onchange="if(this.value) window.location.href='@Url.Action("ByCategory","Books")?categoryId=' + this.value">
-                                    <option value="">جميع التصنيفات</option>
-                                    @if (ViewBag.Categories is List<CategoryResponseDto> categories)
-                                    {
-                                        foreach (var category in categories)
-                                        {
-                                            <option value="@category.CategoryId"
-                                                    selected="@(ViewBag.SelectedCategoryId != null && (int)ViewBag.SelectedCategoryId == category.CategoryId ? "selected" : null)">
-                                                @category.Name
-                                            </option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">المؤلف</label>
-                                <select class="form-select"
-                                        onchange="if(this.value) window.location.href='@Url.Action("ByAuthor","Books")?authorId=' + this.value">
-                                    <option value="">جميع المؤلفين</option>
-                                    @if (ViewBag.Authors is List<AuthorResponseDto> authors)
-                                    {
-                                        foreach (var author in authors)
-                                        {
-                                            <option value="@author.AuthorId"
-                                                    selected="@(ViewBag.SelectedAuthorId != null && (int)ViewBag.SelectedAuthorId == author.AuthorId ? "selected" : null)">
-                                                @author.Name
-                                            </option>
-                                        }
-                                    }
-                                </select>
-                            </div>
+        <!-- Filters and Search -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                    <form id="filtersForm" asp-action="Filter" asp-controller="Books" method="get" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">البحث بالعنوان</label>
+                            <input type="text" id="searchInput" name="searchTerm" class="form-control"
+                                   placeholder="ادخل عنوان الكتاب..." value="@ViewBag.SearchTerm" autocomplete="off" />
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-search me-1"></i> بحث
-                                </button>
-                            </div>
+
+                        <div class="col-md-4">
+                            <label for="categoryId" class="form-label">التصنيف</label>
+                            <select id="categoryId" name="categoryId" class="form-select">
+                                <option value="">اختر التصنيف</option>
+                                @foreach (var category in ViewBag.Categories as List<CategoryResponseDto>)
+                                {
+                                    <option value="@category.CategoryId"
+                                            selected="@(ViewBag.SelectedCategoryId != null && (int)ViewBag.SelectedCategoryId == category.CategoryId)">
+                                        @category.Name
+                                    </option>
+                                }
+                            </select>
                         </div>
+
+                        <div class="col-md-4">
+                            <label for="authorId" class="form-label">المؤلف</label>
+                            <select id="authorId" name="authorId" class="form-select">
+                                <option value="">اختر المؤلف</option>
+                                @foreach (var author in ViewBag.Authors as List<AuthorResponseDto>)
+                                {
+                                    <option value="@author.AuthorId"
+                                            selected="@(ViewBag.SelectedAuthorId != null && (int)ViewBag.SelectedAuthorId == author.AuthorId)">
+                                        @author.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> بحث
+                            </button>
+                        </div>
+                        <!-- Reset Button -->
+                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-secondary w-100">
+                            <i class="fas fa-undo me-1"></i> إعادة تعيين
+                        </a>
                     </form>
+                    </div>
                 </div>
             </div>
+
+            <div class="col-md-4 justify-content-end">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
+                    </a>
+                }
+            </div>
         </div>
+        <!-- Ajax Search Result Here -->
+        <div id="searchResults" style="display:none"></div>
 
-        <div class="col-md-4 d-flex justify-content-end">
-            @if (User.IsInRole("Admin"))
+        <div class="row" id="books-container" @(ViewBag.HideBooksContainer == true ? "style=\"display:none\"" : "")>
+            @if (Model != null && Model.Any())
             {
-                <a asp-action="Create" class="btn btn-success">
-                    <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
-                </a>
-            }
-        </div>
-    </div>
-
-    @if (Model != null && Model.Any())
-    {
-        <div class="row" id="books-container">
-            @foreach (var book in Model)
-            {
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                    <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
-                        <div class="position-relative">
-                            @if (!string.IsNullOrEmpty(book.ImageUrl))
-                            {
-                                <img src="@book.ImageUrl" alt="@book.Title"
-                                     class="w-100" style="height: 250px; object-fit: cover; cursor: pointer;"
-                                     onclick="viewBookDetails(@(book.BookId ))"
-                                     onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
-
-                                <button type="button"
-                                        class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
-                                        style="top: 10px; left: 10px;"
-                                        data-book-id="@(book.BookId)"
-                                        onclick="toggleFavourite(@(book.BookId), this)"
-                                        title="إضافة للمفضلة">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                            }
-                            else
-                            {
-                                <div class="d-flex align-items-center justify-content-center bg-light"
-                                     style="height: 250px; cursor: pointer;"
-                                     onclick="viewBookDetails(@(book.BookId ))">
-                                    <i class="fas fa-book fa-3x text-muted"></i>
-                                </div>
-                            }
-
-
-
-                            @if (book.State == MindShelf_DAL.Models.BookState.Available)
-                            {
-                                <span class="badge bg-success position-absolute" style="top: 10px; right: 10px;">
-                                    متوفر
-                                </span>
-                            }
-                            else if (book.State == MindShelf_DAL.Models.BookState.OutOfStock)
-                            {
-                                <span class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">
-                                    غير متوفر
-                                </span>
-                            }
-                        </div>
-
-                        <div class="card-body d-flex flex-column">
-                            <h6 class="card-title fw-bold mb-2 text-truncate"
-                                onclick="viewBookDetails(@(book.BookId ))"
-                                style="cursor: pointer; color: var(--primary-color);">
-                                @book.Title
-                            </h6>
-                            <p class="text-muted mb-2 text-truncate">
-                                <i class="fas fa-user me-1"></i>@(book.AuthorName ?? "غير محدد")
-                            </p>
-
-                            <div class="rating-container mb-2">
-                                @if (book.Rating > 0)
+                @foreach (var book in Model)
+                {
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                        <div class="card book-card h-100 shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
+                            <div class="position-relative">
+                                @if (!string.IsNullOrEmpty(book.ImageUrl))
                                 {
-                                    <div class="rating-stars">
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            if (i <= book.Rating)
+                                    <img src="@book.ImageUrl" alt="@book.Title"
+                                         class="w-100" style="height: 250px; object-fit: cover; cursor: pointer;"
+                                         onclick="viewBookDetails(@(book.BookId ))"
+                                         onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
+                                            style="top: 10px; left: 10px;"
+                                            data-book-id="@(book.BookId)"
+                                            onclick="toggleFavourite(@(book.BookId), this)"
+                                            title="إضافة للمفضلة">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center justify-content-center bg-light"
+                                         style="height: 250px; cursor: pointer;"
+                                         onclick="viewBookDetails(@(book.BookId ))">
+                                        <i class="fas fa-book fa-3x text-muted"></i>
+                                    </div>
+                                }
+
+                                @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                                {
+                                    <span class="badge bg-success position-absolute" style="top: 10px; right: 10px;">
+                                        متوفر
+                                    </span>
+                                }
+                                else if (book.State == MindShelf_DAL.Models.BookState.OutOfStock)
+                                {
+                                    <span class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">
+                                        غير متوفر
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title fw-bold mb-2 text-truncate"
+                                    onclick="viewBookDetails(@(book.BookId ))"
+                                    style="cursor: pointer; color: var(--primary-color);">
+                                    @book.Title
+                                </h6>
+                                <p class="text-muted mb-2 text-truncate">
+                                    <i class="fas fa-user me-1"></i>@(book.AuthorName ?? "غير محدد")
+                                </p>
+                                <div class="rating-container mb-2">
+                                    @if (book.Rating > 0)
+                                    {
+                                        <div class="rating-stars">
+                                            @for (int i = 1; i <= 5; i++)
                                             {
-                                                <i class="fas fa-star text-warning"></i>
+                                                if (i <= book.Rating)
+                                                {
+                                                    <i class="fas fa-star text-warning"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star text-warning"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <small class="text-muted">(@book.Rating من 5)</small>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">لا توجد تقييمات</small>
+                                    }
+                                </div>
+
+                                <div class="mb-2">
+                                    @if (book.Price > 0)
+                                    {
+                                        <span class="h6 text-success fw-bold">@book.Price ر.س</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="h6 text-info fw-bold">مجاناً</span>
+                                    }
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(book.Description))
+                                {
+                                    <p class="card-text text-muted small mb-3" style="max-height: 40px; overflow: hidden; text-overflow: ellipsis;">
+                                        @(book.Description.Length > 100 ? book.Description.Substring(0, 100) + "..." : book.Description)
+                                    </p>
+                                }
+
+                                <div class="mt-auto">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                                            {
+                                                <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                                                    <input type="hidden" name="BookId" value="@(book.BookId )" />
+                                                    <input type="hidden" name="Quantity" value="1" />
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                        <i class="fas fa-cart-plus me-1"></i> السلة
+                                                    </button>
+                                                </form>
                                             }
                                             else
                                             {
-                                                <i class="far fa-star text-warning"></i>
+                                                <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
                                             }
-                                        }
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-primary btn-sm w-100"
+                                                    onclick="viewBookDetails(@(book.BookId ))">
+                                                <i class="fas fa-eye me-1"></i> التفاصيل
+                                            </button>
+                                        </div>
                                     </div>
-                                    <small class="text-muted">(@book.Rating من 5)</small>
-                                }
-                                else
-                                {
-                                    <small class="text-muted">لا توجد تقييمات</small>
-                                }
-                            </div>
 
-                            <div class="mb-2">
-                                @if (book.Price > 0)
-                                {
-                                    <span class="h6 text-success fw-bold">@book.Price ر.س</span>
-                                }
-                                else
-                                {
-                                    <span class="h6 text-info fw-bold">مجاناً</span>
-                                }
-                            </div>
-
-                            @if (!string.IsNullOrEmpty(book.Description))
-                            {
-                                <p class="card-text text-muted small mb-3" style="max-height: 40px; overflow: hidden; text-overflow: ellipsis;">
-                                    @(book.Description.Length > 100 ? book.Description.Substring(0, 100) + "..." : book.Description)
-                                </p>
-                            }
-
-                            <div class="mt-auto">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        @if (book.State == MindShelf_DAL.Models.BookState.Available)
-                                        {
-                                            <form asp-action="AddToCart" asp-controller="Cart" method="post">
-                                                <input type="hidden" name="BookId" value="@(book.BookId )" />
-                                                <input type="hidden" name="Quantity" value="1" />
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-primary btn-sm w-100">
-                                                    <i class="fas fa-cart-plus me-1"></i> السلة
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
-                                        }
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-primary btn-sm w-100"
-                                                onclick="viewBookDetails(@(book.BookId ))">
-                                            <i class="fas fa-eye me-1"></i> التفاصيل
-                                        </button>
-                                    </div>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <div class="row g-2 mt-2">
+                                            <div class="col-6">
+                                                <a asp-action="Edit" asp-route-id="@(book.BookId )" class="btn btn-warning btn-sm w-100">
+                                                    <i class="fas fa-edit me-1"></i> تعديل
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a asp-action="Delete" asp-route-id="@(book.BookId )" class="btn btn-danger btn-sm w-100">
+                                                    <i class="fas fa-trash me-1"></i> حذف
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <div class="row g-2 mt-2">
-                                        <div class="col-6">
-                                            <a asp-action="Edit" asp-route-id="@(book.BookId )" class="btn btn-warning btn-sm w-100">
-                                                <i class="fas fa-edit me-1"></i> تعديل
-                                            </a>
-                                        </div>
-                                        <div class="col-6">
-                                            <a asp-action="Delete" asp-route-id="@(book.BookId )" class="btn btn-danger btn-sm w-100">
-                                                <i class="fas fa-trash me-1"></i> حذف
-                                            </a>
-                                        </div>
-                                    </div>
-                                }
                             </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-book fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">لا توجد كتب متاحة</h4>
+                    <p class="text-muted">لم يتم العثور على أي كتب تطابق معايير البحث.</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
+                        </a>
+                    }
                 </div>
             }
         </div>
@@ -262,24 +272,7 @@
                 </ul>
             </nav>
         }
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-book fa-4x text-muted mb-3"></i>
-                <h4 class="text-muted">لا توجد كتب متاحة</h4>
-                <p class="text-muted">لم يتم العثور على أي كتب تطابق معايير البحث.</p>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>إضافة كتاب جديد
-                    </a>
-                }
-            </div>
-        </div>
-    }
-</div>
+    </div>
 
 @section Scripts {
     <script>
@@ -299,18 +292,18 @@
             // Check if user is logged in
             @if (!User.Identity?.IsAuthenticated == true)
             {
-                <text>
-                alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
-                window.location.href = '@Url.Action("Login", "Account")';
-                return;
-                </text>
+                    <text>
+                    alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                    window.location.href = '@Url.Action("Login", "Account")';
+                    return;
+                    </text>
             }
 
             var token = $('input[name="__RequestVerificationToken"]').val();
-            
+
             // Disable button to prevent multiple clicks
             $(btn).prop('disabled', true);
-            
+
             // Show loading state
             var originalIcon = $(btn).find('i').attr('class');
             $(btn).find('i').removeClass().addClass('fas fa-spinner fa-spin');
@@ -318,30 +311,25 @@
             $.ajax({
                 url: '@Url.Action("ToggleFavourite", "FavouriteBook")',
                 type: 'POST',
-                data: { 
-                    bookId: bookId, 
-                    __RequestVerificationToken: token 
+                data: {
+                    bookId: bookId,
+                    __RequestVerificationToken: token
                 },
                 success: function(response) {
                     if (response.success) {
                         if (response.isFavourited) {
-                            // Book is now favourited
                             $(btn).find('i').removeClass().addClass('fas fa-heart');
                             $(btn).removeClass('btn-outline-danger').addClass('btn-danger');
                             $(btn).attr('title', 'في المفضلة');
                         } else {
-                            // Book is no longer favourited
                             $(btn).find('i').removeClass().addClass('far fa-heart');
                             $(btn).removeClass('btn-danger').addClass('btn-outline-danger');
                             $(btn).attr('title', 'إضافة للمفضلة');
                         }
-                        
-                        // Success - no message needed
                     } else {
-                        // Restore original state on error
                         $(btn).find('i').removeClass().addClass(originalIcon);
                         alert(response.message);
-                        
+
                         if (response.redirect) {
                             setTimeout(() => {
                                 window.location.href = response.redirect;
@@ -349,12 +337,10 @@
                         }
                     }
                 },
-                error: function(xhr, status, error) {
-                    // Restore original state
+                error: function(xhr) {
                     $(btn).find('i').removeClass().addClass(originalIcon);
                     $(btn).prop('disabled', false);
-                    
-                    // Show error message
+
                     if (xhr.status === 401) {
                         alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
                         setTimeout(() => {
@@ -365,37 +351,67 @@
                     }
                 },
                 complete: function() {
-                    // Re-enable button
                     $(btn).prop('disabled', false);
                 }
             });
         }
 
-        // Check favourite status on page load
-        $(document).ready(function() {
+        // Init scripts
+        $(document).ready(function () {
+            // Restore favourite status
             $('.favourite-btn').each(function() {
                 var btn = $(this);
                 var bookId = btn.data('book-id');
-                
+
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <text>
-                    $.ajax({
-                        url: '@Url.Action("CheckFavouriteStatus", "FavouriteBook")',
-                        type: 'GET',
-                        data: { bookId: bookId },
-                        success: function(response) {
-                            if (response.isFavourited) {
-                                btn.find('i').removeClass().addClass('fas fa-heart');
-                                btn.removeClass('btn-outline-danger').addClass('btn-danger');
-                                btn.attr('title', 'في المفضلة');
+                        <text>
+                        $.ajax({
+                            url: '@Url.Action("CheckFavouriteStatus", "FavouriteBook")',
+                            type: 'GET',
+                            data: { bookId: bookId },
+                            success: function(response) {
+                                if (response.isFavourited) {
+                                    btn.find('i').removeClass().addClass('fas fa-heart');
+                                    btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                                    btn.attr('title', 'في المفضلة');
+                                }
                             }
-                        }
-                    });
-                    </text>
+                        });
+                        </text>
                 }
             });
-        });
 
+            // 🔍 AJAX search (title only, typing)
+            $("#searchInput").on("keyup", function () {
+                let searchTerm = $(this).val();
+
+                // If empty, restore original books
+                if (searchTerm.trim() === "") {
+                    $("#searchResults").hide().empty();
+                    $("#books-container").show();
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("Search", "Books")',
+                    type: "GET",
+                    data: { searchTerm: searchTerm },
+                    success: function (result) {
+                        $("#books-container").hide();
+                        $("#searchResults").html(result).show();
+                    },
+                    error: function () {
+                        $("#books-container").hide();
+                        $("#searchResults").html(
+                            "<div class='col-12 text-center text-danger py-5'>حدث خطأ أثناء البحث</div>"
+                        ).show();
+                    }
+                });
+            });            
+        });
     </script>
+}
+
+    }
 }

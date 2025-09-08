@@ -27,13 +27,25 @@ namespace MindShelf_BL.Services
             Stripe.StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
         }
 
-        public async Task<string> CreateCheckoutSessionAsync(decimal amount, int orderId)
+        public async Task<string> CreateCheckoutSessionAsync(decimal amount, int orderId, string address = null, List<CartItemResponseDto> orderItems = null)
         {
             var order = await _unitOfWork.OrderRepo.GetById(orderId);
             // Fix: Use HttpContext instead of ClaimsPrincipal.Current
             var user = _httpContextAccessor.HttpContext?.User;
             var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userName = user?.Identity?.Name;
+
+            // Use provided address from checkout, fallback to user's profile address, then default
+            string orderAddress;
+            if (!string.IsNullOrEmpty(address))
+            {
+                orderAddress = address;
+            }
+            else
+            {
+                var userEntity = await _userManager.FindByIdAsync(userId);
+                orderAddress = userEntity?.Address ?? "Address not provided";
+            }
 
             if (order == null)
             {
@@ -43,10 +55,26 @@ namespace MindShelf_BL.Services
                     UserName = userName,
                     OrderDate = DateTime.UtcNow,
                     State = OrderState.Pending,
-                    Address = "N/A",
+                    Address = orderAddress,
                     TotalAmount = amount,
-                    Discount = 0
+                    Discount = 0,
+                    OrderItems = new List<OrderItem>()
                 };
+
+                // Add order items if provided
+                if (orderItems != null && orderItems.Any())
+                {
+                    foreach (var item in orderItems)
+                    {
+                        order.OrderItems.Add(new OrderItem
+                        {
+                            BookId = item.BookId,
+                            Quantity = item.Quantity,
+                            UnitPrice = item.UnitPrice,
+                            TotalPrice = item.TotalPrice
+                        });
+                    }
+                }
 
                 await _unitOfWork.OrderRepo.Add(order);
                 await _unitOfWork.SaveChangesAsync();
@@ -95,13 +123,25 @@ namespace MindShelf_BL.Services
             return session.Id;
         }
         // Add new method for cart-based checkout
-        public async Task<string> CreateCartCheckoutSessionAsync(decimal amount, int orderId, List<CartItemResponseDto> cartItems)
+        public async Task<string> CreateCartCheckoutSessionAsync(decimal amount, int orderId, List<CartItemResponseDto> cartItems, string address = null)
         {
             var order = await _unitOfWork.OrderRepo.GetById(orderId);
 
             var user = _httpContextAccessor.HttpContext?.User;
             var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userName = user?.Identity?.Name;
+
+            // Use provided address from checkout, fallback to user's profile address, then default
+            string orderAddress;
+            if (!string.IsNullOrEmpty(address))
+            {
+                orderAddress = address;
+            }
+            else
+            {
+                var userEntity = await _userManager.FindByIdAsync(userId);
+                orderAddress = userEntity?.Address ?? "Address not provided";
+            }
 
             if (order == null)
             {
@@ -111,10 +151,26 @@ namespace MindShelf_BL.Services
                     UserName = userName,
                     OrderDate = DateTime.UtcNow,
                     State = OrderState.Pending,
-                    Address = "N/A",
+                    Address = orderAddress,
                     TotalAmount = amount,
-                    Discount = 0
+                    Discount = 0,
+                    OrderItems = new List<OrderItem>()
                 };
+
+                // Add order items from cart items
+                if (cartItems != null && cartItems.Any())
+                {
+                    foreach (var item in cartItems)
+                    {
+                        order.OrderItems.Add(new OrderItem
+                        {
+                            BookId = item.BookId,
+                            Quantity = item.Quantity,
+                            UnitPrice = item.UnitPrice,
+                            TotalPrice = item.TotalPrice
+                        });
+                    }
+                }
 
                 await _unitOfWork.OrderRepo.Add(order);
                 await _unitOfWork.SaveChangesAsync();

@@ -16,11 +16,10 @@
 			<div class="mb-3">
 				<label for="status" class="form-label">الحالة</label>
 				<select name="status" class="form-select">
-					@foreach (var state in Enum.GetValues(typeof(OrderState)))
+					@foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
 					{
-						var isSelected = Model.OrderStatus == (OrderState)state ? "selected" : "";
-						<option value="@state" selected="@isSelected">
-							@GetStatusText((OrderState)state)
+						<option value="@state" selected="@(Model.OrderStatus == state ? "selected" : null)">
+							@GetStatusText(state)
 						</option>
 					}
 				</select>
@@ -41,14 +40,16 @@
 @functions {
 	string GetStatusText(OrderState status)
 	{
-		return status switch
-		{
-			OrderState.Pending => "في الانتظار",
-			OrderState.Confirmed => "مؤكد",
-			OrderState.Shipping => "تم الشحن",
-			OrderState.Delivered => "تم التسليم",
-			OrderState.Cancelled => "ملغي",
-			_ => status.ToString()
-		};
+        return status switch
+        {
+        OrderState.Pending => "موقوف",
+        OrderState.Confirmed => "مؤكد",
+        OrderState.Shipping => "تم الشحن",
+        OrderState.Delivered => "تم التسليم",
+        OrderState.Cancelled => "ملغي",
+        OrderState.Returned => "أرجاع",
+            OrderState.Processing => "في الانتظار",
+            _ => status.ToString()
+        };
 	}
 }

@@ -6,6 +6,24 @@
 
 <style>
     /* Author Details specific styles */
+    
+    /* Remove all underlines from buttons and links */
+    a, a:hover, a:focus, a:visited, a:active,
+    .btn-back, .btn-back:hover, .btn-back:focus, .btn-back:visited, .btn-back:active,
+    .btn-edit, .btn-edit:hover, .btn-edit:focus, .btn-edit:visited, .btn-edit:active,
+    a.btn-back, a.btn-back:hover, a.btn-back:focus, a.btn-back:visited, a.btn-back:active,
+    a.btn-edit, a.btn-edit:hover, a.btn-edit:focus, a.btn-edit:visited, a.btn-edit:active {
+        text-decoration: none !important;
+    }
+    
+    /* Force button text colors */
+    .btn-back, .btn-edit, a.btn-back, a.btn-edit {
+        color: white !important;
+    }
+    
+    .btn-back:hover, .btn-edit:hover, a.btn-back:hover, a.btn-edit:hover {
+        color: white !important;
+    }
     .author-profile-card {
         background: white;
         border-radius: var(--border-radius);
@@ -15,10 +33,10 @@
         overflow: hidden;
     }
 
-    .author-profile-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
+        .author-profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
 
     .author-profile-image {
         width: 150px;
@@ -61,9 +79,9 @@
         margin-bottom: 1rem;
     }
 
-    .info-item:last-child {
-        margin-bottom: 0;
-    }
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
 
     .info-icon {
         width: 40px;
@@ -97,35 +115,173 @@
     .btn-back {
         background: linear-gradient(135deg, var(--primary-blue), var(--primary-brown));
         border: none;
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
         box-shadow: var(--box-shadow);
+        text-decoration: none !important;
     }
-
     .btn-back:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        color: white;
+        color: white !important;
+        text-decoration: none !important;
     }
-
     .btn-edit {
         background-color: var(--warning-color);
         border-color: var(--warning-color);
-        color: white;
+        color: white !important;
         border-radius: var(--border-radius);
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: var(--transition);
+        text-decoration: none !important;
     }
-
-    .btn-edit:hover {
+       .btn-edit:hover {
         background-color: #e0a800;
         border-color: #d39e00;
         transform: translateY(-1px);
-        color: white;
+        color: white !important;
+        text-decoration: none !important;
+
+    /* Books Section Styles */
+    .books-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .section-title {
+        color: var(--primary-blue);
+        font-family: var(--font-arabic-title);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary-brown);
+            border-radius: 2px;
+        }
+
+   
+    }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+    .book-image-wrapper {
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .book-image {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+
+    .book-card-body {
+        padding: 1.5rem;
+    }
+
+    .book-title {
+        color: var(--primary-blue);
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        height: 2.8rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .book-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        height: 4.5rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .book-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .book-rating {
+        color: var(--warning-color);
+        font-weight: 600;
+    }
+
+    .book-price {
+        color: var(--primary-brown);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .book-state {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .state-available {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+    }
+
+    .state-reserved {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+    }
+
+    .state-borrowed {
+        background-color: rgba(23, 162, 184, 0.15);
+        color: #17a2b8;
+    }
+
+    .state-outofstock {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+    }
+
+    .no-books-message {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: var(--border-radius);
+        border: 1px dashed #dee2e6;
+    }
+
+    .no-books-icon {
+        font-size: 3rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
     }
 
     /* Dark mode styles */
@@ -159,6 +315,38 @@
     .dark-mode .info-value {
         color: #e2e8f0;
     }
+
+    .dark-mode .book-card {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    .dark-mode .book-title {
+        color: #63b3ed;
+    }
+
+    .dark-mode .book-description {
+        color: #a0aec0;
+    }
+
+    .dark-mode .no-books-message {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #a0aec0;
+         }
+    /* Dark mode button styles */
+    .dark-mode .btn-back, .dark-mode .btn-edit,
+    .dark-mode a.btn-back, .dark-mode a.btn-edit {
+        color: white !important;
+        text-decoration: none !important;
+    }
+    
+    .dark-mode .btn-back:hover, .dark-mode .btn-edit:hover,
+    .dark-mode a.btn-back:hover, .dark-mode a.btn-edit:hover {
+        color: white !important;
+        text-decoration: none !important;
+    }
 </style>
 
 <div class="container py-5">
@@ -183,14 +371,14 @@
                 <div class="card-body p-5">
                     <!-- Author Image and Name -->
                     <div class="text-center mb-4">
-                            @if (!string.IsNullOrEmpty(Model.ImageUrl) && (Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
-                            {
-                                <img src="@Model.ImageUrl" alt="@Model.Name" class="author-profile-image mb-3" />
-                            }
-                            else
-                            {
-                                <img src="/Images/anon-icon.jpg" alt="@Model.Name" class="author-profile-image mb-3" />
-                            }
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl) && (Model.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || Model.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="author-profile-image mb-3" />
+                        }
+                        else
+                        {
+                            <img src="/Images/anon-icon.jpg" alt="@Model.Name" class="author-profile-image mb-3" />
+                        }
                         <h2 class="author-profile-name">@Model.Name</h2>
                     </div>
 
@@ -218,6 +406,26 @@
                                 <div class="info-value author-profile-date">@(Model.DateOfBirth?.ToString("yyyy-MM-dd") ?? "غير محدد")</div>
                             </div>
                         </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">عدد الكتب</div>
+                                <div class="info-value">@Model.bookcount كتاب</div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">التقييمات</div>
+                                <div class="info-value">@Model.ReviewsCount تقييم</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Action Buttons -->
@@ -228,6 +436,7 @@
                                 <i class="fas fa-edit me-2"></i>تعديل البيانات
                             </a>
                         }
+
                         <a asp-action="Index" class="btn-back">
                             <i class="fas fa-list me-2"></i>عرض جميع المؤلفين
                         </a>
@@ -236,5 +445,200 @@
             </div>
         </div>
     </div>
+
+    <!-- Books Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="section-title">
+                <i class="fas fa-book-open me-2"></i>كتب المؤلف
+            </h3>
+
+            @if (Model.BooksResponseDto != null && Model.BooksResponseDto.Any())
+            {
+                <div class="row" id="books-container">
+                    @foreach (var book in Model.BooksResponseDto)
+                    {
+                        <div class="col-xl-2 col-lg-4 col-md-3 mb-3">
+                            <div class="card book-card shadow-sm rounded-3 overflow-hidden" data-book-id="@(book.BookId)">
+                                <div class="position-relative">
+                                    @if (!string.IsNullOrEmpty(book.ImageUrl))
+                                    {
+                                        <img src="@book.ImageUrl" alt="@book.Title"
+                                             class="w-100 book-image-wrapper"
+                                             onclick="viewBookDetails(@(book.BookId))"
+                                             onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
+
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
+                                                style="top: 10px; left: 10px;"
+                                                data-book-id="@(book.BookId)"
+                                                onclick="toggleFavourite(@(book.BookId), this)"
+                                                title="إضافة للمفضلة">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center bg-light"
+                                             style="height: 250px; cursor: pointer;"
+                                             onclick="viewBookDetails(@(book.BookId))">
+                                            <i class="fas fa-book fa-3x text-muted"></i>
+                                        </div>
+                                    }
+
+
+
+                                    @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                                    {
+                                        <span class="badge bg-success position-absolute" style="top: 10px; right: 10px;">
+                                            متوفر
+                                        </span>
+                                    }
+                                    else if (book.State == MindShelf_DAL.Models.BookState.OutOfStock)
+                                    {
+                                        <span class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">
+                                            غير متوفر
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title fw-bold mb-2 text-truncate"
+                                        onclick="viewBookDetails(@(book.BookId))"
+                                        style="cursor: pointer; color: var(--primary-color);">
+                                        @book.Title
+                                    </h6>
+                                    <p class="text-muted mb-2 text-truncate">
+                                        <i class="fas fa-user me-1"></i>@(book.AuthorName ?? "غير محدد")
+                                    </p>
+
+                                    <div class="rating-container mb-2">
+                                        @if (book.Rating > 0)
+                                        {
+                                            <div class="rating-stars">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= book.Rating)
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="far fa-star text-warning"></i>
+                                                    }
+                                                }
+                                            </div>
+                                            <small class="text-muted">(@book.Rating من 5)</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">لا توجد تقييمات</small>
+                                        }
+                                    </div>
+
+                                    <div class="mb-2">
+                                        @if (book.Price > 0)
+                                        {
+                                            <span class="h6 text-success fw-bold">@book.Price ر.س</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="h6 text-info fw-bold">مجاناً</span>
+                                        }
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(book.Description))
+                                    {
+                                        <p class="card-text text-muted small mb-3" style="max-height: 40px; overflow: hidden; text-overflow: ellipsis;">
+                                            @(book.Description.Length > 100 ? book.Description.Substring(0, 100) + "..." : book.Description)
+                                        </p>
+                                    }
+
+                                    <div class="mt-auto">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                @if (book.State == MindShelf_DAL.Models.BookState.Available)
+                                                {
+                                                    <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                                                        <input type="hidden" name="BookId" value="@(book.BookId)" />
+                                                        <input type="hidden" name="Quantity" value="1" />
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                            <i class="fas fa-cart-plus me-1"></i> السلة
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
+                                                }
+                                            </div>
+                                            <div class="col-7">
+                                                <button class="btn btn-outline-primary btn-sm w-100"
+                                                        onclick="viewBookDetails(@(book.BookId))">
+                                                    التفاصيل
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <div class="row g-2 mt-2">
+                                                <div class="col-6">
+                                                    <a asp-action="Edit" asp-route-id="@(book.BookId)" class="btn btn-warning btn-sm w-100">
+                                                        <i class="fas fa-edit me-1"></i> تعديل
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a asp-action="Delete" asp-route-id="@(book.BookId)" class="btn btn-danger btn-sm w-100">
+                                                        <i class="fas fa-trash me-1"></i> حذف
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-books-message">
+                    <div class="no-books-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>لا توجد كتب لهذا المؤلف بعد</h4>
+                    <p class="text-muted">لم يتم إضافة أي كتب لهذا المؤلف حتى الآن.</p>
+                </div>
+            }
+        </div>
     </div>
-```
+</div>
+
+@functions {
+    public string GetStateClass(MindShelf_DAL.Models.BookState state)
+    {
+        return state switch
+        {
+            MindShelf_DAL.Models.BookState.Available => "state-available",
+            MindShelf_DAL.Models.BookState.Reserved => "state-reserved",
+            MindShelf_DAL.Models.BookState.Borrowed => "state-borrowed",
+            MindShelf_DAL.Models.BookState.OutOfStock => "state-outofstock",
+            _ => ""
+        };
+    }
+
+    public string GetStateText(MindShelf_DAL.Models.BookState state)
+    {
+        return state switch
+        {
+            MindShelf_DAL.Models.BookState.Available => "متاح",
+            MindShelf_DAL.Models.BookState.Reserved => "محجوز",
+            MindShelf_DAL.Models.BookState.Borrowed => "مستعار",
+            MindShelf_DAL.Models.BookState.OutOfStock => "غير متوفر",
+            _ => state.ToString()
+        };
+    }
+}
