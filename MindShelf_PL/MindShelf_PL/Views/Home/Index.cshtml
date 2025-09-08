@@ -675,14 +675,20 @@
         height: 250px;
         width: 100%;
         object-fit: contain;
-        background-color: #f8f9fa;
+        background-color: var(--light-color);
     }
 
     .book-image {
         height: 250px;
         width: 100%;
         object-fit: contain;
-        background-color: #f8f9fa;
+        background-color: var(--light-color);
+    }
+
+    /* Dark theme adaptation for book image backgrounds */
+    [data-theme="dark"] .book-image-wrapper,
+    [data-theme="dark"] .book-image {
+        background-color: var(--dark-card-bg); /* slate-800 like dark bg */
     }
 
     .event-meta-item i {
@@ -754,6 +760,10 @@
     }
 
     /* Dark Mode Styles */
+    body.dark-mode .book-image-wrapper,
+    body.dark-mode .book-image {
+        background-color: #1f2937; /* slate-800 like dark bg */
+    }
     body.dark-mode .upcoming-events {
         background: var(--dark-bg);
     }
@@ -1009,5 +1019,4 @@
             });
         });
     </script>
-
 }
