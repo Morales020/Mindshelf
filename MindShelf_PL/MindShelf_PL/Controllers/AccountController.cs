@@ -121,6 +121,24 @@ namespace MindShelf_PL.Controllers
 			if (user == null)
 				return RedirectToAction(nameof(Login));
 
+			// Pass display name and privacy settings from claims to the view
+			var claims = await _userManager.GetClaimsAsync(user);
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			
+			// Load privacy settings
+			var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+			var shareAddressClaim = claims.FirstOrDefault(c => c.Type == "share_address")?.Value;
+			var sharePhoneClaim = claims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+			
+			ViewBag.ShareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+			ViewBag.ShareAddress = shareAddressClaim == "true";
+			ViewBag.SharePhone = sharePhoneClaim == "true";
+			
+			// Debug: Log what we're loading
+			System.Diagnostics.Debug.WriteLine($"Profile loading display_name claim: {displayNameClaim}, fallback: {user.UserName}");
+			System.Diagnostics.Debug.WriteLine($"Profile privacy - ShareAvatar: {ViewBag.ShareAvatar}, ShareAddress: {ViewBag.ShareAddress}, SharePhone: {ViewBag.SharePhone}");
+
 			return View(user);
 		}
 
@@ -134,13 +152,34 @@ namespace MindShelf_PL.Controllers
 			if (user == null)
 				return RedirectToAction(nameof(Login));
 
+			// Load privacy flags from claims
+			var claims = await _userManager.GetClaimsAsync(user);
+			var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+			var shareAddressClaim = claims.FirstOrDefault(c => c.Type == "share_address")?.Value;
+			var sharePhoneClaim = claims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+			
+			// Set default values: ShareAvatar=true (show by default), ShareAddress=false, SharePhone=false
+			ViewBag.ShareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+			ViewBag.ShareAddress = shareAddressClaim == "true";
+			ViewBag.SharePhone = sharePhoneClaim == "true";
+			
+			// Debug: Log what privacy values we're loading
+			System.Diagnostics.Debug.WriteLine($"Privacy flags loaded - ShareAvatar: {shareAvatarClaim} -> {ViewBag.ShareAvatar}, ShareAddress: {shareAddressClaim} -> {ViewBag.ShareAddress}, SharePhone: {sharePhoneClaim} -> {ViewBag.SharePhone}");
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			// Debug: Log what we're loading
+			System.Diagnostics.Debug.WriteLine($"Loading display_name claim: {displayNameClaim}, fallback: {user.UserName}");
+
 			return View(user);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Settings([Bind("UserName,PhoneNumber,Address,ProfileImageUrl")] User model, IFormFile profileImage)
+		public async Task<IActionResult> Settings([Bind("UserName,PhoneNumber,Address,ProfileImageUrl")] User model, IFormFile profileImage, string? currentPassword, string? ShareAvatar = null, string? ShareAddress = null, string? SharePhone = null, string? DisplayName = null)
 		{
+			// Debug: Log what we're receiving from the form
+			System.Diagnostics.Debug.WriteLine($"Settings POST - Received values: ShareAvatar={ShareAvatar}, ShareAddress={ShareAddress}, SharePhone={SharePhone}, DisplayName={DisplayName}");
+			
 			if (!User.Identity.IsAuthenticated)
 				return RedirectToAction(nameof(Login));
 
@@ -148,17 +187,53 @@ namespace MindShelf_PL.Controllers
 			if (user == null)
 				return RedirectToAction(nameof(Login));
 
-			// Ignore validation for properties not posted in the form
+			// Make image optional and ignore unrelated validations
 			ModelState.Remove("ProfileImageUrl");
+			ModelState.Remove("profileImage");
 			ModelState.Remove("ShoppingCart");
+
+			// Require current password if phone is being changed (only for local-password users)
+			if (!string.Equals(user.PhoneNumber, model.PhoneNumber, StringComparison.Ordinal))
+			{
+				var hasLocalPassword = await _userManager.HasPasswordAsync(user);
+				if (hasLocalPassword)
+				{
+					if (string.IsNullOrWhiteSpace(currentPassword) || !(await _userManager.CheckPasswordAsync(user, currentPassword)))
+					{
+						ModelState.AddModelError("", "يرجى إدخال كلمة المرور الحالية لتعديل رقم الهاتف");
+					}
+				}
+			}
 
 			if (ModelState.IsValid)
 			{
-				user.UserName = model.UserName;
-				user.PhoneNumber = model.PhoneNumber;
-				user.Address = model.Address;
-				user.ProfileImageUrl = model.ProfileImageUrl;
+				// Use a claim for display name so we can allow spaces and any language
+				async Task UpsertClaim(string type, string value)
+				{
+					var existing = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == type);
+					var newClaim = new System.Security.Claims.Claim(type, value ?? string.Empty);
+					if (existing == null)
+						await _userManager.AddClaimAsync(user, newClaim);
+					else if (existing.Value != newClaim.Value)
+						await _userManager.ReplaceClaimAsync(user, existing, newClaim);
+				}
 
+				if (!string.IsNullOrWhiteSpace(DisplayName))
+				{
+					await UpsertClaim("display_name", DisplayName!.Trim());
+					// Debug: Log what we're saving
+					System.Diagnostics.Debug.WriteLine($"Saving display_name claim: {DisplayName.Trim()}");
+					
+					// Verify it was saved
+					var savedClaims = await _userManager.GetClaimsAsync(user);
+					var savedDisplayName = savedClaims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+					System.Diagnostics.Debug.WriteLine($"Verified saved display_name claim: {savedDisplayName}");
+				}
+
+				user.Address = model.Address;
+				user.PhoneNumber = model.PhoneNumber;
+
+				// Handle optional profile image
 				if (profileImage != null && profileImage.Length > 0)
 				{
 					var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
@@ -166,31 +241,92 @@ namespace MindShelf_PL.Controllers
 					if (!allowed.Contains(ext) || !profileImage.ContentType.StartsWith("image/"))
 					{
 						ModelState.AddModelError("", "صيغة الصورة غير مدعومة. المسموح: JPG, PNG, WEBP");
-						TempData["Error"] = "فشل حفظ البيانات: صيغة الصورة غير مدعومة";
-						return View(user);
 					}
 					const long maxBytes = 5 * 1024 * 1024;
 					if (profileImage.Length > maxBytes)
 					{
 						ModelState.AddModelError("", "حجم الصورة يجب ألا يتجاوز 5 ميجابايت");
-						TempData["Error"] = "فشل حفظ البيانات: حجم الصورة كبير";
-						return View(user);
 					}
 
-					var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "profiles");
-					Directory.CreateDirectory(uploadsRoot);
-					var fileName = $"{Guid.NewGuid()}" + Path.GetExtension(profileImage.FileName);
-					var filePath = Path.Combine(uploadsRoot, fileName);
-					using (var stream = new FileStream(filePath, FileMode.Create))
+					if (ModelState.ErrorCount == 0)
 					{
-						await profileImage.CopyToAsync(stream);
+						var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "profiles");
+						Directory.CreateDirectory(uploadsRoot);
+						var fileName = $"{Guid.NewGuid()}" + Path.GetExtension(profileImage.FileName);
+						var filePath = Path.Combine(uploadsRoot, fileName);
+						using (var stream = new FileStream(filePath, FileMode.Create))
+						{
+							await profileImage.CopyToAsync(stream);
+						}
+						user.ProfileImageUrl = $"/Images/profiles/{fileName}";
 					}
-					user.ProfileImageUrl = $"/Images/profiles/{fileName}";
 				}
 
 				await _userManager.UpdateAsync(user);
-				TempData["Success"] = "تم تحديث البيانات بنجاح";
-				return RedirectToAction(nameof(Profile));
+
+				// Update privacy flags as claims (bool values)
+				async Task UpsertClaimBool(string type, bool value)
+				{
+					var existing = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == type);
+					var newClaim = new System.Security.Claims.Claim(type, value ? "true" : "false");
+					if (existing == null)
+						await _userManager.AddClaimAsync(user, newClaim);
+					else if (existing.Value != newClaim.Value)
+						await _userManager.ReplaceClaimAsync(user, existing, newClaim);
+				}
+
+				// Convert string values to bool (null or empty = false, "true" = true)
+				bool shareAvatarValue = ShareAvatar == "true";
+				bool shareAddressValue = ShareAddress == "true";
+				bool sharePhoneValue = SharePhone == "true";
+				
+				// Debug: Log what privacy values we're receiving
+				System.Diagnostics.Debug.WriteLine($"Privacy flags received - ShareAvatar: {ShareAvatar} -> {shareAvatarValue}, ShareAddress: {ShareAddress} -> {shareAddressValue}, SharePhone: {SharePhone} -> {sharePhoneValue}");
+				
+				await UpsertClaimBool("share_avatar", shareAvatarValue);
+				await UpsertClaimBool("share_address", shareAddressValue);
+				await UpsertClaimBool("share_phone", sharePhoneValue);
+				
+				// Debug: Verify what was saved
+				var verifyClaims = await _userManager.GetClaimsAsync(user);
+				var verifyShareAvatar = verifyClaims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+				var verifyShareAddress = verifyClaims.FirstOrDefault(c => c.Type == "share_address")?.Value;
+				var verifySharePhone = verifyClaims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+				System.Diagnostics.Debug.WriteLine($"Privacy flags saved - ShareAvatar: {verifyShareAvatar}, ShareAddress: {verifyShareAddress}, SharePhone: {verifySharePhone}");
+
+				// Refresh authentication cookie to reflect new user data/claims
+				await _signInManager.RefreshSignInAsync(user);
+				var externalLogins = await _userManager.GetLoginsAsync(user);
+				if (externalLogins != null && externalLogins.Count > 0)
+				{
+					await _signInManager.SignInAsync(user, isPersistent: false);
+				}
+
+				TempData["Success"] = "تم حفظ البيانات بنجاح";
+
+				var claims = await _userManager.GetClaimsAsync(user);
+				var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+				var shareAddressClaim = claims.FirstOrDefault(c => c.Type == "share_address")?.Value;
+				var sharePhoneClaim = claims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+				
+				ViewBag.ShareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+				ViewBag.ShareAddress = shareAddressClaim == "true";
+				ViewBag.SharePhone = sharePhoneClaim == "true";
+				ViewBag.DisplayName = claims.FirstOrDefault(c => c.Type == "display_name")?.Value ?? user.UserName;
+				return View(user);
+			}
+
+			// Keep existing flags on error
+			{
+				var claims2 = await _userManager.GetClaimsAsync(user);
+				var shareAvatarClaim2 = claims2.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+				var shareAddressClaim2 = claims2.FirstOrDefault(c => c.Type == "share_address")?.Value;
+				var sharePhoneClaim2 = claims2.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+				
+				ViewBag.ShareAvatar = shareAvatarClaim2 == null ? true : shareAvatarClaim2 == "true";
+				ViewBag.ShareAddress = shareAddressClaim2 == "true";
+				ViewBag.SharePhone = sharePhoneClaim2 == "true";
+				ViewBag.DisplayName = claims2.FirstOrDefault(c => c.Type == "display_name")?.Value ?? user.UserName;
 			}
 
 			return View(user);
@@ -362,6 +498,18 @@ namespace MindShelf_PL.Controllers
 			{
 				return NotFound();
 			}
+
+			// Load privacy settings for the target user
+			var claims = await _userManager.GetClaimsAsync(user);
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+			var shareAddressClaim = claims.FirstOrDefault(c => c.Type == "share_address")?.Value;
+			var sharePhoneClaim = claims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
+			
+			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			ViewBag.ShareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+			ViewBag.ShareAddress = shareAddressClaim == "true";
+			ViewBag.SharePhone = sharePhoneClaim == "true";
 
 			return View(user);
 		}

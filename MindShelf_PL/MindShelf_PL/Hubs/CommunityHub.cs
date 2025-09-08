@@ -22,16 +22,21 @@ namespace MindShelf_PL.Hubs
 		{
 			var userId = Context?.UserIdentifier;
 			var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
-			// Prefer UserName as display label; if it's an email, use local-part
-			var baseName = userEntity?.UserName
-						   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
-						   ?? Context?.User?.Identity?.Name
-						   ?? "Anonymous";
+			// Prefer display_name claim → then UserName → then identity name; if email, use local-part
+			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var baseName = claimDisplay
+					   ?? userEntity?.UserName
+					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
+					   ?? Context?.User?.Identity?.Name
+					   ?? "Anonymous";
 			var displayName = baseName.Contains('@') ? baseName.Split('@')[0] : baseName;
 
-			// Avatar: DB.ProfileImageUrl -> Google picture claim
-			var avatar = userEntity?.ProfileImageUrl;
-			if (string.IsNullOrWhiteSpace(avatar))
+			// Avatar: Check privacy setting first, then DB.ProfileImageUrl -> Google picture claim
+			var shareAvatarClaim = Context?.User?.Claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+			var shareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+			
+			var avatar = shareAvatar ? userEntity?.ProfileImageUrl : null;
+			if (shareAvatar && string.IsNullOrWhiteSpace(avatar))
 			{
 				avatar = Context?.User?.Claims.FirstOrDefault(c => c.Type == "urn:google:picture")?.Value
 					  ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == "picture")?.Value;

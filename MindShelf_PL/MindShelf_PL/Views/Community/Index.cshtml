@@ -53,12 +53,13 @@
 		@{
 			var myId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 			var avatars = ViewBag.Avatars as IDictionary<string, string>;
+			var myDisplayName = ViewBag.MyDisplayName as string ?? User.Identity?.Name;
 		}
 		@foreach (var msg in Model)
 		{
 			var me = msg.SenderId == myId;
 			var avatarUrl = (avatars != null && msg.SenderId != null && avatars.ContainsKey(msg.SenderId)) ? avatars[msg.SenderId] : null;
-			var raw = msg.SenderName;
+			var raw = me && !string.IsNullOrWhiteSpace(myDisplayName) ? myDisplayName : msg.SenderName;
 			var shown = (!string.IsNullOrEmpty(raw) && raw.Contains("@")) ? raw.Split('@')[0] : raw;
 			<div class="msg @(me ? "me" : "")">
 				<a class="avatar text-decoration-none" href="@Url.Action("Public","Account", new { userId = msg.SenderId })" title="عرض الملف">
@@ -101,6 +102,7 @@
 		sendBtn.disabled = true;
 
 		const myId = '@(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)';
+		const myDisplayName = '@(User.FindFirst("display_name")?.Value ?? User.Identity?.Name)';
 		const avatarMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Avatars));
 
 		const connection=new signalR.HubConnectionBuilder()
@@ -111,7 +113,9 @@
 			const row=document.createElement('div');
 			row.className='msg'+(senderId===myId?' me':'');
 			const av=document.createElement('a'); av.className='avatar text-decoration-none'; av.href=`/Account/Public?userId=${encodeURIComponent(senderId||'')}`; av.title='عرض الملف';
-			const shown = (user && user.includes('@@')) ? user.split('@@')[0] : user;
+			let shown = (senderId===myId && myDisplayName) ? myDisplayName : user;
+			const atSign = '@@';
+			if (shown && shown.includes(atSign)) shown = shown.split(atSign)[0];
 			const a = avatar || (avatarMap && senderId ? avatarMap[senderId] : null);
 			if(a){ const img=document.createElement('img'); img.src=a; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(shown||'?')[0]; }; av.appendChild(img);} else { av.textContent=(shown||'?')[0]; }
 			const body=document.createElement('div'); body.className='body';

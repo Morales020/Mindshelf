@@ -122,11 +122,17 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
-                            var rawName = currentUser?.UserName ?? User?.Identity?.Name;
+                            var rawName = User?.FindFirst("display_name")?.Value
+                                           ?? currentUser?.UserName
+                                           ?? User?.Identity?.Name;
                             var displayName = (rawName?.Contains("@") == true) ? rawName.Split('@')[0] : rawName;
-                            var avatarUrl = currentUser?.ProfileImageUrl
+                            
+                            // Check avatar privacy setting
+                            var shareAvatarClaim = User?.FindFirst("share_avatar")?.Value;
+                            var shareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+                            var avatarUrl = shareAvatar ? (currentUser?.ProfileImageUrl
                                                ?? User?.FindFirst("urn:google:picture")?.Value
-                                               ?? User?.FindFirst("picture")?.Value;
+                                               ?? User?.FindFirst("picture")?.Value) : null;
                             var isAdmin = User.IsInRole("Admin");
 
                             <li class="nav-item dropdown">

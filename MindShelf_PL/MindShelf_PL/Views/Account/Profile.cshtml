@@ -3,8 +3,7 @@
 @{
     ViewData["Title"] = "الملف الشخصي";
     Layout = "_Layout";
-    var rawName = Model.UserName;
-    var displayName = (rawName?.Contains("@") == true) ? rawName.Split('@')[0] : rawName;
+    var displayName = ViewBag.DisplayName as string ?? Model.UserName;
 }
 
 <div class="container py-4">
@@ -13,7 +12,8 @@
             <div class="d-flex align-items-center mb-3">
                 <div class="me-3">
                     @{
-                        var pic = Model.ProfileImageUrl ?? User?.FindFirst("urn:google:picture")?.Value;
+                        var shareAvatar = ViewBag.ShareAvatar as bool? ?? true;
+                        var pic = shareAvatar ? (Model.ProfileImageUrl ?? User?.FindFirst("urn:google:picture")?.Value) : null;
                     }
                     @if (!string.IsNullOrWhiteSpace(pic))
                     {
@@ -31,10 +31,26 @@
             </div>
 
             <dl class="row mb-0">
-                <dt class="col-sm-3">العنوان</dt>
-                <dd class="col-sm-9">@Model.Address</dd>
-                <dt class="col-sm-3">الهاتف</dt>
-                <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                @{
+                    var shareAddress = ViewBag.ShareAddress as bool? ?? false;
+                    var sharePhone = ViewBag.SharePhone as bool? ?? false;
+                }
+                @if (shareAddress)
+                {
+                    <dt class="col-sm-3">العنوان</dt>
+                    <dd class="col-sm-9">@Model.Address</dd>
+                }
+                @if (sharePhone)
+                {
+                    <dt class="col-sm-3">الهاتف</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                }
+                @if (!shareAddress && !sharePhone)
+                {
+                    <div class="col-12 text-muted">
+                        <i class="fas fa-lock me-1"></i> المعلومات الشخصية محمية بالخصوصية
+                    </div>
+                }
             </dl>
         </div>
     </div>

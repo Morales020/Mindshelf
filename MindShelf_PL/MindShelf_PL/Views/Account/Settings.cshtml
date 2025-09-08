@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "تعديل البيانات";
     Layout = "_Layout";
+    var shareAvatar = ViewBag.ShareAvatar as bool? ?? true;
+    var shareAddress = ViewBag.ShareAddress as bool? ?? false;
+    var sharePhone = ViewBag.SharePhone as bool? ?? false;
+    var displayName = (string)ViewBag.DisplayName ?? Model?.UserName;
 }
 
 <div class="container py-4">
@@ -11,34 +15,57 @@
             <form asp-action="Settings" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="All" class="text-danger mb-2"></div>
-                <div class="mb-3">
-                    <label class="form-label">الاسم المعروض</label>
-                    <input asp-for="UserName" class="form-control" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">الاسم المعروض</label>
+                        <input type="text" name="DisplayName" value="@displayName" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input asp-for="Email" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">الهاتف</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">كلمة المرور الحالية (مطلوبة عند تغيير الهاتف)</label>
+                        <input type="password" name="currentPassword" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">العنوان</label>
+                        <input asp-for="Address" class="form-control" />
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">البريد الإلكتروني</label>
-                    <input asp-for="Email" class="form-control" disabled />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">الهاتف</label>
-                    <input asp-for="PhoneNumber" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">العنوان</label>
-                    <input asp-for="Address" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    @if (!string.IsNullOrWhiteSpace(Model?.ProfileImageUrl))
-                    {
-                        <div class="mb-2">
-                            <img src="@Model.ProfileImageUrl" alt="current avatar" style="width:64px;height:64px;border-radius:50%;object-fit:cover;" />
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label class="form-label">صورة الملف الشخصي</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <img id="avatarPreview" src="@Model?.ProfileImageUrl" alt="avatar preview" style="width:64px;height:64px;border-radius:50%;object-fit:cover;" />
+                            <input type="file" name="profileImage" accept="image/*" class="form-control" id="profileImageInput" />
                         </div>
-                    }
-                    <label class="form-label">تحميل صورة الملف الشخصي</label>
-                    <input type="file" name="profileImage" accept="image/*" class="form-control" />
-                    <div class="form-text">يمكنك اختيار صورة من جهازك لرفعها.</div>
+                        <div class="form-text">يمكنك اختيار صورة من جهازك لرفعها.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label d-block">الخصوصية</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="shareAvatar" name="ShareAvatar" value="true" @(shareAvatar ? "checked" : "")>
+                            <label class="form-check-label" for="shareAvatar">إظهار الصورة في المجتمع والملف العام</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="shareAddress" name="ShareAddress" value="true" @(shareAddress ? "checked" : "")>
+                            <label class="form-check-label" for="shareAddress">إظهار العنوان في الملف العام</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sharePhone" name="SharePhone" value="true" @(sharePhone ? "checked" : "")>
+                            <label class="form-check-label" for="sharePhone">إظهار الهاتف في الملف العام</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end">
+
+                <div class="d-flex justify-content-end mt-3">
                     <button type="submit" class="btn btn-primary px-4">
                         <i class="fas fa-save me-1"></i> حفظ
                     </button>
@@ -46,7 +73,21 @@
             </form>
         </div>
     </div>
-    
 </div>
+
+@section Scripts {
+<script>
+    const input = document.getElementById('profileImageInput');
+    const preview = document.getElementById('avatarPreview');
+    if (input) {
+        input.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            preview.src = url;
+        });
+    }
+</script>
+}
 
 

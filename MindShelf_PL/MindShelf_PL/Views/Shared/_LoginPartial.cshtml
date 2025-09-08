@@ -6,7 +6,9 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var currentUser = await UserManager.GetUserAsync(User);
-        var rawName = currentUser?.UserName ?? User?.Identity?.Name;
+        var rawName = User?.FindFirst("display_name")?.Value
+                      ?? currentUser?.UserName
+                      ?? User?.Identity?.Name;
         var displayName = (rawName?.Contains("@") == true) ? rawName.Split('@')[0] : rawName;
         var avatarUrl = currentUser?.ProfileImageUrl
                          ?? User?.FindFirst("urn:google:picture")?.Value

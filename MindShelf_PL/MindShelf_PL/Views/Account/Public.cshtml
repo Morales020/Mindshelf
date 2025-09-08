@@ -2,9 +2,11 @@
 
 @{
     ViewData["Title"] = "الملف العام";
-    var avatar = Model.ProfileImageUrl; // استخدم صورة صاحب الملف، وليس المشاهد
-    var raw = Model.UserName;
-    var shown = (!string.IsNullOrEmpty(raw) && raw.Contains("@")) ? raw.Split('@')[0] : raw;
+    var displayName = ViewBag.DisplayName as string ?? Model.UserName;
+    var shareAvatar = ViewBag.ShareAvatar as bool? ?? true;
+    var shareAddress = ViewBag.ShareAddress as bool? ?? false;
+    var sharePhone = ViewBag.SharePhone as bool? ?? false;
+    var avatar = shareAvatar ? Model.ProfileImageUrl : null;
 }
 
 <div class="container py-4">
@@ -21,21 +23,27 @@
                 }
             </div>
             <div>
-                <h4 class="mb-1">@shown</h4>
+                <h4 class="mb-1">@displayName</h4>
                 <div class="text-muted">@Model.Email</div>
             </div>
         </div>
         <div class="card-body border-top">
             <dl class="row mb-0">
-                @if (!string.IsNullOrWhiteSpace(Model.Address))
+                @if (shareAddress && !string.IsNullOrWhiteSpace(Model.Address))
                 {
                     <dt class="col-sm-3">العنوان</dt>
                     <dd class="col-sm-9">@Model.Address</dd>
                 }
-                @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                @if (sharePhone && !string.IsNullOrWhiteSpace(Model.PhoneNumber))
                 {
                     <dt class="col-sm-3">الهاتف</dt>
                     <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                }
+                @if (!shareAddress && !sharePhone)
+                {
+                    <div class="col-12 text-muted">
+                        <i class="fas fa-lock me-1"></i> المعلومات الشخصية محمية بالخصوصية
+                    </div>
                 }
             </dl>
         </div>
