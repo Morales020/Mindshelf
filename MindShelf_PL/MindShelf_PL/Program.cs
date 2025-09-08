@@ -45,7 +45,7 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(o => { o.EnableDetailedErrors = true; });
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
