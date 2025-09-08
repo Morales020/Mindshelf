@@ -17,10 +17,12 @@ namespace MindShelf_PL.Controllers
 
 		public IActionResult Index()
 		{
+			// Load latest 50, then order ascending so newest don't disappear on refresh
 			var messages = _dbContext.Messages
+				.OrderByDescending(m => m.SentAt)
+				.Take(50)
 				.OrderBy(m => m.SentAt)
-				.Take(20)
-                .ToList();
+				.ToList();
 
 			// Pass avatar urls for initial render (tolerate nulls)
 			ViewBag.Avatars = _dbContext.Users
