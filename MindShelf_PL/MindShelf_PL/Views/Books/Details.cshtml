@@ -38,8 +38,11 @@
                                             </a>
                                         </div>
                                         <div class="info-item mb-2">
+                                             <a asp-controller="Category" asp-action="Details" asp-route-id="@Model.CategoryId"
+                                               class="author-link" style="text-decoration: none; color: inherit;">
                                             <i class="fas fa-list text-primary me-3"></i>
                                             <strong>الفئة:</strong> @Model.CategoryName
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
