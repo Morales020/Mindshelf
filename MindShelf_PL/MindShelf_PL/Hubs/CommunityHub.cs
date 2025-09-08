@@ -4,6 +4,7 @@ using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MindShelf_PL.Hubs
 {
@@ -21,6 +22,7 @@ namespace MindShelf_PL.Hubs
 		{
 			var userName = Context?.User?.Identity?.Name ?? "Anonymous";
 			var userId = Context?.UserIdentifier;
+			var avatar = _dbContext.Users.FirstOrDefault(u => u.Id == userId)?.ProfileImageUrl;
 
 			var msg = new Message
 			{
@@ -33,7 +35,22 @@ namespace MindShelf_PL.Hubs
 			_dbContext.Messages.Add(msg);
 			await _dbContext.SaveChangesAsync();
 
-			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt);
+			// Prune: keep only newest 50 messages
+			var total = _dbContext.Messages.Count();
+			if (total > 50)
+			{
+				var toRemove = _dbContext.Messages
+					.OrderBy(m => m.SentAt)
+					.Take(total - 50)
+					.ToList();
+				if (toRemove.Any())
+				{
+					_dbContext.Messages.RemoveRange(toRemove);
+					await _dbContext.SaveChangesAsync();
+				}
+			}
+
+			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt, avatar);
 		}
 	}
 }

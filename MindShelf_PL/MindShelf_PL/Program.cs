@@ -14,6 +14,7 @@ using Stripe;
 using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace MindShelf_PL
 {
@@ -45,7 +46,7 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(o => { o.EnableDetailedErrors = true; });
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
@@ -152,14 +153,20 @@ namespace MindShelf_PL
 
             app.UseRouting();
 
+            // Support running behind reverse proxies (X-Forwarded-*)
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
 
             using (var scop = app.Services.CreateScope())
             {

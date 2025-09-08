@@ -10,7 +10,7 @@ using MindShelf_DAL.Models;
 
 namespace MindShelf_DAL.Data
 {
-    public class MindShelfDbContext :IdentityDbContext
+    public class MindShelfDbContext : IdentityDbContext<MindShelf_DAL.Models.User>
     {
         public MindShelfDbContext(DbContextOptions<MindShelfDbContext> options) : base(options) { }
 
