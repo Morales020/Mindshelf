@@ -110,6 +110,92 @@ namespace MindShelf_PL.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction(nameof(Login));
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction(nameof(Login));
+
+            return View(user);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Settings()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction(nameof(Login));
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction(nameof(Login));
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings([Bind("UserName,PhoneNumber,Address,ProfileImageUrl")] User model, IFormFile profileImage)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction(nameof(Login));
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction(nameof(Login));
+
+            // Ignore validation for properties not posted in the form
+            ModelState.Remove("ProfileImageUrl");
+            ModelState.Remove("ShoppingCart");
+
+            if (ModelState.IsValid)
+            {
+                user.UserName = model.UserName;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Address = model.Address;
+                user.ProfileImageUrl = model.ProfileImageUrl;
+
+                if (profileImage != null && profileImage.Length > 0)
+                {
+                    var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                    var ext = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
+                    if (!allowed.Contains(ext) || !profileImage.ContentType.StartsWith("image/"))
+                    {
+                        ModelState.AddModelError("", "صيغة الصورة غير مدعومة. المسموح: JPG, PNG, WEBP");
+                        TempData["Error"] = "فشل حفظ البيانات: صيغة الصورة غير مدعومة";
+                        return View(user);
+                    }
+                    const long maxBytes = 5 * 1024 * 1024;
+                    if (profileImage.Length > maxBytes)
+                    {
+                        ModelState.AddModelError("", "حجم الصورة يجب ألا يتجاوز 5 ميجابايت");
+                        TempData["Error"] = "فشل حفظ البيانات: حجم الصورة كبير";
+                        return View(user);
+                    }
+
+                    var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "profiles");
+                    Directory.CreateDirectory(uploadsRoot);
+                    var fileName = $"{Guid.NewGuid()}" + Path.GetExtension(profileImage.FileName);
+                    var filePath = Path.Combine(uploadsRoot, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await profileImage.CopyToAsync(stream);
+                    }
+                    user.ProfileImageUrl = $"/Images/profiles/{fileName}";
+                }
+
+                await _userManager.UpdateAsync(user);
+                TempData["Success"] = "تم تحديث البيانات بنجاح";
+                return RedirectToAction(nameof(Profile));
+            }
+
+            return View(user);
+        }
+
+
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string? returnUrl = null)
         {
@@ -209,6 +295,16 @@ namespace MindShelf_PL.Controllers
             await _userManager.UpdateAsync(user);
 
             return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        public IActionResult Claims()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
+            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            return Json(claims);
         }
     }
 }
