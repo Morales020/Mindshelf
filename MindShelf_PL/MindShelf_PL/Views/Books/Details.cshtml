@@ -30,8 +30,12 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <div class="info-item mb-2">
-                                            <i class="fas fa-user-edit text-primary me-3"></i>
-                                            <strong>المؤلف:</strong> @Model.AuthorName
+                                            <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.AuthorId"
+                                               class="author-link" style="text-decoration: none; color: inherit;">
+                                                <i class="fas fa-user-edit text-primary me-3"></i>
+                                                <strong>المؤلف:</strong>
+                                                @Model.AuthorName
+                                            </a>
                                         </div>
                                         <div class="info-item mb-2">
                                             <i class="fas fa-list text-primary me-3"></i>
@@ -96,7 +100,8 @@
                                             <i class="fas fa-trash"></i> حذف الكتاب
                                         </a>
                                     }
-                                    <a asp-action="Index" class="btn btn-secondary">
+                                    <a asp-action="Index" class="btn btn-dark" style="color:white
+" >
                                         <i class="fas fa-arrow-right"></i> العودة للكتب
                                     </a>
                                 </div>
@@ -362,6 +367,32 @@
         width: 3rem;
         height: 3rem;
     }
+
+    .author-link {
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+
+        .author-link:hover {
+            color: #007bff !important;
+            background-color: rgba(0, 123, 255, 0.1);
+            text-decoration: underline;
+            transform: translateY(-1px);
+        }
+
+        .author-link::after {
+            margin-right: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .author-link:hover::after {
+            opacity: 1;
+        }
 </style>
 
 <script>
