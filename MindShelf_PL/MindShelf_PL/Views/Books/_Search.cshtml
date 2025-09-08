@@ -1,4 +1,6 @@
-﻿@model IEnumerable<BookResponseDto>
+﻿@model List<BookResponseDto>
+@Html.AntiForgeryToken()
+
 
 @if (Model != null && Model.Any())
 {

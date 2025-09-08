@@ -294,6 +294,7 @@ namespace MindShelf_BL.Services
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
                 CategoryName = b.Category?.Name ?? "Unknown",
+                Price = b.Price,
                 Rating = b.Rating,
                 ImageUrl=b.ImageUrl,
                  State = b.State,
