@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Dtos.BookDto;
@@ -308,6 +308,21 @@ namespace MindShelf_MVC.Controllers
             var response = await _bookService.GetBooksByCategoryAsync(categoryId);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
+
+            // Repopulate dropdowns and selection like Index (needed when model is empty)
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            ViewBag.Categories = categoriesResponse.StatusCode == 200 && categoriesResponse.Data != null
+                ? categoriesResponse.Data
+                : new List<CategoryResponseDto>();
+
+            var authorsResponse = await _authorService.GetAllAuthor(1, 100);
+            ViewBag.Authors = authorsResponse.StatusCode == 200 && authorsResponse.Data != null
+                ? authorsResponse.Data
+                : new List<AuthorResponseDto>();
+
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SelectedAuthorId = null;
+            ViewBag.SearchTerm = null;
 
             return View("Index", response.Data);
         }

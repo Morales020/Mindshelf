@@ -13,15 +13,17 @@ namespace MindShelf_PL.Controllers
         private readonly IBookServies _bookServices;
         private readonly IAuthorServies _authorServices;
         private readonly IEventServices _eventServices;
+        private readonly ICategoryService _categoryService;
         private readonly UserManager<User> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices, IEventServices eventServices, UserManager<User> userManager)
+        public HomeController(ILogger<HomeController> logger, IBookServies bookServices, IAuthorServies authorServices, IEventServices eventServices, ICategoryService categoryService, UserManager<User> userManager)
         {
             _logger = logger;
             _bookServices = bookServices;
             _authorServices = authorServices;
             _eventServices = eventServices;
             _eventServices = eventServices;
+            _categoryService = categoryService;
             _userManager = userManager;
         }
 
@@ -35,6 +37,14 @@ namespace MindShelf_PL.Controllers
 
             var upcomingEventsResponse = await _eventServices.GetAllEvents(); // ����� ���� 4 �������
             ViewBag.UpcomingEvents = upcomingEventsResponse.Data ?? new List<MindShelf_BL.Dtos.EventDtos.EventResponseDto>();
+
+            // Load top categories dynamically (by book count)
+            var categoriesResponse = await _categoryService.GetAllCategories();
+            var topCategories = categoriesResponse.Data?
+                .OrderByDescending(c => (c.Books?.Count) ?? 0)
+                .Take(8)
+                .ToList() ?? new List<MindShelf_BL.Dtos.CategoryDto.CategoryResponseDto>();
+            ViewBag.TopCategories = topCategories;
 
             var currentUser = await _userManager.GetUserAsync(User);
             ViewBag.IsLoggedIn = currentUser != null;
