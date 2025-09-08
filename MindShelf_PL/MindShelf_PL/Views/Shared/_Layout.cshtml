@@ -117,15 +117,50 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
+                            var claimName = User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value
+                                             ?? User?.FindFirst("name")?.Value
+                                             ?? (currentUser?.UserName?.Contains("@") == true ? currentUser.UserName.Split('@')[0] : currentUser?.UserName);
+                            var claimPicture = User?.FindFirst("urn:google:picture")?.Value
+                                               ?? User?.FindFirst("picture")?.Value
+                                               ?? currentUser?.ProfileImageUrl;
                             var isAdmin = User.IsInRole("Admin");
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
                                    id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle fs-4 me-2"></i>
-                                    <span>@(currentUser?.UserName ?? "المستخدم")</span>
+                                    @if (!string.IsNullOrWhiteSpace(claimPicture))
+                                    {
+                                        <img src="@claimPicture" alt="avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" class="me-2" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle fs-4 me-2"></i>
+                                    }
+                                    <span>@(claimName ?? "المستخدم")</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
+                                    <li class="px-3 py-2">
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrWhiteSpace(claimPicture))
+                                            {
+                                                <img src="@claimPicture" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" class="me-2" />
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-user-circle fs-2 me-2"></i>
+                                            }
+                                            <div>
+                                                <div class="fw-bold">@claimName</div>
+                                                <div class="text-muted" style="font-size:12px;">@currentUser?.Email</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                            <i class="fas fa-id-card"></i> الملف الشخصي
+                                        </a>
+                                    </li>
                                     <li>
                                         <a class="dropdown-item" asp-controller="FavouriteBook" asp-action="Index">
                                             <i class="fas fa-heart"></i> المفضلة

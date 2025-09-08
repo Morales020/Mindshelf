@@ -1,0 +1,52 @@
+@model MindShelf_DAL.Models.User
+
+@{
+    ViewData["Title"] = "تعديل البيانات";
+    Layout = "_Layout";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Settings" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger mb-2"></div>
+                <div class="mb-3">
+                    <label class="form-label">الاسم المعروض</label>
+                    <input asp-for="UserName" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input asp-for="Email" class="form-control" disabled />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">الهاتف</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">العنوان</label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    @if (!string.IsNullOrWhiteSpace(Model?.ProfileImageUrl))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.ProfileImageUrl" alt="current avatar" style="width:64px;height:64px;border-radius:50%;object-fit:cover;" />
+                        </div>
+                    }
+                    <label class="form-label">تحميل صورة الملف الشخصي</label>
+                    <input type="file" name="profileImage" accept="image/*" class="form-control" />
+                    <div class="form-text">يمكنك اختيار صورة من جهازك لرفعها.</div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-save me-1"></i> حفظ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+

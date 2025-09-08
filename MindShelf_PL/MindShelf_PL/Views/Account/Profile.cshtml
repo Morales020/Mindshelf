@@ -1,0 +1,47 @@
+@model MindShelf_DAL.Models.User
+
+@{
+    ViewData["Title"] = "الملف الشخصي";
+    Layout = "_Layout";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                    @{
+                        var pic = User?.FindFirst("urn:google:picture")?.Value ?? Model.ProfileImageUrl;
+                    }
+                    @if (!string.IsNullOrWhiteSpace(pic))
+                    {
+                        <img src="@pic" alt="avatar" style="width:64px;height:64px;border-radius:50%;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <i class="fas fa-user-circle" style="font-size:64px;"></i>
+                    }
+                </div>
+                <div>
+                    <h4 class="mb-0">@Model.UserName</h4>
+                    <div class="text-muted">@Model.Email</div>
+                </div>
+            </div>
+
+            <dl class="row mb-0">
+                <dt class="col-sm-3">العنوان</dt>
+                <dd class="col-sm-9">@Model.Address</dd>
+                <dt class="col-sm-3">الهاتف</dt>
+                <dd class="col-sm-9">@Model.PhoneNumber</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-end">
+        <a class="btn btn-primary px-4" asp-controller="Account" asp-action="Settings">
+            <i class="fas fa-user-edit me-1"></i> تعديل البيانات
+        </a>
+    </div>
+</div>
+
+

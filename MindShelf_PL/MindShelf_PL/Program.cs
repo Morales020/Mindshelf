@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using MindShelf_BL.Helper.SeedData;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
@@ -110,6 +113,26 @@ namespace MindShelf_PL
                                ?? builder.Configuration["Authentication:Google:ClientSecret"];
 
         options.CallbackPath = "/signin-google";
+        options.SaveTokens = true;
+        options.Scope.Add("openid");
+        options.Scope.Add("email");
+        options.Scope.Add("profile");
+        options.Events.OnCreatingTicket = context =>
+        {
+            try
+            {
+                var user = context.User;
+                var name = user.TryGetProperty("name", out var n) ? n.GetString() : null;
+                var picture = user.TryGetProperty("picture", out var p) ? p.GetString() : null;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                    context.Identity!.AddClaim(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, name));
+                if (!string.IsNullOrWhiteSpace(picture))
+                    context.Identity!.AddClaim(new System.Security.Claims.Claim("urn:google:picture", picture));
+            }
+            catch { }
+            return Task.CompletedTask;
+        };
     });
 
 
