@@ -163,11 +163,11 @@
                     <p class="text-muted mb-0">استكشف مجموعة متنوعة من المؤلفين المتميزين</p>
                 </div>
                 @if (User.IsInRole("Admin"))
-                                {
-                <a asp-action="Create" class="btn-add-author">
-                    <i class="fas fa-plus me-2"></i>إضافة مؤلف جديد
-                </a>
-                                }
+                {
+                    <a asp-action="Create" class="btn-add-author">
+                        <i class="fas fa-plus me-2"></i>إضافة مؤلف جديد
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -215,6 +215,11 @@
                                     <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn btn-edit btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
+                                }
+                                @if (User.IsInRole("Admin"))
+                                {
+
                                     <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn btn-delete btn-sm">
                                         <i class="fas fa-trash"></i>
                                     </a>
@@ -234,9 +239,12 @@
                     </div>
                     <h4 class="text-muted mb-3">لا توجد مؤلفين متاحين</h4>
                     <p class="text-muted mb-4">ابدأ بإضافة مؤلف جديد لبناء مكتبتك</p>
-                    <a asp-action="Create" class="btn-add-author">
-                        <i class="fas fa-plus me-2"></i>إضافة أول مؤلف
-                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Create" class="btn-add-author">
+                            <i class="fas fa-plus me-2"></i>إضافة أول مؤلف
+                        </a>
+                    }
                 </div>
             </div>
         }

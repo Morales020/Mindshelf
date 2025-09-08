@@ -431,11 +431,12 @@
                     <!-- Action Buttons -->
                     <div class="d-flex gap-3 justify-content-center mt-4">
                         @if (User.IsInRole("Admin"))
-                                {
-                        <a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn-edit">
-                            <i class="fas fa-edit me-2"></i>تعديل البيانات
-                        </a>
-                                }
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn-edit">
+                                <i class="fas fa-edit me-2"></i>تعديل البيانات
+                            </a>
+                        }
+
                         <a asp-action="Index" class="btn-back">
                             <i class="fas fa-list me-2"></i>عرض جميع المؤلفين
                         </a>
