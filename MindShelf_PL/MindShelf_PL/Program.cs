@@ -155,11 +155,11 @@ namespace MindShelf_PL
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
 
             using (var scop = app.Services.CreateScope())
             {
