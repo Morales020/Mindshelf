@@ -285,7 +285,7 @@ namespace MindShelf_BL.Services
                 .ToListAsync();
 
             if (!books.Any())
-                return new ResponseMVC<IEnumerable<BookResponseDto>>(404, $"No books found for '{searchTerm}'", null);
+                return new ResponseMVC<IEnumerable<BookResponseDto>>(404, $"هذا الكتاب غير موجود  '{searchTerm}'", null);
 
             var dtos = books.Select(b => new BookResponseDto
             {
@@ -294,6 +294,7 @@ namespace MindShelf_BL.Services
                 Description = b.Description,
                 AuthorName = b.Author?.Name ?? "Unknown",
                 CategoryName = b.Category?.Name ?? "Unknown",
+                Price = b.Price,
                 Rating = b.Rating,
                 ImageUrl=b.ImageUrl,
                  State = b.State,

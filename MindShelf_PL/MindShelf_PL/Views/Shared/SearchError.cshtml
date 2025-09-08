@@ -1,0 +1,51 @@
+﻿@model MindShelf_PL.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "خطأ";
+    Layout = null;
+}
+
+<div class="container text-center py-5">
+   
+    <h1 class="fw-bold text-danger">لم يتم العثور على أي كتب تطابق معايير البحث.!</h1>
+    <!-- الرسالة -->
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-warning shadow-sm mt-4" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            @Model.Message
+        </div>
+    }
+
+
+    <!-- زر العودة -->
+    <a href="@Url.Action("Index", "Home")" class="btn btn-lg btn-primary mt-4 shadow">
+        ⬅️ العودة للصفحة الرئيسية
+    </a>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .animate-bounce {
+        animation: bounce 1.5s infinite;
+    }
+
+    @@keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    .alert {
+        border-radius: 15px;
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        padding: 10px 25px;
+    }
+</style>

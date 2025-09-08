@@ -103,11 +103,11 @@
                         </li>
                     </ul>
 
-                    <!-- Search Bar -->
+                  <!-- Search Bar -->
                     <div class="search-container w-100 my-2 my-lg-0 me-0 me-lg-3 order-lg-0">
-                        <form class="d-flex w-100" asp-controller="Books" asp-action="Search">
+                        <form class="d-flex w-100" asp-controller="Books" asp-action="Index" method="get">
                             <div class="input-group">
-                                <input class="form-control search-input" type="search" name="term"
+                                <input class="form-control search-input" type="search" name="searchTerm"
                                        placeholder="البحث عن كتاب، مؤلف..." id="smartSearch">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fas fa-search"></i>
@@ -116,7 +116,7 @@
                         </form>
                         <div class="search-suggestions" id="searchSuggestions"></div>
                     </div>
-
+                  
                     <!-- User Menu -->
                     <ul class="navbar-nav ms-lg-3 align-items-center">
                         @if (SignInManager.IsSignedIn(User))

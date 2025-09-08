@@ -53,7 +53,7 @@ namespace MindShelf_MVC.Controllers
 
         private IActionResult ErrorResult(string message)
         {
-            return View("Error", new ErrorViewModel
+            return View("SearchError", new ErrorViewModel
             {
                 Message = message,
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
