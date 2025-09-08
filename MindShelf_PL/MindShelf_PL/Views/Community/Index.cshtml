@@ -61,13 +61,19 @@
 </div>
 
 @section Scripts {
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.6/signalr.min.js"></script>
 	<script>
 		const box=document.getElementById('messagesList');
 		function scrollBottom(){ box.scrollTop=box.scrollHeight; }
 		scrollBottom();
 
-		const connection=new signalR.HubConnectionBuilder().withUrl('/communityHub').build();
+		const sendBtn = document.getElementById('sendBtn');
+		sendBtn.disabled = true;
+
+		const connection=new signalR.HubConnectionBuilder()
+			.withUrl('/communityHub')
+			.withAutomaticReconnect()
+			.build();
 		connection.on('ReceiveMessage',(user,message,time,avatar)=>{
 			const row=document.createElement('div');
 			row.className='msg'+(user==='@(User?.Identity?.Name ?? "")'?' me':'');
@@ -79,7 +85,10 @@
 			body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
 		});
 
-		connection.start().catch(err=>console.error(err.toString()));
+
+		connection.start()
+			.then(()=>{ sendBtn.disabled=false; })
+			.catch(err=>{ console.error('SignalR start error:', err.toString()); });
 
 		document.getElementById('sendBtn').addEventListener('click',sendMessage);
 		document.getElementById('messageInput').addEventListener('keypress',function(e){ if(e.key==='Enter') sendMessage(); });
