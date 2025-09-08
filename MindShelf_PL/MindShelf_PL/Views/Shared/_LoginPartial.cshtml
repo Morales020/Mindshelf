@@ -6,17 +6,22 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var currentUser = await UserManager.GetUserAsync(User);
-        var claimName = User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? currentUser?.UserName;
-        var claimPicture = User?.FindFirst("urn:google:picture")?.Value;
+        var rawName = User?.FindFirst("display_name")?.Value
+                      ?? currentUser?.UserName
+                      ?? User?.Identity?.Name;
+        var displayName = (rawName?.Contains("@") == true) ? rawName.Split('@')[0] : rawName;
+        var avatarUrl = currentUser?.ProfileImageUrl
+                         ?? User?.FindFirst("urn:google:picture")?.Value
+                         ?? User?.FindFirst("picture")?.Value;
         var isAdmin = User.IsInRole("Admin");
 
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
                id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="user-avatar me-2">
-                    @if (!string.IsNullOrWhiteSpace(claimPicture))
+                    @if (!string.IsNullOrWhiteSpace(avatarUrl))
                     {
-                        <img src="@claimPicture" alt="avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" />
+                        <img src="@avatarUrl" alt="avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" />
                     }
                     else
                     {
@@ -24,7 +29,7 @@
                     }
                 </div>
                 <div class="user-info">
-                    <span class="user-name">@(claimName ?? "المستخدم")</span>
+                    <span class="user-name">@(displayName ?? "المستخدم")</span>
                     @if (isAdmin)
                     {
                         <br>
@@ -93,14 +98,14 @@
                 </li>
                 <li>
                     <a class="dropdown-item" asp-controller="Order" asp-action="ByUser"
-                       asp-route-userName="@User.Identity.Name">
+                       asp-route-userName="@displayName">
                         <i class="fas fa-shopping-bag text-brown"></i> طلباتي
                         <span class="badge bg-secondary ms-1">@ViewBag.OrdersCount</span>
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item" asp-controller="Cart" asp-action="GetCartByUserName"
-                       asp-route-userName="@User.Identity.Name">
+                       asp-route-userName="@displayName">
                         <i class="fas fa-shopping-cart text-success"></i> سلة التسوق
                         <span class="badge bg-primary ms-1 cart-counter">@ViewBag.CartCount</span>
                     </a>

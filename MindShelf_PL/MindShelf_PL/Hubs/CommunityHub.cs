@@ -20,14 +20,32 @@ namespace MindShelf_PL.Hubs
 
 		public async Task SendMessage(string message)
 		{
-			var userName = Context?.User?.Identity?.Name ?? "Anonymous";
 			var userId = Context?.UserIdentifier;
-			var avatar = _dbContext.Users.FirstOrDefault(u => u.Id == userId)?.ProfileImageUrl;
+			var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+			// Prefer display_name claim → then UserName → then identity name; if email, use local-part
+			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var baseName = claimDisplay
+					   ?? userEntity?.UserName
+					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
+					   ?? Context?.User?.Identity?.Name
+					   ?? "Anonymous";
+			var displayName = baseName.Contains('@') ? baseName.Split('@')[0] : baseName;
+
+			// Avatar: Check privacy setting first, then DB.ProfileImageUrl -> Google picture claim
+			var shareAvatarClaim = Context?.User?.Claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
+			var shareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
+			
+			var avatar = shareAvatar ? userEntity?.ProfileImageUrl : null;
+			if (shareAvatar && string.IsNullOrWhiteSpace(avatar))
+			{
+				avatar = Context?.User?.Claims.FirstOrDefault(c => c.Type == "urn:google:picture")?.Value
+					  ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == "picture")?.Value;
+			}
 
 			var msg = new Message
 			{
 				SenderId = userId,
-				SenderName = userName,
+				SenderName = displayName,
 				Content = message,
 				SentAt = DateTime.UtcNow
 			};
@@ -50,7 +68,7 @@ namespace MindShelf_PL.Hubs
 				}
 			}
 
-			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt, avatar);
+			await Clients.All.SendAsync("ReceiveMessage", msg.SenderId, msg.SenderName, msg.Content, msg.SentAt, avatar);
 		}
 	}
 }
