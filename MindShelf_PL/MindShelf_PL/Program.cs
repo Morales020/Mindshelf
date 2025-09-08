@@ -58,7 +58,14 @@ namespace MindShelf_PL
      )
  );
 
-            builder.Services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<MindShelfDbContext>();
+            // HttpContext accessor for services
+            builder.Services.AddHttpContextAccessor();
+
+            // Identity (registers UserManager<User>, SignInManager<User>, etc.)
+            builder.Services
+                .AddIdentity<User, IdentityRole>(options => { })
+                .AddEntityFrameworkStores<MindShelfDbContext>()
+                .AddDefaultTokenProviders();
 
             // Configure Stripe Settings
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));

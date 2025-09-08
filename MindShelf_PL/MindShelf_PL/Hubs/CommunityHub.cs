@@ -20,14 +20,27 @@ namespace MindShelf_PL.Hubs
 
 		public async Task SendMessage(string message)
 		{
-			var userName = Context?.User?.Identity?.Name ?? "Anonymous";
 			var userId = Context?.UserIdentifier;
-			var avatar = _dbContext.Users.FirstOrDefault(u => u.Id == userId)?.ProfileImageUrl;
+			var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+			// Prefer UserName as display label; if it's an email, use local-part
+			var baseName = userEntity?.UserName
+						   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
+						   ?? Context?.User?.Identity?.Name
+						   ?? "Anonymous";
+			var displayName = baseName.Contains('@') ? baseName.Split('@')[0] : baseName;
+
+			// Avatar: DB.ProfileImageUrl -> Google picture claim
+			var avatar = userEntity?.ProfileImageUrl;
+			if (string.IsNullOrWhiteSpace(avatar))
+			{
+				avatar = Context?.User?.Claims.FirstOrDefault(c => c.Type == "urn:google:picture")?.Value
+					  ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == "picture")?.Value;
+			}
 
 			var msg = new Message
 			{
 				SenderId = userId,
-				SenderName = userName,
+				SenderName = displayName,
 				Content = message,
 				SentAt = DateTime.UtcNow
 			};
@@ -50,7 +63,7 @@ namespace MindShelf_PL.Hubs
 				}
 			}
 
-			await Clients.All.SendAsync("ReceiveMessage", msg.SenderName, msg.Content, msg.SentAt, avatar);
+			await Clients.All.SendAsync("ReceiveMessage", msg.SenderId, msg.SenderName, msg.Content, msg.SentAt, avatar);
 		}
 	}
 }

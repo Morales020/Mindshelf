@@ -122,40 +122,39 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
-                            var claimName = User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value
-                                             ?? User?.FindFirst("name")?.Value
-                                             ?? (currentUser?.UserName?.Contains("@") == true ? currentUser.UserName.Split('@')[0] : currentUser?.UserName);
-                            var claimPicture = User?.FindFirst("urn:google:picture")?.Value
-                                               ?? User?.FindFirst("picture")?.Value
-                                               ?? currentUser?.ProfileImageUrl;
+                            var rawName = currentUser?.UserName ?? User?.Identity?.Name;
+                            var displayName = (rawName?.Contains("@") == true) ? rawName.Split('@')[0] : rawName;
+                            var avatarUrl = currentUser?.ProfileImageUrl
+                                               ?? User?.FindFirst("urn:google:picture")?.Value
+                                               ?? User?.FindFirst("picture")?.Value;
                             var isAdmin = User.IsInRole("Admin");
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
                                    id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    @if (!string.IsNullOrWhiteSpace(claimPicture))
+                                    @if (!string.IsNullOrWhiteSpace(avatarUrl))
                                     {
-                                        <img src="@claimPicture" alt="avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" class="me-2" />
+                                        <img src="@avatarUrl" alt="avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" class="me-2" />
                                     }
                                     else
                                     {
                                         <i class="fas fa-user-circle fs-4 me-2"></i>
                                     }
-                                    <span>@(claimName ?? "المستخدم")</span>
+                                    <span>@(displayName ?? "المستخدم")</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li class="px-3 py-2">
                                         <div class="d-flex align-items-center">
-                                            @if (!string.IsNullOrWhiteSpace(claimPicture))
+                                            @if (!string.IsNullOrWhiteSpace(avatarUrl))
                                             {
-                                                <img src="@claimPicture" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" class="me-2" />
+                                                <img src="@avatarUrl" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" class="me-2" />
                                             }
                                             else
                                             {
                                                 <i class="fas fa-user-circle fs-2 me-2"></i>
                                             }
                                             <div>
-                                                <div class="fw-bold">@claimName</div>
+                                                <div class="fw-bold">@displayName</div>
                                                 <div class="text-muted" style="font-size:12px;">@currentUser?.Email</div>
                                             </div>
                                         </div>
@@ -180,7 +179,7 @@
 	                                    }
 	                                    else if (User.Identity.IsAuthenticated)
 	                                    {
-		                                    <a class="dropdown-item" asp-controller="Order" asp-action="UserOrders" asp-route-userName="@User.Identity.Name">
+		                                    <a class="dropdown-item" asp-controller="Order" asp-action="UserOrders" asp-route-userName="@displayName">
 			                                    <i class="fas fa-shopping-bag"></i> طلباتي
 		                                    </a>
 	                                    }
@@ -188,7 +187,7 @@
 
                                     <li>
                                         <a class="dropdown-item" asp-controller="Cart" asp-action="Index"
-                                           asp-route-userName="@User.Identity.Name">
+                                           asp-route-userName="@displayName">
                                             <i class="fas fa-shopping-cart"></i> السلة
                                         </a>
                                     </li>

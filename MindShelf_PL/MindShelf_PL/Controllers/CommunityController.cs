@@ -24,10 +24,10 @@ namespace MindShelf_PL.Controllers
 				.OrderBy(m => m.SentAt)
 				.ToList();
 
-			// Pass avatar urls for initial render (tolerate nulls)
+			// Pass avatar urls for initial render keyed by UserId
 			ViewBag.Avatars = _dbContext.Users
-				.Select(u => new { u.UserName, u.ProfileImageUrl })
-				.ToDictionary(u => u.UserName, u => u.ProfileImageUrl ?? string.Empty);
+				.Select(u => new { u.Id, u.ProfileImageUrl })
+				.ToDictionary(u => u.Id, u => u.ProfileImageUrl ?? string.Empty);
 
 			return View(messages);
 		}

@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "الملف العام";
     var avatar = Model.ProfileImageUrl; // استخدم صورة صاحب الملف، وليس المشاهد
+    var raw = Model.UserName;
+    var shown = (!string.IsNullOrEmpty(raw) && raw.Contains("@")) ? raw.Split('@')[0] : raw;
 }
 
 <div class="container py-4">
@@ -19,8 +21,8 @@
                 }
             </div>
             <div>
-                <h4 class="mb-1">@Model.UserName</h4>
-                <div class="text-muted">انضم إلينا</div>
+                <h4 class="mb-1">@shown</h4>
+                <div class="text-muted">@Model.Email</div>
             </div>
         </div>
         <div class="card-body border-top">
