@@ -49,18 +49,68 @@
                         <div class="form-text">يمكنك اختيار صورة من جهازك لرفعها.</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label d-block">الخصوصية</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="shareAvatar" name="ShareAvatar" value="true" @(shareAvatar ? "checked" : "")>
-                            <label class="form-check-label" for="shareAvatar">إظهار الصورة في المجتمع والملف العام</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="shareAddress" name="ShareAddress" value="true" @(shareAddress ? "checked" : "")>
-                            <label class="form-check-label" for="shareAddress">إظهار العنوان في الملف العام</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="sharePhone" name="SharePhone" value="true" @(sharePhone ? "checked" : "")>
-                            <label class="form-check-label" for="sharePhone">إظهار الهاتف في الملف العام</label>
+                        <div class="privacy-section">
+                            <div class="privacy-header">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                <h5 class="mb-0">إعدادات الخصوصية</h5>
+                                <small class="text-muted">تحكم في المعلومات التي تظهر للآخرين</small>
+                            </div>
+                            
+                            <div class="privacy-options mt-3">
+                                <div class="privacy-option">
+                                    <div class="privacy-card @(shareAvatar ? "active" : "")">
+                                        <div class="privacy-icon">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                        <div class="privacy-content">
+                                            <div class="privacy-title">صورة الملف الشخصي</div>
+                                            <div class="privacy-description">إظهار الصورة في المجتمع والملف العام</div>
+                                        </div>
+                                        <div class="privacy-toggle">
+                                            <input type="checkbox" id="shareAvatar" name="ShareAvatar" value="true" @(shareAvatar ? "checked" : "") class="toggle-switch">
+                                            <label for="shareAvatar" class="toggle-label">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="privacy-option">
+                                    <div class="privacy-card @(shareAddress ? "active" : "")">
+                                        <div class="privacy-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div class="privacy-content">
+                                            <div class="privacy-title">العنوان</div>
+                                            <div class="privacy-description">إظهار العنوان في الملف العام</div>
+                                        </div>
+                                        <div class="privacy-toggle">
+                                            <input type="checkbox" id="shareAddress" name="ShareAddress" value="true" @(shareAddress ? "checked" : "") class="toggle-switch">
+                                            <label for="shareAddress" class="toggle-label">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="privacy-option">
+                                    <div class="privacy-card @(sharePhone ? "active" : "")">
+                                        <div class="privacy-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="privacy-content">
+                                            <div class="privacy-title">رقم الهاتف</div>
+                                            <div class="privacy-description">إظهار الهاتف في الملف العام</div>
+                                        </div>
+                                        <div class="privacy-toggle">
+                                            <input type="checkbox" id="sharePhone" name="SharePhone" value="true" @(sharePhone ? "checked" : "") class="toggle-switch">
+                                            <label for="sharePhone" class="toggle-label">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,7 +137,194 @@
             preview.src = url;
         });
     }
+
+    // Enhanced Privacy Options JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make privacy cards clickable
+        const privacyCards = document.querySelectorAll('.privacy-card');
+        privacyCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on the toggle switch
+                if (e.target.type === 'checkbox' || e.target.tagName === 'LABEL') {
+                    return;
+                }
+                
+                const checkbox = this.querySelector('.toggle-switch');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        // Add visual feedback for toggle switches
+        const toggleSwitches = document.querySelectorAll('.toggle-switch');
+        toggleSwitches.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const card = this.closest('.privacy-card');
+                if (this.checked) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        });
+    });
 </script>
+
+<style>
+    /* Enhanced Privacy Card Styles */
+    .privacy-card {
+        position: relative;
+        overflow: visible;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        margin-bottom: 16px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .privacy-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border-color: #28a745;
+    }
+    
+    .privacy-card.active {
+        border-left-color: #28a745;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.02) 0%, rgba(40, 167, 69, 0.05) 100%);
+        border-color: #28a745;
+    }
+    
+    /* Remove checkmark indicator */
+    .privacy-card::after {
+        display: none !important;
+    }
+    
+    @@keyframes checkmark-bounce {
+        0% { transform: translateY(-50%) scale(0); }
+        50% { transform: translateY(-50%) scale(1.3); }
+        100% { transform: translateY(-50%) scale(1); }
+    }
+    
+    /* Premium toggle switch design */
+    .toggle-label {
+        position: relative;
+        display: inline-block;
+        width: 70px;
+        height: 36px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 18px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #dee2e6;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toggle-label:hover {
+        background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        border-color: #adb5bd;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toggle-slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 26px;
+        height: 26px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 50%;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .toggle-switch:checked + .toggle-label {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-color: #28a745;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(40, 167, 69, 0.15);
+    }
+    
+    .toggle-switch:checked + .toggle-label .toggle-slider {
+        transform: translateX(34px);
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Remove any checkmarks from toggle slider */
+    .toggle-slider::before,
+    .toggle-slider::after {
+        display: none !important;
+    }
+    
+    /* Ensure no checkmarks appear on toggle switches */
+    .toggle-label::before,
+    .toggle-label::after {
+        display: none !important;
+    }
+    
+    .toggle-switch:focus + .toggle-label {
+        box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.3);
+    }
+    
+    /* Enhanced privacy icons */
+    .privacy-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+        margin-left: 16px;
+        flex-shrink: 0;
+    }
+    
+    .privacy-card:hover .privacy-icon {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    }
+    
+    /* Enhanced typography and layout */
+    .privacy-content {
+        flex: 1;
+        margin: 0 20px;
+        text-align: right;
+    }
+    
+    .privacy-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 4px;
+        font-size: 1.1rem;
+    }
+    
+    .privacy-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .privacy-toggle {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+    
+    /* Hide any small checkboxes */
+    input[type="checkbox"]:not(.toggle-switch) {
+        display: none !important;
+    }
+</style>
 }
 
 
