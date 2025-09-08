@@ -10,7 +10,7 @@ using MindShelf_DAL.Models;
 
 namespace MindShelf_DAL.Data
 {
-    public class MindShelfDbContext :IdentityDbContext
+    public class MindShelfDbContext : IdentityDbContext<MindShelf_DAL.Models.User>
     {
         public MindShelfDbContext(DbContextOptions<MindShelfDbContext> options) : base(options) { }
 
@@ -26,6 +26,7 @@ namespace MindShelf_DAL.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

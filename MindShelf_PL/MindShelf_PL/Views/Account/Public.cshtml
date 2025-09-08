@@ -1,0 +1,43 @@
+@model MindShelf_DAL.Models.User
+
+@{
+    ViewData["Title"] = "الملف العام";
+    var avatar = Model.ProfileImageUrl; // استخدم صورة صاحب الملف، وليس المشاهد
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body d-flex align-items-center">
+            <div class="me-3">
+                @if (!string.IsNullOrWhiteSpace(avatar))
+                {
+                    <img src="@avatar" alt="avatar" style="width:72px;height:72px;border-radius:50%;object-fit:cover;" onerror="this.replaceWith(document.createElement('i'))" />
+                }
+                else
+                {
+                    <i class="fas fa-user-circle" style="font-size:72px;"></i>
+                }
+            </div>
+            <div>
+                <h4 class="mb-1">@Model.UserName</h4>
+                <div class="text-muted">انضم إلينا</div>
+            </div>
+        </div>
+        <div class="card-body border-top">
+            <dl class="row mb-0">
+                @if (!string.IsNullOrWhiteSpace(Model.Address))
+                {
+                    <dt class="col-sm-3">العنوان</dt>
+                    <dd class="col-sm-9">@Model.Address</dd>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                {
+                    <dt class="col-sm-3">الهاتف</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                }
+            </dl>
+        </div>
+    </div>
+</div>
+
+
