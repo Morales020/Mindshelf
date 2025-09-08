@@ -14,6 +14,7 @@ using Stripe;
 using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace MindShelf_PL
 {
@@ -151,6 +152,12 @@ namespace MindShelf_PL
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Support running behind reverse proxies (X-Forwarded-*)
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
