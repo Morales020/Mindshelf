@@ -147,14 +147,6 @@
                                     }
                                 </div>
                                 <div class="d-grid gap-2">
-                                    @if (book.Price == 0)
-                                    {
-                                        <a href="@Url.Action("Download", "Books", new { id = book.BookId })" class="btn btn-success btn-sm">
-                                            <i class="fas fa-download"></i> تحميل مجاني
-                                        </a>
-                                    }
-                                    else
-                                    {
                                         @if (book.State == MindShelf_DAL.Models.BookState.Available)
                                         {
                                             <form asp-action="AddToCart" asp-controller="Cart" method="post">
@@ -170,7 +162,6 @@
                                         {
                                             <button class="btn btn-secondary btn-sm w-100" disabled>غير متوفر</button>
                                         }
-                                    }
                                     <a href="@Url.Action("Details", "Books", new { id = book.BookId })" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye"></i> التفاصيل
                                     </a>
@@ -357,7 +348,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="@Url.Action("Index", "Category")" class="btn btn-outline-primary btn-lg">
+            <a href="@Url.Action("Index", "Category")" class="btn btn-primary btn-lg">
                 <i class="fas fa-list"></i> عرض جميع التصنيفات
             </a>
         </div>
@@ -382,45 +373,43 @@
                 {
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card author-card h-100">
-                            <div class="card-body text-center">
+                            <div class="card-body text-center d-flex flex-column">
                                 <div class="author-image mb-3">
                                     @if (!string.IsNullOrEmpty(author.ImageUrl) && (author.ImageUrl.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("png", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("gif", StringComparison.OrdinalIgnoreCase) || author.ImageUrl.EndsWith("webp", StringComparison.OrdinalIgnoreCase)))
                                     {
                                         <img src="@author.ImageUrl" alt="@author.Name"
                                              class="rounded-circle" width="80" height="80"
-                                             style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                                             style="object-fit: cover; border: 3px solid var(--primary-color);">
                                     }
                                     else
                                     {
                                         <img src="/Images/anon-icon.jpg" alt="@author.Name"
                                              class="rounded-circle" width="80" height="80"
-                                             style="object-fit: cover; border: 3px solid var(--primary-blue);">
+                                             style="object-fit: cover; border: 3px solid var(--primary-color);">
                                     }
                                 </div>
                                 <h5 class="author-name text-primary mb-2">@author.Name</h5>
                                 @if (!string.IsNullOrEmpty(author.Bio))
                                 {
-                                    <p class="author-bio text-muted mb-3">
+                                    <p class="author-bio text-muted mb-3 flex-grow-1">
                                         @(author.Bio.Length > 100 ? author.Bio.Substring(0, 100) + "..." : author.Bio)
                                     </p>
                                 }
-                                <div class="author-stats mb-3">
-                                    <div class="row text-center">
-                                        <div class="col-6">
-                                            <strong class="text-brown">@author.bookcount</strong>
-                                            <br><small class="text-muted">كتاب</small>
-                                        </div>
-                                        <div class="col-6">
-                                            <strong class="text-brown">@author.ReviewsCount</strong>
-                                            <br><small class="text-muted">مراجعة</small>
-                                        </div>
+                                <div class="author-stats mb-3 d-flex justify-content-center gap-4">
+                                    <div>
+                                        <strong class="book-count-text">@author.bookcount</strong>
+                                        <br><small class="text-muted">كتاب</small>
+                                    </div>
+                                    <div>
+                                        <strong class="review-count-text">@author.ReviewsCount</strong>
+                                        <br><small class="text-muted">مراجعة</small>
                                     </div>
                                 </div>
-                                <div class="author-actions">
-                                    <a href="@Url.Action("Details", "Author", new { id = author.AuthorId })" class="btn btn-primary btn-sm">
+                                <div class="author-actions d-flex flex-column gap-2 mt-auto">
+                                    <a href="@Url.Action("Details", "Author", new { id = author.AuthorId })" class="btn btn-primary">
                                         <i class="fas fa-user"></i> الملف الشخصي
                                     </a>
-                                    <a href="@Url.Action("Details", "Author", new { id = author.AuthorId })#Link" class="btn btn-outline-primary btn-sm">
+                                    <a href="@Url.Action("Details", "Author", new { id = author.AuthorId })#Link" class="btn btn-outline-primary">
                                         <i class="fas fa-books"></i> كتب المؤلف
                                     </a>
                                 </div>
@@ -439,12 +428,11 @@
                 </div>
             }
         </div>
-
-        <div class="text-center mt-4">
-            <a href="@Url.Action("Index", "Author")" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-users"></i> عرض جميع المؤلفين
-            </a>
-        </div>
+    <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Author")" class="btn btn-primary btn-lg">
+		    <i class="fas fa-users"></i> عرض جميع المؤلفين
+	    </a>
+    </div>
     </div>
 </section>
 
@@ -497,9 +485,9 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="event-card-footer">
-                                <a href="@Url.Action("Details", "Event", new { id = ev.EventId })" class="btn btn-details">
+                                <a href="@Url.Action("Details", "Event", new { id = ev.EventId })" class="btn btn-primary">
                                     <i class="fas fa-info-circle"></i>
                                     التفاصيل
                                 </a>
@@ -549,7 +537,6 @@
 </section>
 
 <style>
-    /* Home Events Section Styles */
     .upcoming-events {
         background: var(--light-color);
         position: relative;
