@@ -265,8 +265,8 @@
                     @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
                     {
                         <li class="page-item @(i == (ViewBag.CurrentPage ?? 1) ? "active" : "")">
-                            <a class="page-link"
-                               href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm })">@i</a>
+                        <a class="page-link"
+                           href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.SelectedCategoryId, authorId = ViewBag.SelectedAuthorId })">@i</a>
                         </li>
                     }
                 </ul>

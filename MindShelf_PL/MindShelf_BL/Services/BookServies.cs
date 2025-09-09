@@ -58,7 +58,7 @@ namespace MindShelf_BL.Services
                 Rating = book.Rating
             }).ToList();
 
-            return new ResponseMVC<IEnumerable<BookResponseDto>>(200, $"Success - Total: {totalBooks}", bookDtos);
+            return new ResponseMVC<IEnumerable<BookResponseDto>>(200, "Success", bookDtos, totalBooks);
         }
         #endregion
 

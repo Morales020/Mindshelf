@@ -17,17 +17,17 @@ namespace MindShelf_BL.Helper
 
         public ResponseMVC() { }
 
-        public ResponseMVC(int statusCode, string message = null, T data = default)
+        public ResponseMVC(int statusCode, string message = null, T data = default, int? totalPages = null)
         {
             StatusCode = statusCode;
             Message = message;
             Data = data;
+            TotalPages = totalPages;
         }
 
-
-        public static ResponseMVC<T> SuccessResponse(T data, string message = "Operation completed successfully", int statusCode = 200)
+        public static ResponseMVC<T> SuccessResponse(T data,string message = "Operation completed successfully",int statusCode = 200,int? totalPages = null)
         {
-            return new ResponseMVC<T>(statusCode, message, data);
+            return new ResponseMVC<T>(statusCode, message, data, totalPages);
         }
 
         public static ResponseMVC<T> ErrorResponse(string message, int statusCode = 400)

@@ -90,6 +90,13 @@ namespace MindShelf_MVC.Controllers
             ViewBag.SelectedCategoryId = categoryId;
             ViewBag.SelectedAuthorId = authorId;
 
+            int totalBooks = response.TotalPages ?? books.Count();
+            int totalPages = (int)Math.Ceiling(totalBooks / (double)pageSize);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalBooks = totalBooks; 
+
             return View(books.ToList());
         }
 
