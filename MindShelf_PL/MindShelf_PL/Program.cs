@@ -126,13 +126,6 @@ namespace MindShelf_PL
         options.Scope.Add("openid");
         options.Scope.Add("email");
         options.Scope.Add("profile");
-        
-        // Debug logging for OAuth redirect URIs
-        options.Events.OnRedirectToAuthorizationEndpoint = context =>
-        {
-            Console.WriteLine($"Google OAuth Redirect URI: {context.RedirectUri}");
-            return Task.CompletedTask;
-        };
         options.Events.OnCreatingTicket = context =>
         {
             try
@@ -165,14 +158,10 @@ namespace MindShelf_PL
             // Support running behind reverse proxies (X-Forwarded-*) - MUST be before UseHttpsRedirection
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
             });
 
-            // Only use HTTPS redirection if not in production (Render handles HTTPS)
-            if (!app.Environment.IsProduction())
-            {
-                app.UseHttpsRedirection();
-            }
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
