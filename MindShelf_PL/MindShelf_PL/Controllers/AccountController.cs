@@ -341,20 +341,23 @@ namespace MindShelf_PL.Controllers
 			return Challenge(properties, provider);
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+	[HttpGet]
+	public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+	{
+		try
 		{
 			returnUrl ??= Url.Content("~/");
 
 			if (remoteError != null)
 			{
-				ModelState.AddModelError("", $"Error from external provider: {remoteError}");
+				TempData["Error"] = $"Error from external provider: {remoteError}";
 				return RedirectToAction(nameof(Login));
 			}
 
 			var info = await _signInManager.GetExternalLoginInfoAsync();
 			if (info == null)
 			{
+				TempData["Error"] = "Failed to retrieve external login information.";
 				return RedirectToAction(nameof(Login));
 			}
 
@@ -404,8 +407,13 @@ namespace MindShelf_PL.Controllers
 							EmailConfirmed = true,
 							ProfileImageUrl = picture
 						};
-						var createResult = await _userManager.CreateAsync(user);
-						if (!createResult.Succeeded) return RedirectToAction(nameof(Login));
+					var createResult = await _userManager.CreateAsync(user);
+					if (!createResult.Succeeded)
+					{
+						var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+						TempData["Error"] = $"Failed to create user: {errors}";
+						return RedirectToAction(nameof(Login));
+					}
 					}
 					else
 					{
@@ -425,6 +433,15 @@ namespace MindShelf_PL.Controllers
 
 				return RedirectToAction(nameof(Login));
 			}
+		}
+		catch (Exception ex)
+		{
+			// Log the exception for debugging
+			Console.WriteLine($"External login error: {ex.Message}");
+			Console.WriteLine($"Stack trace: {ex.StackTrace}");
+			
+			TempData["Error"] = "An error occurred during external login. Please try again.";
+			return RedirectToAction(nameof(Login));
 		}
 
 
