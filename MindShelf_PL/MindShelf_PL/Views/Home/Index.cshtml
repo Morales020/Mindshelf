@@ -900,6 +900,10 @@
     .hero-search-content {
         flex: 1;
         min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .hero-search-title {
@@ -925,6 +929,17 @@
         max-width: 200px;
         direction: ltr;
         text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero-search-author::before {
+        content: '\f007';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 0.8rem;
+        color: var(--text-muted);
     }
 
     .hero-search-price {
@@ -932,6 +947,7 @@
         margin-top: 0.25rem;
         font-weight: 600;
         color: var(--success-color);
+        text-align: left;
     }
 
     .hero-search-arrow {

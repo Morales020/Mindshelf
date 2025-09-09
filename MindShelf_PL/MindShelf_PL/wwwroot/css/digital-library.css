@@ -598,6 +598,15 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 0.25rem;
 }
 
+/* Enhance user name (light mode) in navbar toggle like dark mode styling */
+.navbar .navbar-nav .nav-item .nav-link.dropdown-toggle span,
+.navbar .navbar-nav .nav-item .nav-link.dropdown-toggle .user-name {
+    color: var(--primary-beige) !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.35) !important;
+    letter-spacing: 0.3px;
+}
+
     .navbar-nav .nav-link:hover {
         background-color: rgba(255, 255, 255, 0.1);
         color: var(--primary-beige) !important;
@@ -737,6 +746,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     gap: 1rem;
+    direction: rtl; /* Arrow on left, image on right in RTL */
     position: relative;
     overflow: hidden;
 }
@@ -790,6 +800,7 @@ h1, h2, h3, h4, h5, h6 {
 .search-content-full {
     min-width: 0;
     flex: 1;
+    text-align: right;
 }
 
 .search-title-full {
@@ -802,8 +813,8 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
-    direction: ltr;
-    text-align: left;
+    direction: ltr; /* keep ellipsis at end */
+    text-align: right;
 }
 
 .search-author-full {
@@ -816,7 +827,7 @@ h1, h2, h3, h4, h5, h6 {
     text-overflow: ellipsis;
     max-width: 100%;
     direction: ltr;
-    text-align: left;
+    text-align: right;
 }
 
 .search-arrow-full {
@@ -869,6 +880,8 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.9rem;
     margin-top: 0.25rem;
     font-weight: 600;
+    text-align: right;
+    display: block;
 }
 
 .search-container {
@@ -1005,9 +1018,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.95rem;
 }
 
-.search-input:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 0.2rem rgba(30, 58, 138, 0.25);
+    .search-input:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.2rem rgba(30, 58, 138, 0.25);
     outline: none;
     transform: translateY(-1px);
 }
@@ -1304,7 +1317,7 @@ body.dark-mode .search-suggestion-item.active {
 
 body.dark-mode .search-suggestion-item .text-muted {
     color: #a0a0a0 !important;
-}
+    }
 
 /* ========== User Dropdown ========== */
 .dropdown-menu {
