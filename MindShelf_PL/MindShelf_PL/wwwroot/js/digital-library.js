@@ -10,6 +10,7 @@ let isDarkMode = localStorage.getItem('darkMode') === 'true';
 // ========== Document Ready ==========
 document.addEventListener('DOMContentLoaded', function () {
     initializeComponents();
+    initializeSearchToggle();
 });
 
 // ========== Initialization ==========
@@ -21,6 +22,7 @@ function initializeComponents() {
     initLoadingOverlay();
     initTooltips();
     initFormValidation();
+    preloadBooks(); // Preload books for instant search
 }
 
 // ========== Dark Mode ==========
@@ -66,23 +68,30 @@ function initSmartSearch() {
     const searchInput = document.getElementById('smartSearch');
     const searchSuggestions = document.getElementById('searchSuggestions');
 
-    if (!searchInput || !searchSuggestions) return;
+    console.log('Initializing smart search...');
+    console.log('Search input found:', !!searchInput);
+    console.log('Search suggestions found:', !!searchSuggestions);
+
+    if (!searchInput || !searchSuggestions) {
+        console.error('Search elements not found!');
+        return;
+    }
 
     searchInput.addEventListener('input', function () {
         const query = this.value.trim();
+        console.log('Input event triggered, query:', query);
 
         // مسح المؤقت السابق
         clearTimeout(searchTimeout);
 
-        if (query.length < 2) {
+        if (query.length < 1) {
             hideSuggestions();
             return;
         }
 
-        // تأخير البحث لتحسين الأداء
-        searchTimeout = setTimeout(() => {
-            performSearch(query);
-        }, 300);
+        // بحث فوري بدون تأخير
+        console.log('Performing search for:', query);
+        performSearch(query);
     });
 
     // إخفاء الاقتراحات عند النقر خارجها
@@ -100,77 +109,335 @@ function initSmartSearch() {
 
 async function performSearch(query) {
     const searchSuggestions = document.getElementById('searchSuggestions');
+    console.log('performSearch called with query:', query);
 
     try {
         // عرض مؤشر التحميل
-        searchSuggestions.innerHTML = '<div class="search-suggestion-item">جاري البحث...</div>';
+        searchSuggestions.innerHTML = '<div class="search-suggestion-item"><i class="fas fa-spinner fa-spin me-2"></i>جاري البحث...</div>';
         searchSuggestions.style.display = 'block';
+        console.log('Loading indicator shown');
 
-        // محاكاة البحث (يجب استبدالها بـ API حقيقي)
+        // البحث الفعلي
         const suggestions = await fetchSearchSuggestions(query);
+        console.log('Suggestions received:', suggestions);
 
         displaySuggestions(suggestions);
 
     } catch (error) {
         console.error('خطأ في البحث:', error);
-        searchSuggestions.innerHTML = '<div class="search-suggestion-item text-danger">حدث خطأ في البحث</div>';
+        searchSuggestions.innerHTML = '<div class="search-suggestion-item text-danger"><i class="fas fa-exclamation-triangle me-2"></i>حدث خطأ في البحث</div>';
+        searchSuggestions.style.display = 'block';
+    }
+}
+
+// Cache for all books to enable client-side filtering
+let allBooksCache = [];
+let cacheLoaded = false;
+
+// Preload books for instant search
+async function preloadBooks() {
+    try {
+        await loadAllBooks();
+        console.log('Books preloaded successfully');
+    } catch (error) {
+        console.error('Error preloading books:', error);
     }
 }
 
 async function fetchSearchSuggestions(query) {
-    // محاكاة بيانات البحث (يجب استبدالها بـ API حقيقي)
-    const mockSuggestions = [
-        { type: 'book', title: 'الأسود يليق بك', author: 'أحلام مستغانمي', id: 1 },
-        { type: 'book', title: 'مئة عام من العزلة', author: 'غابرييل غارسيا ماركيز', id: 2 },
-        { type: 'author', name: 'نجيب محفوظ', booksCount: 45, id: 1 },
-        { type: 'author', name: 'أحمد شوقي', booksCount: 23, id: 2 },
-        { type: 'category', name: 'الأدب العربي', booksCount: 156, id: 1 }
-    ];
+    try {
+        console.log('Searching for:', query);
+        
+        // Load all books if not cached
+        if (!cacheLoaded) {
+            console.log('Cache not loaded, loading books...');
+            await loadAllBooks();
+        }
+        
+        // If cache is still empty, try direct search
+        if (allBooksCache.length === 0) {
+            console.log('Cache is empty, trying direct search...');
+            return await directSearch(query);
+        }
+        
+        // Filter books client-side for instant results
+        const filteredBooks = allBooksCache.filter(book => 
+            book.title.toLowerCase().includes(query.toLowerCase()) ||
+            book.author.toLowerCase().includes(query.toLowerCase())
+        );
+        
+        console.log(`Found ${filteredBooks.length} books matching "${query}"`);
+        return filteredBooks.slice(0, 10); // Show up to 10 results
+        
+    } catch (error) {
+        console.error('Error fetching search suggestions:', error);
+        return [];
+    }
+}
 
-    // تأخير للمحاكاة
-    await new Promise(resolve => setTimeout(resolve, 200));
+// Fallback direct search function
+async function directSearch(query) {
+    try {
+        console.log('Performing direct search for:', query);
+        
+        const response = await fetch(`/Books/Search?searchTerm=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/html',
+            }
+        });
 
-    return mockSuggestions.filter(item =>
-        (item.title && item.title.includes(query)) ||
-        (item.name && item.name.includes(query)) ||
-        (item.author && item.author.includes(query))
-    ).slice(0, 5);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const html = await response.text();
+        
+        // Parse the HTML response to extract book data
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const bookCards = doc.querySelectorAll('.book-card');
+        
+        console.log('Direct search found book cards:', bookCards.length);
+        
+        const suggestions = [];
+        
+        bookCards.forEach((card, index) => {
+            console.log(`Processing card ${index}:`, card);
+            
+            // Try multiple selectors for title
+            const titleElement = card.querySelector('.card-title, h5, h6, .fw-bold');
+            const authorElement = card.querySelector('.text-muted, small');
+            const imageElement = card.querySelector('img');
+            const priceElement = card.querySelector('.h6.text-success.fw-bold, .text-success, .price');
+            
+            // Try multiple selectors for link or use data-book-id
+            const linkElement = card.querySelector('a[href*="/Books/Details/"], a[href*="/Books/Details"], a[onclick*="viewBookDetails"]');
+            const bookIdFromData = card.getAttribute('data-book-id');
+            
+            console.log(`Card ${index} elements:`, {
+                titleElement: titleElement?.textContent?.trim(),
+                authorElement: authorElement?.textContent?.trim(),
+                imageElement: imageElement?.src,
+                priceElement: priceElement?.textContent?.trim(),
+                priceElementClass: priceElement?.className,
+                linkElement: linkElement?.href,
+                bookIdFromData: bookIdFromData
+            });
+            
+            if (titleElement) {
+                const title = titleElement.textContent.trim();
+                const author = authorElement ? authorElement.textContent.trim() : 'غير محدد';
+                const imageUrl = imageElement ? imageElement.src : null;
+                
+                // Better price extraction - look for price patterns
+                let price = null;
+                if (priceElement) {
+                    const priceText = priceElement.textContent.trim();
+                    // Check if it looks like a price (contains numbers and currency)
+                    if (priceText.match(/\d+/) && (priceText.includes('ر.س') || priceText.includes('جنيه') || priceText.includes('$') || priceText.includes('£') || priceText.includes('مجاناً'))) {
+                        price = priceText;
+                    }
+                }
+                
+                // If no price found, try to find it in other elements
+                if (!price) {
+                    const allTextElements = card.querySelectorAll('*');
+                    for (let elem of allTextElements) {
+                        const text = elem.textContent.trim();
+                        if (text.match(/\d+/) && (text.includes('ر.س') || text.includes('جنيه') || text.includes('$') || text.includes('£') || text.includes('مجاناً'))) {
+                            price = text;
+                            break;
+                        }
+                    }
+                }
+                
+                // Get book ID from either link or data attribute
+                let bookId = null;
+                if (linkElement) {
+                    const href = linkElement.getAttribute('href');
+                    bookId = href.match(/\/Books\/Details\/(\d+)/)?.[1];
+                } else if (bookIdFromData) {
+                    bookId = bookIdFromData;
+                }
+                
+                console.log(`Book ${index}:`, { title, author, imageUrl, price, bookId });
+                
+                if (bookId) {
+                    suggestions.push({
+                        type: 'book',
+                        title: title,
+                        author: author,
+                        imageUrl: imageUrl,
+                        price: price,
+                        id: parseInt(bookId)
+                    });
+                } else {
+                    console.log(`Card ${index} missing book ID`);
+                }
+            } else {
+                console.log(`Card ${index} missing title element`);
+            }
+        });
+
+        console.log('Direct search suggestions:', suggestions.length);
+        return suggestions.slice(0, 10);
+        
+    } catch (error) {
+        console.error('Error in direct search:', error);
+        return [];
+    }
+}
+
+async function loadAllBooks() {
+    try {
+        console.log('Loading all books...');
+        
+        const response = await fetch('/Books/Index', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/html',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const html = await response.text();
+        
+        // Parse the HTML response to extract all book data
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const bookCards = doc.querySelectorAll('.book-card');
+        
+        console.log('Found book cards:', bookCards.length);
+        
+        allBooksCache = [];
+        
+        bookCards.forEach((card, index) => {
+            const titleElement = card.querySelector('.card-title, h5, h6');
+            const authorElement = card.querySelector('.text-muted');
+            const imageElement = card.querySelector('img');
+            const priceElement = card.querySelector('.h6.text-success.fw-bold, .text-success, .price');
+            const linkElement = card.querySelector('a[href*="/Books/Details/"]');
+            
+            if (titleElement && linkElement) {
+                const title = titleElement.textContent.trim();
+                const author = authorElement ? authorElement.textContent.trim() : 'غير محدد';
+                const imageUrl = imageElement ? imageElement.src : null;
+                
+                // Better price extraction - look for price patterns
+                let price = null;
+                if (priceElement) {
+                    const priceText = priceElement.textContent.trim();
+                    // Check if it looks like a price (contains numbers and currency)
+                    if (priceText.match(/\d+/) && (priceText.includes('ر.س') || priceText.includes('جنيه') || priceText.includes('$') || priceText.includes('£') || priceText.includes('مجاناً'))) {
+                        price = priceText;
+                    }
+                }
+                
+                // If no price found, try to find it in other elements
+                if (!price) {
+                    const allTextElements = card.querySelectorAll('*');
+                    for (let elem of allTextElements) {
+                        const text = elem.textContent.trim();
+                        if (text.match(/\d+/) && (text.includes('ر.س') || text.includes('جنيه') || text.includes('$') || text.includes('£') || text.includes('مجاناً'))) {
+                            price = text;
+                            break;
+                        }
+                    }
+                }
+                
+                const href = linkElement.getAttribute('href');
+                const bookId = href.match(/\/Books\/Details\/(\d+)/)?.[1];
+                
+                if (bookId) {
+                    allBooksCache.push({
+                        type: 'book',
+                        title: title,
+                        author: author,
+                        imageUrl: imageUrl,
+                        price: price,
+                        id: parseInt(bookId)
+                    });
+                }
+            }
+        });
+
+        cacheLoaded = true;
+        console.log(`Loaded ${allBooksCache.length} books into cache`);
+        
+    } catch (error) {
+        console.error('Error loading all books:', error);
+        cacheLoaded = false;
+    }
 }
 
 function displaySuggestions(suggestions) {
     const searchSuggestions = document.getElementById('searchSuggestions');
 
     if (suggestions.length === 0) {
-        searchSuggestions.innerHTML = '<div class="search-suggestion-item">لا توجد نتائج</div>';
+        searchSuggestions.innerHTML = '<div class="search-suggestion-item text-center text-muted"><i class="fas fa-search me-2"></i>لا توجد نتائج</div>';
+        searchSuggestions.style.display = 'block';
         return;
     }
 
-    const html = suggestions.map(item => {
+    const html = suggestions.map((item, index) => {
         if (item.type === 'book') {
+            const bookImage = item.imageUrl || '/Images/books/default-book.jpg';
             return `
-                <div class="search-suggestion-item" onclick="goToBook(${item.id})">
-                    <i class="fas fa-book me-2 text-primary"></i>
-                    <strong>${item.title}</strong>
-                    <br>
-                    <small class="text-muted">بقلم: ${item.author}</small>
+                <div class="search-suggestion-item-full" onclick="goToBook(${item.id})" data-index="${index}">
+                    <div class="search-book-image-container">
+                        <img src="${bookImage}" alt="${item.title}" class="search-book-image" 
+                             onerror="this.src='/Images/books/default-book.jpg'">
+                    </div>
+                    <div class="search-content-full">
+                        <div class="search-title-full fw-bold">${item.title}</div>
+                        <div class="search-author-full text-muted">
+                            <i class="fas fa-user me-1"></i>${item.author}
+                        </div>
+                        <div class="search-price-full text-success fw-bold">
+                            ${item.price && item.price.trim() ? item.price : 'السعر غير متوفر'}
+                        </div>
+                    </div>
+                    <div class="search-arrow-full">
+                        <i class="fas fa-arrow-left text-muted"></i>
+                    </div>
                 </div>
             `;
         } else if (item.type === 'author') {
             return `
-                <div class="search-suggestion-item" onclick="goToAuthor(${item.id})">
-                    <i class="fas fa-user-edit me-2 text-brown"></i>
-                    <strong>${item.name}</strong>
-                    <br>
-                    <small class="text-muted">${item.booksCount} كتاب</small>
+                <div class="search-suggestion-item-full" onclick="goToAuthor(${item.id})" data-index="${index}">
+                    <div class="search-icon-container-full">
+                        <i class="fas fa-user-edit text-brown"></i>
+                    </div>
+                    <div class="search-content-full">
+                        <div class="search-title-full fw-bold">${item.name}</div>
+                        <div class="search-author-full text-muted">
+                            <i class="fas fa-books me-1"></i>${item.booksCount} كتاب
+                        </div>
+                    </div>
+                    <div class="search-arrow-full">
+                        <i class="fas fa-arrow-left text-muted"></i>
+                    </div>
                 </div>
             `;
         } else if (item.type === 'category') {
             return `
-                <div class="search-suggestion-item" onclick="goToCategory(${item.id})">
-                    <i class="fas fa-list me-2 text-info"></i>
-                    <strong>${item.name}</strong>
-                    <br>
-                    <small class="text-muted">${item.booksCount} كتاب</small>
+                <div class="search-suggestion-item-full" onclick="goToCategory(${item.id})" data-index="${index}">
+                    <div class="search-icon-container-full">
+                        <i class="fas fa-list text-info"></i>
+                    </div>
+                    <div class="search-content-full">
+                        <div class="search-title-full fw-bold">${item.name}</div>
+                        <div class="search-author-full text-muted">
+                            <i class="fas fa-books me-1"></i>${item.booksCount} كتاب
+                        </div>
+                    </div>
+                    <div class="search-arrow-full">
+                        <i class="fas fa-arrow-left text-muted"></i>
+                    </div>
                 </div>
             `;
         }
@@ -545,9 +812,141 @@ if (window.location.hostname === 'localhost') {
             setTimeout(() => showNotification('رسالة خطأ', 'danger'), 2000);
             setTimeout(() => showNotification('رسالة معلومات', 'info'), 3000);
         },
-        testSearch: (query) => performSearch(query)
+        testSearch: (query) => performSearch(query),
+        testFetch: async (query) => {
+            try {
+                const response = await fetch(`/Books/Search?searchTerm=${encodeURIComponent(query)}`);
+                const html = await response.text();
+                console.log('Raw response:', html.substring(0, 500));
+                return html;
+            } catch (error) {
+                console.error('Test fetch error:', error);
+                return null;
+            }
+        },
+        testBooks: () => {
+            console.log('All books cache:', allBooksCache);
+            console.log('Cache loaded:', cacheLoaded);
+            return allBooksCache;
+        },
+        loadBooks: () => loadAllBooks(),
+        testInput: () => {
+            const input = document.getElementById('smartSearch');
+            console.log('Search input element:', input);
+            console.log('Search input value:', input?.value);
+            return input;
+        },
+        inspectHTML: async (query) => {
+            try {
+                const response = await fetch(`/Books/Search?searchTerm=${encodeURIComponent(query)}`);
+                const html = await response.text();
+                console.log('Full HTML response:', html);
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const bookCards = doc.querySelectorAll('.book-card');
+                console.log('Book cards found:', bookCards.length);
+                
+                if (bookCards.length > 0) {
+                    console.log('First book card HTML:', bookCards[0].outerHTML);
+                }
+                
+                return html;
+            } catch (error) {
+                console.error('Error inspecting HTML:', error);
+                return null;
+            }
+        }
     };
 
     console.log('🚀 MindShelf Debug Mode Active');
-    console.log('Available commands: debug.isDarkMode(), debug.showAllNotifications(), debug.testSearch(query)');
+    console.log('Available commands:');
+    console.log('- debug.testSearch("harry") - Test search');
+    console.log('- debug.testBooks() - Show cached books');
+    console.log('- debug.loadBooks() - Reload books');
+    console.log('- debug.testInput() - Check search input');
+}
+
+// ========== Search Toggle Functionality ==========
+function initializeSearchToggle() {
+    const searchToggleBtn = document.getElementById('searchToggleBtn');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchInput = document.getElementById('smartSearch');
+    
+    if (!searchToggleBtn || !searchOverlay) return;
+    
+    let isSearchVisible = false;
+    
+    searchToggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (isSearchVisible) {
+            // Hide search
+            searchOverlay.style.display = 'none';
+            searchOverlay.classList.remove('show');
+            isSearchVisible = false;
+            
+            // Change icon to search
+            searchToggleBtn.innerHTML = '<i class="fas fa-search"></i>';
+            
+            // Remove body scroll lock
+            document.body.style.overflow = '';
+        } else {
+            // Show search
+            searchOverlay.style.display = 'block';
+            setTimeout(() => {
+                searchOverlay.classList.add('show');
+            }, 10);
+            isSearchVisible = true;
+            
+            // Focus on input after animation
+            setTimeout(() => {
+                searchInput.focus();
+            }, 400);
+            
+            // Change icon to close
+            searchToggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+            
+            // Lock body scroll
+            document.body.style.overflow = 'hidden';
+        }
+    });
+    
+    // Close search when clicking outside
+    document.addEventListener('click', function(e) {
+        if (isSearchVisible && 
+            !searchOverlay.contains(e.target) && 
+            !searchToggleBtn.contains(e.target)) {
+            
+            searchOverlay.classList.remove('show');
+            setTimeout(() => {
+                searchOverlay.style.display = 'none';
+            }, 400);
+            isSearchVisible = false;
+            
+            // Change icon back to search
+            searchToggleBtn.innerHTML = '<i class="fas fa-search"></i>';
+            
+            // Remove body scroll lock
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close search on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isSearchVisible) {
+            searchOverlay.classList.remove('show');
+            setTimeout(() => {
+                searchOverlay.style.display = 'none';
+            }, 400);
+            isSearchVisible = false;
+            
+            // Change icon back to search
+            searchToggleBtn.innerHTML = '<i class="fas fa-search"></i>';
+            
+            // Remove body scroll lock
+            document.body.style.overflow = '';
+        }
+    });
 }
