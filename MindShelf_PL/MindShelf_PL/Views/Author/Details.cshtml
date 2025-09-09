@@ -466,7 +466,8 @@
                                         <img src="@book.ImageUrl" alt="@book.Title"
                                              class="w-100 book-image-wrapper"
                                              onclick="viewBookDetails(@(book.BookId))"
-                                             onerror="this.onerror=null;this.src='/images/placeholder-book.png';" />
+                                             onerror="this.onerror=null;this.src='/images/placeholder-book.png';"
+                                             style="cursor: pointer; color: var(--primary-color);" />
 
                                         <button type="button"
                                                 class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
@@ -639,6 +640,13 @@
 }
 
 <script>
+    function viewBookDetails(bookId) {
+            if (bookId === 0) {
+                alert('معرف الكتاب غير صالح');
+                return;
+            }
+            window.location.href = '@Url.Action("Details", "Books")/' + bookId;
+        }
 
         function toggleFavourite(bookId, btn) {
     @if (!User.Identity?.IsAuthenticated == true)
@@ -735,4 +743,5 @@
 
 
 
-                });	</script>
+                });	
+                </script>
