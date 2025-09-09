@@ -443,6 +443,7 @@ namespace MindShelf_PL.Controllers
 			TempData["Error"] = "An error occurred during external login. Please try again.";
 			return RedirectToAction(nameof(Login));
 		}
+	}
 
 
 		public IActionResult ForgetPassword()
