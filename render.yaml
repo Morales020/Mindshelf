@@ -9,7 +9,7 @@ services:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ASPNETCORE_URLS
-        value: https://0.0.0.0:$PORT
+        value: http://0.0.0.0:$PORT
       - key: ConnectionStrings__Cs
         fromDatabase:
           name: mindshelf-db

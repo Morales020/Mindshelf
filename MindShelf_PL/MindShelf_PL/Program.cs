@@ -168,7 +168,11 @@ namespace MindShelf_PL
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            app.UseHttpsRedirection();
+            // Only use HTTPS redirection if not in production (Render handles HTTPS)
+            if (!app.Environment.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
             app.UseStaticFiles();
 
             app.UseRouting();
