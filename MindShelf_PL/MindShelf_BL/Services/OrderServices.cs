@@ -164,6 +164,7 @@ namespace MindShelf_BL.Services
                         {
                             OrderItemId = item.OrderItemId,
                             BookId = item.BookId,
+                            BookImageUrl = item.Book.ImageUrl,
                             BookName = item.Book.Title,
                             Quantity = item.Quantity,
                             Price = item.UnitPrice,
