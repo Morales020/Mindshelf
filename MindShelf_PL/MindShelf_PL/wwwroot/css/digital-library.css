@@ -2438,3 +2438,201 @@ body.dark-mode {
 [data-theme="dark"] .bg-light .card-title {
     color: var(--dark-text-primary) !important;
 }
+
+/* ========== User Dropdown Dark Mode ========== */
+body.dark-mode .dropdown-menu {
+    background-color: var(--dark-card-bg) !important;
+    border-color: var(--dark-border-color) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+body.dark-mode .dropdown-item {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #3a3f47 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .dropdown-header {
+    color: #b0b0b0 !important;
+}
+
+body.dark-mode .user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+body.dark-mode .user-info {
+    color: #ffffff !important;
+}
+
+body.dark-mode .user-info span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+body.dark-mode .nav-link {
+    color: #ffffff !important;
+}
+
+body.dark-mode .nav-link:hover {
+    color: var(--primary-beige) !important;
+}
+
+/* Specific targeting for dropdown toggle text */
+body.dark-mode .dropdown-toggle .user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9) !important;
+}
+
+body.dark-mode .dropdown-toggle .user-info {
+    color: #ffffff !important;
+}
+
+body.dark-mode .dropdown-toggle .user-info span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9) !important;
+}
+
+/* Force visibility for all text in user dropdown area */
+body.dark-mode .navbar-nav .nav-link .user-name,
+body.dark-mode .navbar-nav .nav-link .user-info,
+body.dark-mode .navbar-nav .nav-link .user-info span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9) !important;
+}
+
+/* Ultra-specific targeting for user name visibility */
+body.dark-mode .nav-link.dropdown-toggle .user-name,
+body.dark-mode .nav-link.dropdown-toggle .user-info .user-name,
+body.dark-mode .dropdown-toggle .user-name,
+body.dark-mode .user-info .user-name {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 1.1em !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 0.5px rgba(0,0,0,0.3) !important;
+}
+
+/* Force all spans in user info to be white */
+body.dark-mode .user-info span,
+body.dark-mode .user-info .user-name,
+body.dark-mode .nav-link span,
+body.dark-mode .nav-link .user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+}
+
+/* Nuclear option - target everything in the dropdown toggle */
+body.dark-mode .navbar-nav .nav-link.dropdown-toggle *,
+body.dark-mode .navbar-nav .nav-link.dropdown-toggle .user-info *,
+body.dark-mode .navbar-nav .nav-link.dropdown-toggle .user-info span {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+}
+
+/* EXACT targeting based on actual HTML structure */
+body.dark-mode .nav-link.dropdown-toggle .user-info .user-name,
+body.dark-mode .nav-link.dropdown-toggle .user-info span.user-name,
+body.dark-mode .navbar-nav .nav-link .user-info .user-name,
+body.dark-mode .navbar-nav .nav-link .user-info span.user-name {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: 1.2em !important;
+    text-shadow: 0 3px 6px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.5) !important;
+    text-transform: none !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Target the specific nav-link with dropdown-toggle class */
+body.dark-mode .nav-link.dropdown-toggle {
+    color: #ffffff !important;
+}
+
+body.dark-mode .nav-link.dropdown-toggle .user-info {
+    color: #ffffff !important;
+}
+
+body.dark-mode .nav-link.dropdown-toggle .user-info span {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    text-shadow: 0 3px 6px rgba(0,0,0,1) !important;
+}
+
+/* Force visibility with maximum specificity */
+body.dark-mode .navbar .navbar-nav .nav-item .nav-link.dropdown-toggle .user-info .user-name {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: 1.3em !important;
+    text-shadow: 0 4px 8px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.7) !important;
+}
+
+/* Target the span in layout file dropdown toggle */
+body.dark-mode .nav-link.dropdown-toggle span,
+body.dark-mode .navbar-nav .nav-link.dropdown-toggle span,
+body.dark-mode .nav-item .nav-link.dropdown-toggle span {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: 0.95em !important;
+    text-shadow: 0 3px 6px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.5) !important;
+}
+
+/* Maximum specificity for layout file structure */
+body.dark-mode .navbar .navbar-nav .nav-item .nav-link.dropdown-toggle span {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: 0.95em !important;
+    text-shadow: 0 4px 8px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.7) !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Target the user name and email inside the dropdown menu */
+body.dark-mode .dropdown-menu .fw-bold {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 1.1em !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+    -webkit-text-stroke: 0.5px rgba(0,0,0,0.5) !important;
+}
+
+body.dark-mode .dropdown-menu .text-muted {
+    color: #e0e0e0 !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+}
+
+/* Specific targeting for dropdown menu user info */
+body.dark-mode .dropdown-menu li .fw-bold,
+body.dark-mode .dropdown-menu li .text-muted {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+}
+
+body.dark-mode .dropdown-menu li .text-muted {
+    color: #e0e0e0 !important;
+    font-weight: 500 !important;
+}
+
+/* Force visibility for all text in dropdown menu header */
+body.dark-mode .dropdown-menu .d-flex div div {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,1) !important;
+}
+
+body.dark-mode .dropdown-menu .d-flex .text-muted {
+    color: #e0e0e0 !important;
+    font-weight: 500 !important;
+}
