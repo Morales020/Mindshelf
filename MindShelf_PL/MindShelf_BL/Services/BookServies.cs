@@ -113,7 +113,9 @@ namespace MindShelf_BL.Services
                     Price = createBookDto.Price,
                     Rating = createBookDto.Rating,
                     ImageUrl = createBookDto.ImageUrl,
-                    State = createBookDto.State
+                    State = createBookDto.State,
+                    ReviewCount = 0, // Initialize review count to 0
+                    Stock = 1 // Initialize stock to 1 (assuming new books start with 1 copy)
                 };
 
                 await _UnitOfWork.BookRepo.Add(book);
@@ -128,7 +130,9 @@ namespace MindShelf_BL.Services
                     Price = book.Price,
                     Rating = book.Rating,
                     State = book.State,
-                    ImageUrl = book.ImageUrl
+                    ImageUrl = book.ImageUrl,
+                    ReviewCount = book.ReviewCount,
+                    Stock = book.Stock
                 };
 
                 return new ResponseMVC<BookResponseDto>(201, "Book created successfully", dto);

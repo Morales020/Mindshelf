@@ -125,8 +125,28 @@
 		});
 
 		connection.start()
-			.then(()=>{ console.log('SignalR connected'); sendBtn.disabled=false; })
-			.catch(err=>{ console.error('SignalR start error:', err.toString()); sendBtn.disabled=false; });
+			.then(()=>{ 
+				console.log('SignalR connected successfully'); 
+				sendBtn.disabled=false; 
+			})
+			.catch(err=>{ 
+				console.error('SignalR connection failed:', err.toString()); 
+				console.error('Full error:', err);
+				sendBtn.disabled=false; 
+			});
+
+		// Add connection state logging
+		connection.onclose((error) => {
+			console.log('SignalR connection closed:', error);
+		});
+
+		connection.onreconnecting((error) => {
+			console.log('SignalR reconnecting:', error);
+		});
+
+		connection.onreconnected((connectionId) => {
+			console.log('SignalR reconnected:', connectionId);
+		});
 
 		document.getElementById('sendBtn').addEventListener('click',sendMessage);
 		document.getElementById('messageInput').addEventListener('keypress',function(e){ if(e.key==='Enter') sendMessage(); });
@@ -135,8 +155,18 @@
 			const input=document.getElementById('messageInput');
 			const message=input.value.trim();
 			if(!message) return;
-			connection.invoke('SendMessage',message).catch(err=>console.error(err.toString()));
-			input.value=''; input.focus();
+			
+			console.log('Sending message:', message);
+			connection.invoke('SendMessage', message)
+				.then(() => {
+					console.log('Message sent successfully');
+					input.value=''; 
+					input.focus();
+				})
+				.catch(err => {
+					console.error('Failed to send message:', err.toString());
+					console.error('Full error:', err);
+				});
 		}
 	</script>
 }

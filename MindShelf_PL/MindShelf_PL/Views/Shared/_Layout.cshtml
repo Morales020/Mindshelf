@@ -366,6 +366,98 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/digital-library.js" asp-append-version="true"></script>
 
+    <!-- SignalR for Book Notifications -->
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+        <script>
+            // Book Notification System
+            const bookNotificationConnection = new signalR.HubConnectionBuilder()
+                .withUrl('/bookNotificationHub')
+                .withAutomaticReconnect()
+                .build();
+
+            bookNotificationConnection.start()
+                .then(() => {
+                    console.log('Book notification connection established');
+                    return bookNotificationConnection.invoke('JoinBookNotifications');
+                })
+                .then(() => {
+                    console.log('Joined book notifications group');
+                })
+                .catch(err => {
+                    console.error('Book notification connection failed:', err.toString());
+                });
+
+            // Listen for new book notifications
+            bookNotificationConnection.on('NewBookAdded', function (bookData) {
+                console.log('New book notification received:', bookData);
+                
+                // Create notification toast
+                showBookNotification(bookData);
+            });
+
+            function showBookNotification(bookData) {
+                // Create toast notification
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body d-flex align-items-center">
+                                <i class="fas fa-book me-2"></i>
+                                <div>
+                                    <strong>كتاب جديد!</strong><br>
+                                    <small>${bookData.title} - ${bookData.authorName}</small>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                // Create toast container if it doesn't exist
+                let toastContainer = document.getElementById('bookNotificationContainer');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'bookNotificationContainer';
+                    toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    toastContainer.style.zIndex = '9999';
+                    document.body.appendChild(toastContainer);
+                }
+
+                // Add toast to container
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                
+                // Show the toast
+                const toastElement = toastContainer.lastElementChild;
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+
+                // Remove toast element after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastElement.remove();
+                });
+            }
+
+            // Connection state logging
+            bookNotificationConnection.onclose((error) => {
+                console.log('Book notification connection closed:', error);
+            });
+
+            bookNotificationConnection.onreconnecting((error) => {
+                console.log('Book notification reconnecting:', error);
+            });
+
+            bookNotificationConnection.onreconnected((connectionId) => {
+                console.log('Book notification reconnected:', connectionId);
+                // Rejoin the group after reconnection
+                bookNotificationConnection.invoke('JoinBookNotifications');
+            });
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 
     <!-- Loading Overlay -->
