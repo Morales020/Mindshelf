@@ -15,16 +15,19 @@
             <div class="hero-search mt-4">
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
-                        <form asp-controller="Books" asp-action="Index" method="get">
-                            <div class="input-group input-group-lg">
-                                <input type="text" name="searchTerm" class="form-control"
-                                       placeholder="البحث عن كتاب أو تصنيف..."
-                                       id="heroSearch">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i> بحث
-                                </button>
-                            </div>
-                        </form>
+                        <div class="hero-search-container">
+                            <form asp-controller="Books" asp-action="Index" method="get">
+                                <div class="input-group input-group-lg">
+                                    <input type="text" name="searchTerm" class="form-control hero-search-input"
+                                           placeholder="البحث عن كتاب أو تصنيف..."
+                                           id="heroSearch">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-search"></i> بحث
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="hero-search-suggestions" id="heroSearchSuggestions"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,6 +796,189 @@
         color: #b0b0b0;
     }
 
+    /* Hero Search Suggestions */
+    .hero-section {
+        position: relative;
+        z-index: auto; /* keep default so it doesn't cover navbar dropdowns */
+    }
+
+    .stats-section {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-search-container {
+        position: relative;
+        width: 100%;
+        z-index: 2500;
+        transition: margin-bottom 0.25s ease;
+    }
+
+    .hero-search-container.open {
+        margin-bottom: 320px;
+    }
+
+    .hero-search-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        box-shadow: var(--shadow-lg);
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 3000;
+        display: none;
+    }
+
+    .hero-search-suggestion-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-search-suggestion-item:hover {
+        background: var(--light-color);
+        transform: translateX(5px);
+    }
+
+    .hero-search-suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .hero-search-suggestion-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--primary-color);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .hero-search-suggestion-item:hover::before {
+        transform: scaleY(1);
+    }
+
+    .hero-search-book-image-container {
+        width: 50px;
+        height: 65px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        flex-shrink: 0;
+    }
+
+    .hero-search-book-image-container:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+    }
+
+    .hero-search-book-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .hero-search-book-image:hover {
+        transform: scale(1.1);
+    }
+
+    .hero-search-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .hero-search-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+        direction: ltr;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .hero-search-author {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+        direction: ltr;
+        text-align: left;
+    }
+
+    .hero-search-price {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        font-weight: 600;
+        color: var(--success-color);
+    }
+
+    .hero-search-arrow {
+        color: var(--text-muted);
+        transition: var(--transition);
+        flex-shrink: 0;
+    }
+
+    .hero-search-suggestion-item:hover .hero-search-arrow {
+        color: var(--primary-color);
+        transform: translateX(5px);
+    }
+
+    /* Dark Mode for Hero Search */
+    body.dark-mode .hero-search-suggestions {
+        background: var(--dark-card-bg);
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .hero-search-suggestion-item {
+        border-color: var(--dark-border-color);
+    }
+
+    body.dark-mode .hero-search-suggestion-item:hover {
+        background: var(--dark-bg);
+    }
+
+    body.dark-mode .hero-search-title {
+        color: var(--dark-text-primary);
+    }
+
+    body.dark-mode .hero-search-author {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .hero-search-price {
+        color: #10b981;
+    }
+
+    body.dark-mode .hero-search-arrow {
+        color: #b0b0b0;
+    }
+
+    body.dark-mode .hero-search-suggestion-item:hover .hero-search-arrow {
+        color: var(--primary-color);
+    }
+
     /* Responsive Design */
     @@media (max-width: 768px) {
         .event-card-header {
@@ -812,6 +998,14 @@
         .btn-register {
             width: 100%;
         }
+
+        .hero-search-title,
+        .hero-search-author {
+            max-width: 150px;
+        }
+        .hero-search-container.open {
+            margin-bottom: 260px;
+        }
     }
 </style>
 
@@ -821,6 +1015,7 @@
         // تحريك الإحصائيات
         document.addEventListener('DOMContentLoaded', function() {
             animateStats();
+            initializeHeroSearch();
         });
 
         function animateStats() {
@@ -1008,6 +1203,234 @@
                 }
             });
         });
+
+        // Hero Search Functionality
+        let heroAllBooksCache = [];
+        let heroSearchTimeout;
+
+        function initializeHeroSearch() {
+            const heroSearchInput = document.getElementById('heroSearch');
+            const heroSearchSuggestions = document.getElementById('heroSearchSuggestions');
+            
+            if (!heroSearchInput || !heroSearchSuggestions) return;
+
+            // Load all books for instant search
+            loadHeroAllBooks();
+
+            // Add input event listener
+            heroSearchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                if (query.length < 1) {
+                    heroSearchSuggestions.style.display = 'none';
+                    document.querySelector('.hero-search-container')?.classList.remove('open');
+                    return;
+                }
+
+                // Clear previous timeout
+                if (heroSearchTimeout) {
+                    clearTimeout(heroSearchTimeout);
+                }
+
+                // Set new timeout for search
+                heroSearchTimeout = setTimeout(() => {
+                    performHeroSearch(query);
+                }, 150);
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!heroSearchInput.contains(e.target) && !heroSearchSuggestions.contains(e.target)) {
+                    heroSearchSuggestions.style.display = 'none';
+                    document.querySelector('.hero-search-container')?.classList.remove('open');
+                }
+            });
+
+            // Handle suggestion clicks
+            heroSearchSuggestions.addEventListener('click', function(e) {
+                const suggestionItem = e.target.closest('.hero-search-suggestion-item');
+                if (suggestionItem) {
+                    const bookId = suggestionItem.getAttribute('data-book-id');
+                    if (bookId) {
+                        window.location.href = `/Books/Details/${bookId}`;
+                    }
+                }
+            });
+        }
+
+        function loadHeroAllBooks() {
+            console.log('Hero search: Loading all books...');
+            fetch('/Books/Index')
+                .then(response => {
+                    console.log('Hero search: Response status:', response.status);
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('Hero search: HTML length:', html.length);
+                    console.log('Hero search: HTML preview:', html.substring(0, 500));
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const bookCards = doc.querySelectorAll('.book-card');
+                    console.log('Hero search: Found', bookCards.length, 'book cards');
+                    
+                    // If no .book-card found, try alternative selectors
+                    if (bookCards.length === 0) {
+                        const altCards = doc.querySelectorAll('.card, [data-book-id], [onclick*="viewBookDetails"]');
+                        console.log('Hero search: Found', altCards.length, 'alternative cards');
+                        if (altCards.length > 0) {
+                            console.log('Hero search: First alternative card:', altCards[0].outerHTML.substring(0, 200));
+                        }
+                    }
+                    
+                    heroAllBooksCache = [];
+                    
+                    bookCards.forEach((card, index) => {
+                        console.log(`Hero search: Processing card ${index}:`, card);
+                        
+                        // Try multiple selectors for title
+                        const titleElement = card.querySelector('.card-title, h5, h6, .fw-bold');
+                        const authorElement = card.querySelector('.text-muted, small');
+                        const imageElement = card.querySelector('img');
+                        const priceElement = card.querySelector('.h6.text-success.fw-bold, .text-success, .price, .text-primary');
+                        
+                        console.log('Hero search: Elements found:', {
+                            titleElement: titleElement?.textContent?.trim(),
+                            authorElement: authorElement?.textContent?.trim(),
+                            imageElement: imageElement?.src,
+                            priceElement: priceElement?.textContent?.trim()
+                        });
+                        
+                        // Try multiple ways to get the book id
+                        const bookIdFromData = card.getAttribute('data-book-id');
+                        const onclickElement = card.querySelector('[onclick*="viewBookDetails"]');
+                        const onclickAttr = onclickElement ? onclickElement.getAttribute('onclick') : null;
+                        const bookIdFromOnclick = onclickAttr ? (onclickAttr.match(/viewBookDetails\((\d+)\)/)?.[1] || null) : null;
+                        
+                        if (titleElement) {
+                            const title = titleElement.textContent.trim();
+                            const author = authorElement ? authorElement.textContent.trim() : 'غير محدد';
+                            const imageUrl = imageElement ? imageElement.src : null;
+                            
+                            // Better price extraction - look for price patterns
+                            let price = null;
+                            if (priceElement) {
+                                const priceText = priceElement.textContent.trim();
+                                console.log('Hero search: Price element text:', priceText);
+                                // Check if it looks like a price (contains numbers and currency)
+                                if (priceText.match(/\d+/) && (priceText.includes('ر.س') || priceText.includes('جنيه') || priceText.includes('$') || priceText.includes('£') || priceText.includes('مجاناً'))) {
+                                    price = priceText;
+                                }
+                            }
+                            
+                            // If no price found, try to find it in other elements
+                            if (!price) {
+                                const allTextElements = card.querySelectorAll('*');
+                                for (let elem of allTextElements) {
+                                    const text = elem.textContent.trim();
+                                    if (text.match(/\d+/) && (text.includes('ر.س') || text.includes('جنيه') || text.includes('$') || text.includes('£') || text.includes('مجاناً'))) {
+                                        price = text;
+                                        console.log('Hero search: Found price in fallback:', price);
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            console.log('Hero search: Final extracted data:', {
+                                title,
+                                author,
+                                imageUrl,
+                                price,
+                                bookId: bookIdFromData || bookIdFromOnclick
+                            });
+                            
+                            // Prefer data attribute; fallback to onclick()
+                            const bookId = bookIdFromData || bookIdFromOnclick;
+                            if (!bookId) {
+                                console.log('Hero search: Skipping card - no bookId found', {
+                                    bookIdFromData,
+                                    onclickAttr
+                                });
+                            }
+                            
+                            if (bookId) {
+                                heroAllBooksCache.push({
+                                    type: 'book',
+                                    title: title,
+                                    author: author,
+                                    bookId: bookId,
+                                    imageUrl: imageUrl,
+                                    price: price
+                                });
+                            }
+                        }
+                    });
+                    
+                    console.log('Hero search: Loaded', heroAllBooksCache.length, 'books');
+                    console.log('Hero search: Sample books:', heroAllBooksCache.slice(0, 3).map(b => ({ title: b.title, author: b.author })));
+                })
+                .catch(error => {
+                    console.error('Hero search: Error loading books:', error);
+                });
+        }
+
+        function performHeroSearch(query) {
+            const heroSearchSuggestions = document.getElementById('heroSearchSuggestions');
+            
+            console.log('Hero search: Searching for:', query);
+            console.log('Hero search: Cache has', heroAllBooksCache.length, 'books');
+            
+            if (!query || query.length < 1) {
+                heroSearchSuggestions.style.display = 'none';
+                return;
+            }
+
+            // Filter cached books
+            const filteredBooks = heroAllBooksCache.filter(book => {
+                const titleMatch = book.title.toLowerCase().includes(query.toLowerCase());
+                const authorMatch = book.author.toLowerCase().includes(query.toLowerCase());
+                console.log(`Hero search: Book "${book.title}" - Title match: ${titleMatch}, Author match: ${authorMatch}`);
+                return titleMatch || authorMatch;
+            });
+
+            console.log('Hero search: Filtered results:', filteredBooks.length);
+            displayHeroSuggestions(filteredBooks);
+        }
+
+        function displayHeroSuggestions(suggestions) {
+            const heroSearchSuggestions = document.getElementById('heroSearchSuggestions');
+            
+            if (!suggestions || suggestions.length === 0) {
+                heroSearchSuggestions.innerHTML = '<div class="hero-search-suggestion-item"><div class="text-center text-muted py-3">لا توجد نتائج</div></div>';
+                heroSearchSuggestions.style.display = 'block';
+                return;
+            }
+
+            const html = suggestions.slice(0, 5).map(item => {
+                const bookImage = item.imageUrl || '/Images/books/default.jpg';
+                return `
+                    <div class="hero-search-suggestion-item" data-book-id="${item.bookId}">
+                        <div class="hero-search-book-image-container">
+                            <img src="${bookImage}" alt="${item.title}" class="hero-search-book-image" 
+                                 onerror="this.src='/Images/books/default.jpg'">
+                        </div>
+                        <div class="hero-search-content">
+                            <div class="hero-search-title">${item.title}</div>
+                            <div class="hero-search-author">${item.author}</div>
+                            <div class="hero-search-price text-success fw-bold">
+                                ${item.price && item.price.trim() ? item.price : 'السعر غير متوفر'}
+                            </div>
+                        </div>
+                        <div class="hero-search-arrow">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            heroSearchSuggestions.innerHTML = html;
+            heroSearchSuggestions.style.display = 'block';
+            document.querySelector('.hero-search-container')?.classList.add('open');
+        }
     </script>
 
 }

@@ -722,7 +722,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
     max-height: 500px;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 2000; /* high enough for overlay, below user dropdown */
     display: none;
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     margin-top: 0;
@@ -1313,6 +1313,7 @@ body.dark-mode .search-suggestion-item .text-muted {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     font-family: var(--font-arabic);
+    z-index: 3000; /* ensure above hero and search */
 }
 
     .dropdown-item {
