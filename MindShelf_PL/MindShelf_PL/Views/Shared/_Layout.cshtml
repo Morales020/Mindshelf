@@ -103,19 +103,10 @@
                         </li>
                     </ul>
 
-                  <!-- Search Bar -->
-                    <div class="search-container w-100 my-2 my-lg-0 me-0 me-lg-3 order-lg-0">
-                        <form class="d-flex w-100" asp-controller="Books" asp-action="Index" method="get">
-                            <div class="input-group">
-                                <input class="form-control search-input" type="search" name="searchTerm"
-                                       placeholder="البحث عن كتاب، مؤلف..." id="smartSearch">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <div class="search-suggestions" id="searchSuggestions"></div>
-                    </div>
+                  <!-- Search Toggle Button -->
+                    <button class="btn btn-outline-light search-toggle-btn me-2 me-lg-3 order-lg-0" id="searchToggleBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
                   
                     <!-- User Menu -->
                     <ul class="navbar-nav ms-lg-3 align-items-center">
@@ -232,6 +223,24 @@
                 </div>
             </div>
         </nav>
+        
+        <!-- Search Bar Section -->
+        <div class="search-overlay" id="searchOverlay" style="display: none;">
+            <div class="container">
+                <div class="search-container-full" id="searchContainer">
+                    <form class="d-flex" asp-controller="Books" asp-action="Index" method="get">
+                        <div class="input-group search-input-group">
+                            <input class="form-control search-input-full" type="search" name="searchTerm"
+                                   placeholder="البحث عن كتاب، مؤلف، أو فئة..." id="smartSearch">
+                            <button class="btn btn-primary search-btn-full" type="submit">
+                                <i class="fas fa-search me-2"></i>بحث
+                            </button>
+                        </div>
+                    </form>
+                    <div class="search-suggestions-full" id="searchSuggestions"></div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- Main Content -->

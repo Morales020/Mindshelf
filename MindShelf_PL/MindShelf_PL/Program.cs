@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.HttpOverrides;
+using MindShelf_PL.Hubs;
 
 namespace MindShelf_PL
 {
@@ -180,6 +181,7 @@ namespace MindShelf_PL
             {
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
             });
+
 
             app.MapControllerRoute(
                 name: "default",

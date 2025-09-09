@@ -45,11 +45,13 @@
                     </div>
                 }
                 <hr />
-                <h5>Description:</h5>
-                <p>@Model.Description</p>
+                <div class="description-section">
+	                <h6>Description:</h6>
+	                <p>@Model.Description</p>
+                </div>
 
                 <div class="text-center mt-4">
-                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <a href="@Url.Action("Index")" class="btn-back">
                         <i class="fas fa-arrow-left me-1"></i> رجوع
                     </a>
                     @if (User.IsInRole("Admin"))
@@ -69,27 +71,158 @@
 </div>
 
 <style>
-    .btn-purple {
-        background-color: #6f42c1;
-        border-color: #6f42c1;
-        color: white;
-        transition: all 0.3s;
+    /* Import a modern, clean font that supports Arabic */
+    @@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+    /* --- CSS Variables for consistent styling --- */
+    :root {
+        --secondary-color: #6c757d; /* Gray */
+        --accent-color: #28a745; /* Green for success/price */
+        --bg-color-light: #f8f9fa;
+        --text-color-light: #333;
+        --card-bg-light: #ffffff;
+        --card-border-light: #e9ecef;
+        --shadow-color-light: rgba(0, 0, 0, 0.1);
+        --transition-duration: 0.3s;
     }
 
-        .btn-purple:hover {
-            background-color: #5a2e9c;
-            transform: scale(1.05);
+    h3 {
+	    font-family: 'Tajawal', sans-serif; /* Use the new font */
+	    font-weight: 700; /* Bolder for impact */
+	    text-align: center;
+	    font-size: 2.5rem; /* Larger font size */
+	    margin-bottom: 0.5rem; /* Reduce the bottom margin */
+	    color: var(--text-color-light) !important;
+	    text-transform: uppercase; /* Make the text uppercase */
+	    letter-spacing: 2px; /* Add spacing between letters */
+    }
+
+    body.dark-mode {
+        --bg-color-light: #212529;
+        --text-color-light: #f8f9fa;
+        --card-bg-light: #343a40;
+        --card-border-light: #495057;
+        --shadow-color-light: rgba(0, 0, 0, 0.3);
+    }
+
+    /* --- General Body & Typography --- */
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: var(--bg-color-light);
+        color: var(--text-color-light);
+        transition: background-color var(--transition-duration), color var(--transition-duration);
+    }
+
+    h3 {
+        font-weight: 700;
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-color-light) !important;
+    }
+
+    /* --- Main Container Card --- */
+    .card.shadow-lg {
+        background-color: var(--card-bg-light);
+        border: 1px solid var(--card-border-light) !important;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px var(--shadow-color-light);
+        transition: all var(--transition-duration);
+    }
+
+    /* --- Book Card Styling --- */
+    .book-card {
+        background-color: var(--card-bg-light);
+        border-color: var(--card-border-light);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--shadow-color-light);
         }
 
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        transition: all 0.3s;
+    .card-title {
+        color: var(--text-color-light);
+        font-weight: 700;
     }
 
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            transform: scale(1.05);
+    .card-text.text-muted {
+        color: var(--text-color-light) !important; /* Adjust muted color for dark mode */
+    }
+
+    .text-success {
+        color: var(--accent-color) !important;
+    }
+
+    /* --- Description Section --- */
+    .description-section {
+        background-color: var(--bg-color-light); /* Use theme-based color */
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+        border: 1px solid var(--card-border-light);
+        transition: all var(--transition-duration);
+    }
+
+        .description-section h6 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 0.25rem;
+        }
+
+        .description-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color-light);
+        }
+
+    /* --- Button Styling --- */
+    .btn-common, .btn-primary, .btn-danger, .btn-back {
+        font-family: 'Tajawal', sans-serif;
+        font-weight: 700;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        transition: transform 0.2s ease-in-out, background-color var(--transition-duration);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-common:hover, .btn-primary:hover, .btn-danger:hover, .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Specific button colors */
+    .btn-back {
+        background: var(--secondary-color);
+        color: white !important;
+    }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+    }
+
+        
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background: #c82333;
         }
 </style>

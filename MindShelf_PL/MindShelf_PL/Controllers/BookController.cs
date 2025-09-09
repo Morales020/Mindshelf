@@ -8,6 +8,7 @@ using MindShelf_BL.Dtos.CategoryDto;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
 using MindShelf_DAL.Models;
+using MindShelf_PL.Hubs;
 using MindShelf_PL.Models;
 using MindShelf_PL.Hubs;
 using System.Diagnostics;
@@ -94,6 +95,13 @@ namespace MindShelf_MVC.Controllers
             ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedCategoryId = categoryId;
             ViewBag.SelectedAuthorId = authorId;
+
+            int totalBooks = response.TotalPages ?? books.Count();
+            int totalPages = (int)Math.Ceiling(totalBooks / (double)pageSize);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalBooks = totalBooks; 
 
             return View(books.ToList());
         }
@@ -201,7 +209,7 @@ namespace MindShelf_MVC.Controllers
             }
 
             // حفظ الصورة
-            dto.ImageUrl = await SaveImageAsync(imageFile);
+            dto.ImageUrl = await SaveImageAsync(dto.ImageFile ?? imageFile);
 
             // إنشاء الكتاب
             var response = await _bookService.CreateBookAsync(dto);
@@ -210,6 +218,7 @@ namespace MindShelf_MVC.Controllers
                 ModelState.AddModelError("", response.Message);
                 return View(dto);
             }
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"كتاب جديد: {dto.Title}");
 
             // إرسال إشعار لجميع المستخدمين عن الكتاب الجديد
             try

@@ -3,6 +3,9 @@
 
     @{
         ViewData["Title"] = "الكتب";
+    var searchQuery = ViewBag.SearchQuery as string;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int currentPage = ViewBag.CurrentPage ?? 1;
     }
 
     <div class="page-header">
@@ -262,13 +265,19 @@
         {
             <nav aria-label="صفحات الكتب" class="mt-4">
                 <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, search = searchQuery })">السابق</a>
+                </li>
                     @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
                     {
                         <li class="page-item @(i == (ViewBag.CurrentPage ?? 1) ? "active" : "")">
-                            <a class="page-link"
-                               href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm })">@i</a>
+                        <a class="page-link"
+                           href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.SelectedCategoryId, authorId = ViewBag.SelectedAuthorId })">@i</a>
                         </li>
                     }
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, search = searchQuery })">التالي</a>
+                </li>
                 </ul>
             </nav>
         }
