@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Dtos.BookDto;
 using MindShelf_BL.Dtos.CategoryDto;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
 using MindShelf_DAL.Models;
+using MindShelf_PL.Hubs;
 using MindShelf_PL.Models;
 using System.Diagnostics;
 
@@ -18,18 +20,21 @@ namespace MindShelf_MVC.Controllers
         private readonly IAuthorServies _authorService;
         private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _env;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public BooksController(
             IBookServies bookService
             , IWebHostEnvironment env
             , IAuthorServies authorService
-            , ICategoryService categoryService
+            , ICategoryService categoryService,
+            IHubContext<NotificationHub> hubContext
             )
         {
             _bookService = bookService;
             _env = env;
             _authorService = authorService;
             _categoryService = categoryService;
+            _hubContext = hubContext;
         }
 
         private async Task<string?> SaveImageAsync(IFormFile? imageFile)
@@ -203,7 +208,7 @@ namespace MindShelf_MVC.Controllers
             }
 
             // حفظ الصورة
-            dto.ImageUrl = await SaveImageAsync(imageFile);
+            dto.ImageUrl = await SaveImageAsync(dto.ImageFile ?? imageFile);
 
             // إنشاء الكتاب
             var response = await _bookService.CreateBookAsync(dto);
@@ -212,6 +217,7 @@ namespace MindShelf_MVC.Controllers
                 ModelState.AddModelError("", response.Message);
                 return View(dto);
             }
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"كتاب جديد: {dto.Title}");
 
             TempData["Success"] = "تمت إضافة الكتاب بنجاح ✅";
             return RedirectToAction(nameof(Index));

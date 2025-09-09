@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.HttpOverrides;
+using MindShelf_PL.Hubs;
 
 namespace MindShelf_PL
 {
@@ -169,7 +170,9 @@ namespace MindShelf_PL
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
+            app.MapHub<CommunityHub>("/communityHub");
+            app.MapHub<NotificationHub>("/notificationHub");
+
 
             app.MapControllerRoute(
                 name: "default",
