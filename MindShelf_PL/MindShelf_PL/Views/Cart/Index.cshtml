@@ -3,8 +3,26 @@
 
 
 <style>
+    .quantity-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+    }
+
     .quantity-control {
-        gap: 0.5rem;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        margin: 0 auto !important;
+        width: fit-content !important;
     }
     
     .quantity-btn {
@@ -69,6 +87,18 @@
         vertical-align: middle;
         border-top: 1px solid #e9ecef;
     }
+
+    .table td:has(.quantity-control) {
+        vertical-align: middle !important;
+        text-align: center !important;
+        padding: 1rem !important;
+    }
+
+    /* Force quantity control alignment */
+    td.text-center.align-middle {
+        vertical-align: middle !important;
+        text-align: center !important;
+    }
     
     .table tbody tr:hover {
         background-color: #f8f9fa;
@@ -98,6 +128,419 @@
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
+
+    /* Dark Mode Styles for Cart */
+    body.dark-mode .card {
+        background: var(--dark-card-bg) !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .card-header {
+        background: var(--dark-card-bg) !important;
+        border-bottom-color: var(--dark-border-color) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .table {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .table th {
+        background-color: #2a2e34 !important;
+        color: #ffffff !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .table td {
+        background-color: var(--dark-card-bg) !important;
+        color: #ffffff !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .table tbody tr:hover {
+        background-color: #3a3f47 !important;
+    }
+
+    body.dark-mode .book-name-link {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .book-name-link:hover {
+        color: var(--primary-color) !important;
+    }
+
+    body.dark-mode .text-muted {
+        color: #b0b0b0 !important;
+    }
+
+    body.dark-mode .img-thumbnail {
+        background: #2a2e34 !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .bg-light {
+        background-color: #2a2e34 !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .bg-light i {
+        color: #b0b0b0 !important;
+    }
+
+    /* Enhanced Quantity Controls for Dark Mode */
+    body.dark-mode .quantity-btn {
+        background: #2a2e34 !important;
+        border-color: var(--dark-border-color) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .quantity-btn:hover {
+        background: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .quantity-input {
+        background: #2a2e34 !important;
+        border-color: var(--dark-border-color) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .quantity-input:focus {
+        background: #2a2e34 !important;
+        border-color: var(--primary-color) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    }
+
+    /* Order Summary Card Dark Mode */
+    body.dark-mode .order-summary-card {
+        background: #2a2e34 !important;
+        border-color: var(--dark-border-color) !important;
+    }
+
+    body.dark-mode .order-summary-title {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .order-summary-item {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .order-summary-value {
+        color: var(--primary-color) !important;
+        font-weight: 700 !important;
+    }
+
+    /* Button Enhancements for Dark Mode */
+    body.dark-mode .btn-outline-primary {
+        color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    body.dark-mode .btn-outline-primary:hover {
+        background: var(--primary-color) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .btn-outline-danger {
+        color: #dc3545 !important;
+        border-color: #dc3545 !important;
+    }
+
+    body.dark-mode .btn-outline-danger:hover {
+        background: #dc3545 !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .btn-success {
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+
+    body.dark-mode .btn-success:hover {
+        background: #218838 !important;
+        border-color: #1e7e34 !important;
+    }
+
+    body.dark-mode .btn-primary {
+        background: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    body.dark-mode .btn-primary:hover {
+        background: #0056b3 !important;
+        border-color: #004085 !important;
+    }
+
+    /* Enhanced hover effects for dark mode */
+    body.dark-mode .table tbody tr {
+        transition: background-color 0.3s ease;
+    }
+
+    body.dark-mode .quantity-btn {
+        transition: all 0.3s ease;
+    }
+
+    body.dark-mode .img-thumbnail {
+        transition: all 0.3s ease;
+    }
+
+    /* Improved contrast for better readability */
+    body.dark-mode .table th {
+        font-weight: 700 !important;
+    }
+
+    body.dark-mode .book-name-link strong {
+        font-weight: 700 !important;
+    }
+
+    /* Dark mode for quantity label */
+    body.dark-mode .quantity-label {
+        color: #ffffff !important;
+    }
+
+    /* Enhanced Cart Styling */
+    .cart-hero {
+        background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .cart-hero h4 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .cart-hero i {
+        font-size: 1.5rem;
+        margin-left: 0.5rem;
+    }
+
+    /* Enhanced table styling */
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .table th {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+    }
+
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Enhanced book image styling */
+    .book-thumbnail {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+
+    .book-thumbnail:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Enhanced quantity controls */
+    .quantity-section {
+        padding: 1rem;
+        background: rgba(0,0,0,0.02);
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .quantity-label {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+    }
+
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #dee2e6;
+        background: #fff;
+        transition: all 0.3s ease;
+        padding: 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .quantity-btn:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+    }
+
+    .quantity-input {
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 16px;
+        height: 40px;
+        transition: all 0.3s ease;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .quantity-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        transform: scale(1.02);
+    }
+
+    /* Enhanced action buttons */
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Enhanced order summary card */
+    .order-summary-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .order-summary-title {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .order-summary-item {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .order-summary-value {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Dark mode enhancements */
+    body.dark-mode .cart-hero {
+        background: linear-gradient(135deg, #2a2e34 0%, #1a1e24 100%);
+    }
+
+    body.dark-mode .table {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body.dark-mode .table th {
+        background: linear-gradient(135deg, #2a2e34 0%, #1a1e24 100%);
+        color: #ffffff;
+    }
+
+    body.dark-mode .table tbody tr:hover {
+        background-color: #3a3f47 !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    body.dark-mode .quantity-section {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.1);
+    }
+
+    body.dark-mode .quantity-btn {
+        background: #2a2e34;
+        border-color: #495057;
+        color: #ffffff;
+    }
+
+    body.dark-mode .quantity-btn:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    body.dark-mode .quantity-input {
+        background: #2a2e34;
+        border-color: #495057;
+        color: #ffffff;
+    }
+
+    body.dark-mode .quantity-input:focus {
+        background: #2a2e34;
+        border-color: var(--primary-color);
+        color: #ffffff;
+    }
+
+    body.dark-mode .order-summary-card {
+        background: linear-gradient(135deg, #2a2e34 0%, #1a1e24 100%);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body.dark-mode .order-summary-title {
+        color: #ffffff;
+    }
+
+    body.dark-mode .order-summary-item {
+        color: #ffffff;
+    }
+
+    /* Enhanced empty cart styling */
+    .empty-cart {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode .empty-cart {
+        background: linear-gradient(135deg, #2a2e34 0%, #1a1e24 100%);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 </style>
 
 <div class="row">
@@ -113,7 +556,7 @@
         @if (Model?.CartItems != null && Model.CartItems.Any())
         {
             <div class="card">
-                <div class="card-header">
+                <div class="card-header cart-hero">
                     <h4><i class="fas fa-shopping-cart me-2"></i>سلة التسوق</h4>
                 </div>
                 <div class="card-body">
@@ -121,29 +564,28 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>الصورة</th>
-                                    <th>الكتاب</th>
-                                    <th>المؤلف</th>
-                                    <th>السعر</th>
-                                    <th>الكمية</th>
-                                    <th>المجموع</th>
-                                    <th>الإجراءات</th>
+                                    <th class="text-center">الصورة</th>
+                                    <th class="text-center">الكتاب</th>
+                                    <th class="text-center">المؤلف</th>
+                                    <th class="text-center">السعر</th>
+                                    <th class="text-center">الكمية</th>
+                                    <th class="text-center">المجموع</th>
+                                    <th class="text-center">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.CartItems)
                                 {
                                     <tr data-cart-item-id="@item.CartItemId">
-                                        <td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center"> 
                                             <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="text-decoration-none">
                                                 @if (!string.IsNullOrEmpty(item.BookImageUrl))
                                                 {
                                                     <img src="@item.BookImageUrl" 
-                                                         class="img-thumbnail" 
-                                                         style="width: 60px; height: 80px; object-fit: cover; cursor: pointer; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" 
-                                                         alt="@item.BookName"
-                                                         onmouseover="this.style.transform='scale(1.05)'"
-                                                         onmouseout="this.style.transform='scale(1)'">
+                                                         class="img-thumbnail book-thumbnail" 
+                                                         style="width: 60px; height: 80px; object-fit: cover; cursor: pointer;" 
+                                                         alt="@item.BookName">
                                                 }
                                                 else
                                                 {
@@ -152,32 +594,49 @@
                                                     </div>
                                                 }
                                             </a>
+                                            </div>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center"> 
                                             <a href="@Url.Action("Details", "Books", new { id = item.BookId })" class="book-name-link">
                                                 <strong>@item.BookName</strong>
                                             </a>
-                                            <br>
-                                            <small class="text-muted">@item.BookDescription</small>
-                                        </td>
-                                        <td>@item.BookAuthor</td>
-                                        <td>@item.UnitPrice.ToString("C")</td>
-                                        <td>
-                                            <div class="quantity-control d-flex align-items-center justify-content-center">
-                                                <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="changeQuantity(@item.CartItemId, -1)" title="تقليل الكمية">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-                                                <input type="number" class="form-control quantity-input text-center mx-2" value="@item.Quantity" min="1" max="99" onchange="updateQuantity(@item.CartItemId, this.value)" style="width: 60px;">
-                                                <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="changeQuantity(@item.CartItemId, 1)" title="زيادة الكمية">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
                                             </div>
                                         </td>
-                                        <td class="item-total">@item.TotalPrice.ToString("C")</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center"> 
+                                            @item.BookAuthor
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center"> 
+                                            @item.UnitPrice.ToString("C")
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="quantity-section">
+                                                <div class="quantity-control">
+                                                    <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="changeQuantity(@item.CartItemId, -1)" title="تقليل الكمية">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="form-control quantity-input text-center" value="@item.Quantity" min="1" max="99" onchange="updateQuantity(@item.CartItemId, this.value)" style="width: 60px;">
+                                                    <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="changeQuantity(@item.CartItemId, 1)" title="زيادة الكمية">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center"> 
+                                            @item.TotalPrice.ToString("C")
+                                            </div>
+                                        </td>
                                         <td>
+                                            <div class="d-flex justify-content-center align-items-center"> 
                                             <button class="btn btn-danger btn-sm" onclick="removeItem(@item.CartItemId)" title="حذف">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 }
@@ -212,7 +671,7 @@
         else
         {
             <div class="text-center py-5">
-                <div class="card">
+                <div class="card empty-cart">
                     <div class="card-body py-5">
                         <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
                         <h3 class="text-muted mb-3">السلة فارغة</h3>

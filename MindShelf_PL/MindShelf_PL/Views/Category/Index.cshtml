@@ -1,71 +1,250 @@
 ﻿@model IEnumerable<CategoryResponseDto>
-
 @{
     ViewData["Title"] = "الفئات";
 }
-
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-list me-2"></i>إدارة الفئات</h2>
+    <h2 class="page-title"><i class="fas fa-list me-2"></i>إدارة الفئات</h2>
     @if (User.IsInRole("Admin"))
     {
-        <a class="btn btn-primary" href="@Url.Action("Create")">
+        <a class="btn-custom btn-primary-custom" href="@Url.Action("Create")">
             <i class="fas fa-plus me-1"></i>إضافة فئة جديدة
         </a>
     }
 </div>
 
 <div class="row">
-    @if (Model != null && Model.Any())
-    {
-        @foreach (var category in Model)
-        {
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-tag fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">@category.Name</h5>
-                        <p class="card-text text-muted">@category.Description</p>
-                        <p class="text-info">
-                            <i class="fas fa-book me-1"></i>
-                            @(category.Books?.Count ?? 0) كتاب
-                        </p>
-                        <div class="d-flex flex-column gap-2 w-100">
-                            <a href="@Url.Action("Details", "Category", new { id = category.CategoryId })"
-                               class="btn btn-outline-primary w-100">
-                                <i class="fas fa-eye me-1"></i>عرض الكتب
-                            </a>
+	@if (Model != null && Model.Any())
+	{
+		@foreach (var category in Model)
+		{
+			<div class="col-lg-4 col-md-6 mb-4">
+				<div class="card category-card h-100 shadow-sm">
+					<div class="card-body text-center d-flex flex-column align-items-center">
+						<i class="fas fa-tag fa-3x mb-3 category-icon"></i>
+						<h5 class="card-title">@category.Name</h5>
+						<p class="card-text text-muted flex-grow-1">@category.Description</p>
+						<p class="text-info book-count">
+							<i class="fas fa-book me-1"></i>
+							@(category.Books?.Count ?? 0) كتاب
+						</p>
+						<div class="d-flex flex-column gap-2 w-100">
+							<a href="@Url.Action("Details", "Category", new { id = category.CategoryId })"
+							   class="btn-custom btn-outline-primary-custom w-100">
+								<i class="fas fa-eye me-1"></i>عرض الكتب
+							</a>
 
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a href="@Url.Action("Edit", "Category", new { id = category.CategoryId })"
-                                   class="btn btn-outline-secondary w-100">
-                                    <i class="fas fa-edit"></i> تعديل
-                                </a>
+							@if (User.IsInRole("Admin"))
+							{
+								<a href="@Url.Action("Edit", "Category", new { id = category.CategoryId })"
+								   class="btn-custom btn-outline-secondary-custom w-100">
+									<i class="fas fa-edit"></i> تعديل
+								</a>
 
-                                <a href="@Url.Action("Delete", "Category", new { id = category.CategoryId })"
-                                   class="btn btn-outline-danger w-100">
-                                    <i class="fas fa-trash"></i> حذف
-                                </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="text-center py-5">
-                <i class="fas fa-list fa-4x text-muted mb-3"></i>
-                <h4 class="text-muted">لا توجد فئات</h4>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a href="@Url.Action("Create")" class="btn btn-primary mt-3">
-                        <i class="fas fa-plus me-1"></i>إضافة أول فئة
-                    </a>
-                }
-            </div>
-        </div>
-    }
+								<a href="@Url.Action("Delete", "Category", new { id = category.CategoryId })"
+								   class="btn-custom btn-outline-danger-custom w-100">
+									<i class="fas fa-trash"></i> حذف
+								</a>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	}
+	else
+	{
+		<div class="col-12">
+			<div class="text-center py-5">
+				<i class="fas fa-list fa-4x text-muted mb-3"></i>
+				<h4 class="text-muted">لا توجد فئات</h4>
+				@if (User.IsInRole("Admin"))
+				{
+					<a href="@Url.Action("Create")" class="btn-custom btn-primary-custom mt-3">
+						<i class="fas fa-plus me-1"></i>إضافة أول فئة
+					</a>
+				}
+			</div>
+		</div>
+	}
 </div>
+<style>
+    /* Import a modern font for a professional look */
+    @@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+    /* --- CSS Variables for easy theming --- */
+    :root {
+        --secondary-color: #6c757d; /* Gray */
+        --accent-color: #28a745; /* Green for success/price */
+        --bg-color-light: #f4f7f9; /* Off-white background */
+        --text-color-light: #333;
+        --card-bg-light: #ffffff; /* Pure white card background */
+        --card-border-light: #e0e6ed;
+        --shadow-color-light: rgba(0, 0, 0, 0.08); /* Softer shadow */
+        --transition-duration: 0.3s;
+        /* NEW: Dark mode button colors */
+        --dark-button-bg: #4B382F; /* A dark brown for default */
+        --dark-button-border: #6F4E37; /* A lighter brown for border */
+        --dark-button-text: white;
+        --dark-button-hover-bg: #6F4E37; /* Lighter brown on hover */
+    }
+
+    body.dark-mode {
+        --bg-color-light: #212529;
+        --text-color-light: #f8f9fa;
+        --card-bg-light: #343a40;
+        --card-border-light: #495057;
+        --shadow-color-light: rgba(0, 0, 0, 0.3);
+    }
+
+    /* --- General Body & Typography --- */
+    body {
+        font-family: 'Tajawal', 'sans-serif';
+        background-color: var(--bg-color-light);
+        color: var(--text-color-light);
+        transition: background-color var(--transition-duration), color var(--transition-duration);
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: var(--text-color-light) !important;
+        transition: color var(--transition-duration);
+    }
+
+    /* --- Category Cards --- */
+    .category-card {
+        background-color: var(--card-bg-light);
+        border: 1px solid var(--card-border-light);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px var(--shadow-color-light);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12); /* Slightly more prominent shadow on hover */
+        }
+
+            .category-card:hover .card-title,
+            .category-card:hover .card-text.text-muted {
+                color: white !important;
+            }
+
+    .category-icon {
+        color: var(--primary-color) !important;
+    }
+
+    .card-title {
+        font-weight: 700;
+        color: var(--text-color-light);
+        margin-top: 1rem;
+    }
+
+    .card-text.text-muted {
+        color: #757575 !important;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .book-count {
+        color: var(--accent-color) !important;
+        font-weight: 700;
+    }
+
+    /* --- Buttons --- */
+    .btn-custom {
+        font-family: 'Tajawal', 'sans-serif';
+        font-weight: 700;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Softer button shadow */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Filled Buttons */
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: #5d48d1;
+        }
+
+    /* Outline Buttons - Light Mode */
+    .btn-outline-primary-custom {
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #964B00 !important;
+        border: 1px solid #964B00;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+    }
+
+        .btn-outline-primary-custom:hover {
+            background-color: #964B00;
+            color: white !important;
+            border-color: #964B00;
+        }
+
+    .btn-outline-secondary-custom {
+        background-color: transparent;
+        color: var(--secondary-color) !important;
+        border: 2px solid var(--secondary-color);
+    }
+
+        .btn-outline-secondary-custom:hover {
+            background-color: var(--secondary-color);
+            color: white !important;
+        }
+
+    .btn-outline-danger-custom {
+        background-color: transparent;
+        color: #dc3545 !important;
+        border: 2px solid #dc3545;
+    }
+
+        .btn-outline-danger-custom:hover {
+            background-color: #dc3545;
+            color: white !important;
+        }
+
+    /* Dark Mode specific overrides */
+    body.dark-mode .category-card {
+        background: var(--card-bg-gradient-dark);
+        border-color: var(--card-border-light);
+    }
+
+    body.dark-mode .category-icon,
+    body.dark-mode .card-title,
+    body.dark-mode .card-text.text-muted,
+    body.dark-mode .book-count {
+        color: var(--text-color-light) !important;
+    }
+
+    /* UPDATED: Button styles for dark mode */
+    body.dark-mode .btn-outline-primary-custom {
+        background-color: var(--dark-button-bg);
+        color: var(--dark-button-text) !important;
+        border: 1px solid var(--dark-button-border);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+        body.dark-mode .btn-outline-primary-custom:hover {
+            background-color: var(--dark-button-hover-bg);
+            color: white !important;
+            border-color: var(--dark-button-hover-bg);
+        }
+
+            /* Ensure icon inside button also changes color on hover in dark mode */
+            body.dark-mode .btn-outline-primary-custom:hover i {
+                color: white !important;
+            }
+</style>
