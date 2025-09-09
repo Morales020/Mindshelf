@@ -14,12 +14,33 @@
                 <div class="card-body p-4">
                     <div class="row">
                         <!-- Book Image -->
-                        <div class="col-md-4 text-center">
+                        <div class="position-relative col-md-4 text-center">
                             <div class="book-image-container">
-                                <img src="@Model.ImageUrl" alt="@Model.Title" 
-                                     class="img-fluid rounded-3 shadow" 
+                                <img src="@Model.ImageUrl" alt="@Model.Title"
+                                     class="w-100 book-image-wrapper"
                                      style="max-height: 400px; width: 100%; object-fit: contain;" />
                             </div>
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm position-absolute favourite-btn"
+                                    style="top: 10px; left: 30px;"
+                                    data-book-id="@(Model.BookId)"
+                                    onclick="toggleFavourite(@(Model.BookId), this)"
+                                    title="إضافة للمفضلة">
+                                <i class="far fa-heart"></i>
+                            </button>
+
+                            @if (Model.State == MindShelf_DAL.Models.BookState.Available)
+                            {
+                                <span class="badge bg-success position-absolute" style="top: 10px; right: 30px;">
+                                    متوفر
+                                </span>
+                            }
+                            else if (Model.State == MindShelf_DAL.Models.BookState.OutOfStock)
+                            {
+                                <span class="badge bg-danger position-absolute" style="top: 10px; right: 30;">
+                                    غير متوفر
+                                </span>
+                            }
                         </div>
 
                         <!-- Book Information -->
@@ -399,6 +420,103 @@
 </style>
 
 <script>
+
+    function toggleFavourite(bookId, btn) {
+         @if (!User.Identity?.IsAuthenticated == true)
+            {
+                        <text>
+                        alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                        window.location.href = '@Url.Action("Login", "Account")';
+                        return;
+                        </text>
+            }
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Disable button to prevent multiple clicks
+            $(btn).prop('disabled', true);
+
+            // Show loading state
+            var originalIcon = $(btn).find('i').attr('class');
+            $(btn).find('i').removeClass().addClass('fas fa-spinner fa-spin');
+
+            $.ajax({
+                url: '@Url.Action("ToggleFavourite", "FavouriteBook")',
+                type: 'POST',
+                data: {
+                    bookId: bookId,
+                    __RequestVerificationToken: token
+                },
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFavourited) {
+                            $(btn).find('i').removeClass().addClass('fas fa-heart');
+                            $(btn).removeClass('btn-outline-danger').addClass('btn-danger');
+                            $(btn).attr('title', 'في المفضلة');
+                        } else {
+                            $(btn).find('i').removeClass().addClass('far fa-heart');
+                            $(btn).removeClass('btn-danger').addClass('btn-outline-danger');
+                            $(btn).attr('title', 'إضافة للمفضلة');
+                        }
+                    } else {
+                        $(btn).find('i').removeClass().addClass(originalIcon);
+                        alert(response.message);
+
+                        if (response.redirect) {
+                            setTimeout(() => {
+                                window.location.href = response.redirect;
+                            }, 2000);
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    $(btn).find('i').removeClass().addClass(originalIcon);
+                    $(btn).prop('disabled', false);
+
+                    if (xhr.status === 401) {
+                        alert('يجب تسجيل الدخول لإضافة كتاب للمفضلة');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        }, 2000);
+                    } else {
+                        alert('حدث خطأ أثناء تحديث المفضلة');
+                    }
+                },
+                complete: function() {
+                    $(btn).prop('disabled', false);
+                }
+            });
+        }
+
+        // Init scripts
+        $(document).ready(function () {
+            // Restore favourite status
+            $('.favourite-btn').each(function() {
+                var btn = $(this);
+                var bookId = btn.data('book-id');
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                            <text>
+                            $.ajax({
+                                url: '@Url.Action("CheckFavouriteStatus", "FavouriteBook")',
+                                type: 'GET',
+                                data: { bookId: bookId },
+                                success: function(response) {
+                                    if (response.isFavourited) {
+                                        btn.find('i').removeClass().addClass('fas fa-heart');
+                                        btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                                        btn.attr('title', 'في المفضلة');
+                                    }
+                                }
+                            });
+                            </text>
+                }
+            });
+
+           
+            
+        });
     // Load reviews when page loads
     document.addEventListener('DOMContentLoaded', function() {
         loadReviews();
