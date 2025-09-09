@@ -83,6 +83,7 @@ namespace MindShelf_BL.Services
                 Name = author.Name,
                 Bio = author.Bio,
                 DateOfBirth = author.DateOfBirth,
+                bookcount = author.Books.Count,
                 ImageUrl = author.ImageUrl,
                 BooksResponseDto = author.Books.Select(book => new BookResponseDto
                 {
