@@ -301,4 +301,4 @@ For comprehensive documentation, please refer to our complete documentation suit
 
 ---
 
-*Last updated: January 2025*
+*Last updated: September 2025*
