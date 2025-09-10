@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MindShelf_DAL.Models;
+using System.Text.RegularExpressions;
 
 namespace MindShelf_DAL.Data
 {
@@ -27,6 +27,7 @@ namespace MindShelf_DAL.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
