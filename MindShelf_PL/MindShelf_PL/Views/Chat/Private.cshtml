@@ -1,0 +1,84 @@
+@model IEnumerable<MindShelf_DAL.Models.PrivateMessage>
+@{
+    ViewData["Title"] = "مراسلة خاصة";
+    var otherId = ViewBag.OtherUserId as string;
+    var otherName = ViewBag.OtherDisplayName as string ?? "";
+    var otherAvatar = ViewBag.OtherAvatar as string;
+    var myId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body d-flex align-items-center border-bottom">
+            <a href="@Url.Action("Public","Account", new { userId = otherId })" class="me-3 text-decoration-none" title="عرض الملف">
+                @if (!string.IsNullOrWhiteSpace(otherAvatar))
+                {
+                    <img src="@otherAvatar" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" />
+                }
+                else
+                {
+                    <i class="fas fa-user-circle" style="font-size:48px;"></i>
+                }
+            </a>
+            <h5 class="mb-0">@otherName</h5>
+        </div>
+
+        <div class="card-body" style="height:480px; overflow:auto;" id="chatBox">
+            @foreach (var m in Model)
+            {
+                var me = m.SenderId == myId;
+                <div class="d-flex mb-2 @(me?"justify-content-end":"justify-content-start")">
+                    <div class="px-3 py-2 rounded @(me?"bg-primary text-white":"bg-light")" style="max-width:70%">
+                        <div>@m.Content</div>
+                        <div class="text-muted small mt-1">@m.SentAt.ToLocalTime()</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="card-body border-top">
+            <div class="input-group">
+                <input id="msgInput" class="form-control" placeholder="اكتب رسالة..." autocomplete="off" />
+                <button id="sendBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const myId = '@myId';
+        const otherId = '@otherId';
+        const chatBox = document.getElementById('chatBox');
+        function appendMsg(fromMe, text, time){
+            const row = document.createElement('div');
+            row.className = 'd-flex mb-2 ' + (fromMe? 'justify-content-end':'justify-content-start');
+            row.innerHTML = `<div class="px-3 py-2 rounded ${fromMe? 'bg-primary text-white':'bg-light'}" style="max-width:70%"><div>${text}</div><div class="text-muted small mt-1">${new Date(time).toLocaleString()}</div></div>`;
+            chatBox.appendChild(row); chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        const connection = new signalR.HubConnectionBuilder().withUrl('/privateChatHub').withAutomaticReconnect().build();
+        connection.on('ReceivePrivateMessage', (senderId, message, sentAt)=>{
+            if(senderId === otherId){ appendMsg(false, message, sentAt); }
+            // toast
+            if(window.showToast){ showToast('رسالة جديدة', message); }
+        });
+        connection.on('ReceivePrivateMessageEcho', (toUserId, message, sentAt)=>{
+            if(toUserId === otherId){ appendMsg(true, message, sentAt); }
+        });
+        connection.start();
+
+        document.getElementById('sendBtn').addEventListener('click', send);
+        document.getElementById('msgInput').addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
+        function send(){
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if(!text) return;
+            connection.invoke('SendPrivateMessage', otherId, text);
+            input.value = '';
+        }
+    </script>
+}
+
+

@@ -182,6 +182,11 @@ namespace MindShelf_PL
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
             });
 
+            app.MapHub<MindShelf_PL.Hubs.PrivateChatHub>("/privateChatHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
 
             app.MapControllerRoute(
                 name: "default",
