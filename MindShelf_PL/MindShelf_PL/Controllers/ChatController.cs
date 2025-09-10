@@ -15,6 +15,15 @@ namespace MindShelf_PL.Controllers
 		private readonly MindShelfDbContext _dbContext;
 		private readonly UserManager<User> _userManager;
 
+		public class ConversationVm
+		{
+			public string OtherUserId { get; set; } = string.Empty;
+			public DateTime LastMessageAt { get; set; }
+			public int UnreadCount { get; set; }
+			public string? DisplayName { get; set; }
+			public string? AvatarUrl { get; set; }
+		}
+
 		public ChatController(MindShelfDbContext dbContext, UserManager<User> userManager)
 		{
 			_dbContext = dbContext;
@@ -22,6 +31,55 @@ namespace MindShelf_PL.Controllers
 		}
 
 		[HttpGet]
+		public async Task<IActionResult> UnreadTotal()
+		{
+			var me = await _userManager.GetUserAsync(User);
+			if (me == null) return Unauthorized();
+			var count = _dbContext.PrivateMessages.Count(m => m.ReceiverId == me.Id && !m.IsRead);
+			return Json(count);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Conversations()
+		{
+			var me = await _userManager.GetUserAsync(User);
+			if (me == null) return RedirectToAction("Login", "Account");
+
+			// Build conversation summaries: per other user, latest message time, unread count
+			var query = _dbContext.PrivateMessages
+				.Where(m => m.SenderId == me.Id || m.ReceiverId == me.Id)
+				.Select(m => new {
+					OtherId = m.SenderId == me.Id ? m.ReceiverId : m.SenderId,
+					Message = m,
+				});
+
+			var grouped = query
+				.AsEnumerable()
+				.GroupBy(x => x.OtherId)
+				.Select(g => new ConversationVm
+				{
+					OtherUserId = g.Key,
+					LastMessageAt = g.Max(x => x.Message.SentAt),
+					UnreadCount = g.Count(x => x.Message.ReceiverId == me.Id && !x.Message.IsRead)
+				})
+				.OrderByDescending(c => c.LastMessageAt)
+				.ToList();
+
+			// Load user names/avatars
+			var otherIds = grouped.Select(c => c.OtherUserId).ToList();
+			var users = _dbContext.Users.Where(u => otherIds.Contains(u.Id)).ToList();
+			foreach (var c in grouped)
+			{
+				var u = users.FirstOrDefault(u => u.Id == c.OtherUserId);
+				c.DisplayName = u?.UserName ?? c.OtherUserId;
+				if (!string.IsNullOrWhiteSpace(c.DisplayName) && c.DisplayName.Contains('@'))
+					c.DisplayName = c.DisplayName.Split('@')[0];
+				c.AvatarUrl = u?.ProfileImageUrl;
+			}
+
+			return View(grouped);
+		}
+
 		public async Task<IActionResult> Private(string userId)
 		{
 			var me = await _userManager.GetUserAsync(User);
@@ -71,6 +129,16 @@ namespace MindShelf_PL.Controllers
 				.OrderBy(m => m.SentAt)
 				.Take(200)
 				.ToListAsync();
+
+			// Mark partner's unread messages as read now
+			var unread = _dbContext.PrivateMessages
+				.Where(m => m.SenderId == other.Id && m.ReceiverId == me.Id && !m.IsRead)
+				.ToList();
+			if (unread.Any())
+			{
+				foreach (var m in unread) m.IsRead = true;
+				await _dbContext.SaveChangesAsync();
+			}
 
 			return View(history);
 		}
