@@ -197,9 +197,9 @@
                                     </p>
                                 }
 
-                                <div class="mt-auto">
+                            <div class="mt-auto btn-group-sm">
                                     <div class="row g-2">
-                                        <div class="col-6">
+                                    <div class="col-6">
                                             @if (book.State == MindShelf_DAL.Models.BookState.Available)
                                             {
                                                 <form asp-action="AddToCart" asp-controller="Cart" method="post">
@@ -226,7 +226,7 @@
 
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <div class="row g-2 mt-2">
+                                    <div class="row g-2 mt-2">
                                             <div class="col-6">
                                                 <a asp-action="Edit" asp-route-id="@(book.BookId )" class="btn btn-warning btn-sm w-100">
                                                     <i class="fas fa-edit me-1"></i> تعديل
