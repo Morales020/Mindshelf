@@ -145,16 +145,6 @@ namespace MindShelf_PL
     });
 
 
-            // Configure port for production
-            if (!builder.Environment.IsDevelopment())
-            {
-                var port = Environment.GetEnvironmentVariable("PORT");
-                if (!string.IsNullOrEmpty(port))
-                {
-                    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-                }
-            }
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

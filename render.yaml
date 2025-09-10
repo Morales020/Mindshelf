@@ -10,8 +10,6 @@ services:
         value: Production
       - key: ASPNETCORE_URLS
         value: http://0.0.0.0:$PORT
-      - key: ASPNETCORE_Kestrel__Endpoints__Http__Url
-        value: http://0.0.0.0:$PORT
       - key: ConnectionStrings__Cs
         fromDatabase:
           name: mindshelf-db
