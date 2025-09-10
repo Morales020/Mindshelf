@@ -54,6 +54,23 @@
 <div class="container py-4">
     <h2 class="mb-3"><i class="fas fa-comments"></i> مراسلة خاصة</h2>
 
+    <div class="d-flex align-items-center mb-2 p-2" style="border:1px solid var(--bs-border-color);border-radius:12px;">
+        <a href="@Url.Action("Public","Account", new { userId = otherId })" class="text-decoration-none me-2" title="عرض الملف">
+            @if (!string.IsNullOrWhiteSpace(otherAvatar))
+            {
+                <img src="@otherAvatar" class="rounded-circle" style="width:40px;height:40px;object-fit:cover;" onerror="this.replaceWith(document.createElement('i'))" />
+            }
+            else
+            {
+                <i class="fas fa-user-circle" style="font-size:40px;"></i>
+            }
+        </a>
+        <div>
+            <div class="fw-bold">@otherName</div>
+            <div class="text-muted small">محادثة خاصة</div>
+        </div>
+    </div>
+
     <div id="messagesList" class="chat-box">
         @foreach (var m in Model)
         {
