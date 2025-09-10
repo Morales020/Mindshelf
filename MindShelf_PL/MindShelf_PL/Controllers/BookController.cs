@@ -66,7 +66,7 @@ namespace MindShelf_MVC.Controllers
             });
         }
 
-        public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 12)
         {
 
             var response = await _bookService.GetAllBook(page, pageSize);
