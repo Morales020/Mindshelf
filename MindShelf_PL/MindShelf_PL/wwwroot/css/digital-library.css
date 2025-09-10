@@ -194,132 +194,163 @@
     box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
 }
 
-/* Danger Buttons */
-.btn-danger, .btn-outline-danger {
+/* ========================================
+   Enhanced MindShelf Button Styles
+   ======================================== */
+
+/* Universal Button Base Styles (applied to all buttons) */
+.btn {
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    text-decoration: none !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        text-decoration: none !important;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.4s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+/* Light Mode Specific Colors and Gradients */
+/* Filled Buttons */
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #b02a37 100%);
+    border: 2px solid var(--danger-color);
+    color: white !important;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, var(--info-color) 0%, #0aa2c0 100%);
+    border: 2px solid var(--info-color);
+    color: white !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffca2c 100%);
+    border: 2px solid var(--warning-color);
+    color: white !important;
+}
+
+/* Outline Buttons */
+.btn-outline-danger {
     background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
-    border: 2px solid #dc3545;
-    color: #dc3545 !important;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color) !important;
 }
 
-.btn-danger::before, .btn-outline-danger::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.4s;
-}
-
-.btn-danger:hover::before, .btn-outline-danger:hover::before {
-    left: 100%;
-}
-
-.btn-danger:hover, .btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-}
-
-/* Info Buttons */
-.btn-info, .btn-outline-info {
+.btn-outline-info {
     background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 202, 240, 0.05) 100%);
-    border: 2px solid #0dcaf0;
-    color: #0dcaf0 !important;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+    border: 2px solid var(--info-color);
+    color: var(--info-color) !important;
 }
 
-.btn-info::before, .btn-outline-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.4s;
-}
-
-.btn-info:hover::before, .btn-outline-info:hover::before {
-    left: 100%;
-}
-
-.btn-info:hover, .btn-outline-info:hover {
-    background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(13, 202, 240, 0.3);
-}
-
-/* Warning Buttons */
-.btn-warning, .btn-outline-warning {
+.btn-outline-warning {
     background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
-    border: 2px solid #ffc107;
-    color: #ffc107 !important;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+    border: 2px solid var(--warning-color);
+    color: var(--warning-color) !important;
 }
 
-.btn-warning::before, .btn-outline-warning::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.4s;
-}
-
-.btn-warning:hover::before, .btn-outline-warning:hover::before {
-    left: 100%;
-}
-
-.btn-warning:hover, .btn-outline-warning:hover {
-    background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-}
-
-/* Dark Mode Button Styles - Force text colors */
-body.dark-mode .btn-primary, body.dark-mode .btn-register {
-    background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
-    color: white !important;
-    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
-}
-
-body.dark-mode .btn-secondary, body.dark-mode .btn-outline-secondary {
-    color: #6c757d !important;
-}
-
-body.dark-mode .btn-success, body.dark-mode .btn-outline-success {
+/* Light Mode Outline Hover Effect (fills with color) */
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #b02a37 100%);
     color: white !important;
 }
 
-body.dark-mode .btn-danger, body.dark-mode .btn-outline-danger {
+.btn-outline-info:hover {
+    background: linear-gradient(135deg, var(--info-color) 0%, #0aa2c0 100%);
     color: white !important;
 }
 
-body.dark-mode .btn-info, body.dark-mode .btn-outline-info {
+.btn-outline-warning:hover {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffca2c 100%);
     color: white !important;
 }
 
-body.dark-mode .btn-warning, body.dark-mode .btn-outline-warning {
+/* ========================================
+   Dark Mode Specific Button Styles
+   ======================================== */
+body.dark-mode .btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+    body.dark-mode .btn:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    }
+
+/* Dark Mode Filled Buttons */
+body.dark-mode .btn-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #b02a37 100%);
+    border: 2px solid var(--danger-color);
+    color: white !important;
+}
+
+body.dark-mode .btn-info {
+    background: linear-gradient(135deg, var(--info-color) 0%, #0aa2c0 100%);
+    border: 2px solid var(--info-color);
+    color: white !important;
+}
+
+body.dark-mode .btn-warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffca2c 100%);
+    border: 2px solid var(--warning-color);
+    color: white !important;
+}
+
+/* Dark Mode Outline Buttons */
+body.dark-mode .btn-outline-danger {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color) !important;
+}
+
+body.dark-mode .btn-outline-info {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.2) 0%, rgba(13, 202, 240, 0.1) 100%);
+    border: 2px solid var(--info-color);
+    color: var(--info-color) !important;
+}
+
+body.dark-mode .btn-outline-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 193, 7, 0.1) 100%);
+    border: 2px solid var(--warning-color);
+    color: var(--warning-color) !important;
+}
+
+/* Dark Mode Outline Button Hover Effect (fills with color) */
+body.dark-mode .btn-outline-danger:hover {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #b02a37 100%);
+    color: white !important;
+}
+
+body.dark-mode .btn-outline-info:hover {
+    background: linear-gradient(135deg, var(--info-color) 0%, #0aa2c0 100%);
+    color: white !important;
+}
+
+body.dark-mode .btn-outline-warning:hover {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffca2c 100%);
     color: white !important;
 }
 
