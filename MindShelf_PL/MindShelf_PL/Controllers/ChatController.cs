@@ -92,6 +92,7 @@ namespace MindShelf_PL.Controllers
 			// Build other user's display name and avatar (handle Google sign-in)
 			var otherClaims = await _userManager.GetClaimsAsync(other);
 			var otherDisplay = otherClaims.FirstOrDefault(c => c.Type == "display_name")?.Value
+						   ?? otherClaims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
 						   ?? other.UserName
 						   ?? other.Email
 						   ?? other.Id;
@@ -110,6 +111,7 @@ namespace MindShelf_PL.Controllers
 			// My display name and avatar
 			var myClaims = await _userManager.GetClaimsAsync(me);
 			var myDisplay = myClaims.FirstOrDefault(c => c.Type == "display_name")?.Value
+						  ?? myClaims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
 						  ?? me.UserName
 						  ?? me.Email
 						  ?? me.Id;
