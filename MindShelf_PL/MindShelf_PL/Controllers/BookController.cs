@@ -328,9 +328,9 @@ namespace MindShelf_MVC.Controllers
             return View("Index", response.Data);
         }
 
-        public async Task<IActionResult> Filter(int? categoryId, int? authorId)
+        public async Task<IActionResult> Filter(int? categoryId, int? authorId, string searchTerm)
         {
-            var response = await _bookService.FilterBooksAsync(categoryId, authorId);
+            var response = await _bookService.FilterBooksAsync(categoryId, authorId, searchTerm);
             if (response.StatusCode != 200 || response.Data == null)
                 return ErrorResult(response.Message);
 
@@ -342,6 +342,7 @@ namespace MindShelf_MVC.Controllers
             ViewBag.Authors = authors.Data;
             ViewBag.SelectedCategoryId = categoryId;
             ViewBag.SelectedAuthorId = authorId;
+            ViewBag.SearchTerm = searchTerm;
 
 
             return View("Index", response.Data);
