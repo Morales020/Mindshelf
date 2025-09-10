@@ -5,74 +5,146 @@
     var otherName = ViewBag.OtherDisplayName as string ?? "";
     var otherAvatar = ViewBag.OtherAvatar as string;
     var myId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var myDisplayName = ViewBag.MyDisplayName as string ?? User.Identity?.Name;
+    var myAvatar = ViewBag.MyAvatar as string;
 }
 
+<style>
+    :root {
+        --msg-incoming-bg: #f5f7fb;
+        --msg-incoming-border: #e3e9f4;
+        --msg-outgoing-bg: #d7efff;
+        --msg-outgoing-border: #bfe6ff;
+        --msg-shadow: 0 2px 6px rgba(20,25,38,.06);
+    }
+
+    .chat-box{min-height:320px;max-height:64vh;overflow-y:auto;border:1px solid var(--bs-border-color);border-radius:14px;background:var(--bs-body-bg);padding:8px}
+    .msg{display:flex;gap:.6rem;margin:.65rem .5rem;align-items:flex-end}
+    .msg .avatar{width:36px;height:36px;border-radius:50%;background:#e9ecef;display:flex;align-items:center;justify-content:center;font-weight:700;color:#6c757d;flex:0 0 36px;box-shadow: var(--msg-shadow)}
+    .msg .body{max-width:72%;}
+    .msg .bubble{position:relative;background:var(--msg-incoming-bg);border:1px solid var(--msg-incoming-border);border-radius:14px 14px 14px 6px;padding:.5rem .7rem;box-shadow: var(--msg-shadow)}
+    .msg .name{font-weight:700;font-size:.9rem;margin-bottom:.15rem}
+    .msg .text{white-space:pre-wrap}
+    .msg .meta{font-size:.73rem;color:#8a94a6;margin:.25rem .2rem 0}
+
+    .msg.me{flex-direction:row-reverse}
+    .msg.me .body{align-items:flex-end;text-align:right}
+    .msg.me .bubble{background:var(--msg-outgoing-bg);border-color:var(--msg-outgoing-border);border-radius:14px 14px 6px 14px}
+
+    .msg .bubble:after{content:"";position:absolute;left:-6px;bottom:6px;border-width:6px 6px 0 0;border-style:solid;border-color:var(--msg-incoming-border) transparent transparent transparent;}
+    .msg .bubble:before{content:"";position:absolute;left:-5px;bottom:7px;border-width:5px 5px 0 0;border-style:solid;border-color:var(--msg-incoming-bg) transparent transparent transparent;}
+    .msg.me .bubble:after{left:auto;right:-6px;border-width:6px 0 0 6px;border-color:var(--msg-outgoing-border) transparent transparent var(--msg-outgoing-border);}
+    .msg.me .bubble:before{left:auto;right:-5px;border-width:5px 0 0 5px;border-color:var(--msg-outgoing-bg) transparent transparent var(--msg-outgoing-bg);}
+
+    .msg .bubble:hover{filter:brightness(0.98)}
+
+    body.dark-mode .chat-box{background:#121417;border-color:#2a2d33}
+    body.dark-mode .msg .avatar{background:#2a2d33;color:#9aa4b2}
+    body.dark-mode .msg .bubble{background:#1b1f26;border-color:#2a2d33;color:#e6e8eb}
+    body.dark-mode .msg.me .bubble{background:#103245;border-color:#1a3a4c}
+    body.dark-mode .meta{color:#97a3b6}
+    body.dark-mode .bubble:before{border-color:#1b1f26 transparent transparent transparent}
+    body.dark-mode .bubble:after{border-color:#2a2d33 transparent transparent transparent}
+    body.dark-mode .msg.me .bubble:before{border-color:#103245 transparent transparent #103245}
+    body.dark-mode .msg.me .bubble:after{border-color:#1a3a4c transparent transparent #1a3a4c}
+
+    .composer{position:sticky;bottom:0;background:var(--bs-body-bg);padding-top:.6rem}
+</style>
+
 <div class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body d-flex align-items-center border-bottom">
-            <a href="@Url.Action("Public","Account", new { userId = otherId })" class="me-3 text-decoration-none" title="عرض الملف">
-                @if (!string.IsNullOrWhiteSpace(otherAvatar))
-                {
-                    <img src="@otherAvatar" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" />
-                }
-                else
-                {
-                    <i class="fas fa-user-circle" style="font-size:48px;"></i>
-                }
-            </a>
-            <h5 class="mb-0">@otherName</h5>
-        </div>
+    <h2 class="mb-3"><i class="fas fa-comments"></i> مراسلة خاصة</h2>
 
-        <div class="card-body" style="height:480px; overflow:auto;" id="chatBox">
-            @foreach (var m in Model)
-            {
-                var me = m.SenderId == myId;
-                <div class="d-flex mb-2 @(me?"justify-content-end":"justify-content-start")">
-                    <div class="px-3 py-2 rounded @(me?"bg-primary text-white":"bg-light")" style="max-width:70%">
-                        <div>@m.Content</div>
-                        <div class="text-muted small mt-1">@m.SentAt.ToLocalTime()</div>
+    <div id="messagesList" class="chat-box">
+        @foreach (var m in Model)
+        {
+            var me = m.SenderId == myId;
+            var avatarUrl = me ? myAvatar : otherAvatar;
+            var raw = me ? myDisplayName : otherName;
+            var shown = (!string.IsNullOrEmpty(raw) && raw.Contains("@")) ? raw.Split('@')[0] : raw;
+            <div class="msg @(me ? "me" : "")">
+                <a class="avatar text-decoration-none" href="@Url.Action("Public","Account", new { userId = me ? myId : otherId })" title="عرض الملف">
+                    @if (!string.IsNullOrWhiteSpace(avatarUrl))
+                    {
+                        <img src="@avatarUrl" class="w-100 h-100 rounded-circle" style="object-fit:cover;" onerror="this.parentElement.textContent='@((string.IsNullOrEmpty(shown) ? "?" : shown[0].ToString()))'" />
+                    }
+                    else
+                    {
+                        @((string.IsNullOrEmpty(shown) ? "?" : shown[0].ToString()))
+                    }
+                </a>
+                <div class="body">
+                    <div class="bubble">
+                        <div class="name">@shown</div>
+                        <div class="text">@m.Content</div>
                     </div>
+                    <div class="meta">@m.SentAt.ToLocalTime()</div>
                 </div>
-            }
-        </div>
-
-        <div class="card-body border-top">
-            <div class="input-group">
-                <input id="msgInput" class="form-control" placeholder="اكتب رسالة..." autocomplete="off" />
-                <button id="sendBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
             </div>
+        }
+    </div>
+
+    <div class="composer">
+        <div class="input-group mt-2">
+            <input type="text" id="messageInput" class="form-control" placeholder="اكتب رسالة..." autocomplete="off" />
+            <button class="btn btn-primary" id="sendBtn"><i class="fas fa-paper-plane"></i> إرسال</button>
         </div>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
-        const myId = '@myId';
-        const otherId = '@otherId';
-        const chatBox = document.getElementById('chatBox');
-        function appendMsg(fromMe, text, time){
-            const row = document.createElement('div');
-            row.className = 'd-flex mb-2 ' + (fromMe? 'justify-content-end':'justify-content-start');
-            row.innerHTML = `<div class="px-3 py-2 rounded ${fromMe? 'bg-primary text-white':'bg-light'}" style="max-width:70%"><div>${text}</div><div class="text-muted small mt-1">${new Date(time).toLocaleString()}</div></div>`;
-            chatBox.appendChild(row); chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        const box=document.getElementById('messagesList');
+        function scrollBottom(){ box.scrollTop=box.scrollHeight; }
+        scrollBottom();
 
-        const connection = new signalR.HubConnectionBuilder().withUrl('/privateChatHub').withAutomaticReconnect().build();
-        connection.on('ReceivePrivateMessage', (senderId, message, sentAt)=>{
-            if(senderId === otherId){ appendMsg(false, message, sentAt); }
-            // toast
-            if(window.showToast){ showToast('رسالة جديدة', message); }
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.disabled = false;
+
+        const myId = '@(myId)';
+        const myDisplayName = '@(myDisplayName)';
+        const myAvatar = '@(myAvatar)';
+        const otherId = '@(otherId)';
+        const otherName = '@(otherName)';
+        const otherAvatar = '@(otherAvatar)';
+
+        const connection=new signalR.HubConnectionBuilder()
+            .withUrl('/privateChatHub')
+            .withAutomaticReconnect()
+            .build();
+        connection.on('ReceivePrivateMessage',(senderId,message,time)=>{
+            const row=document.createElement('div');
+            const me = senderId===myId;
+            let shown = me ? myDisplayName : otherName;
+            const avatar = me ? myAvatar : otherAvatar;
+            row.className='msg'+(me?' me':'');
+            const av=document.createElement('a'); av.className='avatar text-decoration-none'; av.href=`/Account/Public?userId=${encodeURIComponent(me?myId:otherId)}`; av.title='عرض الملف';
+            const atSign = '@@';
+            if (shown && shown.includes(atSign)) shown = shown.split(atSign)[0];
+            if(avatar){ const img=document.createElement('img'); img.src=avatar; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(shown||'?')[0]; }; av.appendChild(img);} else { av.textContent=(shown||'?')[0]; }
+            const body=document.createElement('div'); body.className='body';
+            const bubble=document.createElement('div'); bubble.className='bubble'; bubble.innerHTML=`<div class="name">${shown}</div><div class="text">${message}</div>`;
+            const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(time).toLocaleString();
+            body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
+            if(window.showToast && senderId!==myId){ showToast('رسالة جديدة', message); }
         });
-        connection.on('ReceivePrivateMessageEcho', (toUserId, message, sentAt)=>{
-            if(toUserId === otherId){ appendMsg(true, message, sentAt); }
+        connection.on('ReceivePrivateMessageEcho',(toUserId,message,time)=>{
+            if(toUserId!==otherId) return;
+            const row=document.createElement('div');
+            row.className='msg me';
+            const av=document.createElement('a'); av.className='avatar text-decoration-none'; av.href=`/Account/Public?userId=${encodeURIComponent(myId)}`; av.title='عرض الملف';
+            if(myAvatar){ const img=document.createElement('img'); img.src=myAvatar; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(myDisplayName||'?')[0]; }; av.appendChild(img);} else { av.textContent=(myDisplayName||'?')[0]; }
+            const body=document.createElement('div'); body.className='body';
+            const bubble=document.createElement('div'); bubble.className='bubble'; bubble.innerHTML=`<div class="name">${myDisplayName}</div><div class="text">${message}</div>`;
+            const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(time).toLocaleString();
+            body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
         });
         connection.start();
 
         document.getElementById('sendBtn').addEventListener('click', send);
-        document.getElementById('msgInput').addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
+        document.getElementById('messageInput').addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
         function send(){
-            const input = document.getElementById('msgInput');
+            const input = document.getElementById('messageInput');
             const text = input.value.trim();
             if(!text) return;
             connection.invoke('SendPrivateMessage', otherId, text);
@@ -80,5 +152,4 @@
         }
     </script>
 }
-
 
