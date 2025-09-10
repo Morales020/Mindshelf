@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.HttpOverrides;
+using MindShelf_PL.Hubs;
 
 namespace MindShelf_PL
 {
@@ -46,7 +47,9 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR(o => { o.EnableDetailedErrors = true; });
+            builder.Services.AddSignalR(o => { 
+                o.EnableDetailedErrors = true; 
+            });
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
@@ -169,7 +172,16 @@ namespace MindShelf_PL
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
+            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
+            app.MapHub<MindShelf_PL.Hubs.BookNotificationHub>("/bookNotificationHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
 
             app.MapControllerRoute(
                 name: "default",
