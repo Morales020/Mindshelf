@@ -35,15 +35,17 @@
 
 							@if (User.IsInRole("Admin"))
 							{
+								<div class="btn-group gap-1">
 								<a href="@Url.Action("Edit", "Category", new { id = category.CategoryId })"
-								   class="btn-custom btn-outline-secondary-custom w-100">
+								   class="btn btn-warning w-100">
 									<i class="fas fa-edit"></i> تعديل
 								</a>
 
 								<a href="@Url.Action("Delete", "Category", new { id = category.CategoryId })"
-								   class="btn-custom btn-outline-danger-custom w-100">
+								   class="btn btn-danger w-100">
 									<i class="fas fa-trash"></i> حذف
 								</a>
+								</div>
 							}
 						</div>
 					</div>

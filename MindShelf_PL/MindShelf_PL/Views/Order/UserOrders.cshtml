@@ -10,12 +10,40 @@
     int totalPages = ViewBag.TotalPages ?? 1;
 }
 
+<style>
+    /* Dark Mode Styles for Order Index */
+	body.dark-mode .modal-content {
+		background-color: var(--dark-card-bg);
+		border-color: var(--dark-border-color);
+	}
+
+	body.dark-mode .modal-body {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-body p {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-body strong {
+		color: var(--dark-text-primary);
+	}
+
+	body.dark-mode .modal-footer {
+		border-color: var(--dark-border-color);
+	}
+
+
+</style>
+
 <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">طلباتي</h5>
+<div class="card-header text-white">
+	<h3 class="mb-3 mt-3">
+		<i class="fas fa-shopping-cart me-2"></i>
+		طلباتي
+	</h3>
     </div>
     <div class="card-body">
-
         <!-- Filter -->
         <form method="get" class="row g-3 align-items-end mb-4">
             <div class="col-md-3">
@@ -81,19 +109,21 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm me-1">
-                                        <i class="fas fa-eye"></i> تفاصيل
-                                    </a>
-                                    @if (order.OrderStatus == OrderState.Pending || order.OrderStatus == OrderState.Confirmed)
-                                    {
-                                        <button type="button"
-                                                class="btn btn-outline-danger btn-sm me-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#cancelModal"
-                                                data-order-id="@order.Id">
-                                            <i class="fas fa-ban"></i> إلغاء
-                                        </button>
-                                    }
+                                    <div class="btn-group btn-group-sm">
+	                                <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm me-1">
+		                                <i class="fas fa-eye"></i> تفاصيل
+	                                </a>
+	                                @if (order.OrderStatus == OrderState.Pending || order.OrderStatus == OrderState.Confirmed)
+	                                {
+		                                <button type="button"
+		                                        class="btn btn-danger btn-sm"
+		                                        data-bs-toggle="modal"
+		                                        data-bs-target="#cancelModal"
+		                                        data-order-id="@order.Id">
+			                                <i class="fas fa-ban"></i> إلغاء
+		                                </button>
+	                                }
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -148,28 +178,28 @@
 
 <!-- Cancel Confirmation Modal -->
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="cancelModalLabel"><i class="fas fa-ban me-2"></i>تأكيد الإلغاء</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-            </div>
-            <div class="modal-body">
-                <p>هل أنت متأكد أنك تريد إلغاء الطلب <strong id="cancelOrderId"></strong>؟</p>
-            </div>
-            <div class="modal-footer">
-                <form id="cancelForm" method="post">
-                    <input type="hidden" name="id" id="cancelInputId" />
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-ban me-1"></i> إلغاء الطلب
-                    </button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> إلغاء
-                </button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title" id="cancelModalLabel"><i class="fas fa-ban me-2"></i>تأكيد الإلغاء</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+			</div>
+			<div class="modal-body">
+				<p>هل أنت متأكد أنك تريد إلغاء الطلب <strong id="cancelOrderId"></strong>؟</p>
+			</div>
+			<div class="modal-footer">
+				<form id="cancelForm" method="post">
+					<input type="hidden" name="id" id="cancelInputId" />
+					<button type="submit" class="btn btn-danger">
+						<i class="fas fa-ban me-1"></i> إلغاء الطلب
+					</button>
+				</form>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+					<i class="fas fa-times me-1"></i> إلغاء
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @functions {
@@ -200,15 +230,15 @@
 
 @section Scripts {
     <script>
-        var cancelModal = document.getElementById('cancelModal');
-        cancelModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var orderId = button.getAttribute('data-order-id');
+		var cancelModal = document.getElementById('cancelModal');
+		cancelModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			var orderId = button.getAttribute('data-order-id');
 
-            document.getElementById('cancelOrderId').textContent = "#" + orderId.padStart(6, "0");
-            document.getElementById('cancelInputId').value = orderId;
+			document.getElementById('cancelOrderId').textContent = "#" + orderId.padStart(6, "0");
+			document.getElementById('cancelInputId').value = orderId;
 
-            document.getElementById('cancelForm').action = '/Order/Cancel/' + orderId;
-        });
-    </script>
+			document.getElementById('cancelForm').action = '/Order/Cancel/' + orderId;
+		});
+	</script>
 }
