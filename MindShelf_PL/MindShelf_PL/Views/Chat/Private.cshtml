@@ -115,6 +115,12 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
+        // Mark this page as an active chat with the selected user to suppress global PM toasts
+        try {
+            window.activeChatWith = '@otherId';
+            window.addEventListener('beforeunload', function(){ try { delete window.activeChatWith; } catch(e) { window.activeChatWith = undefined; } });
+        } catch(e) {}
+
         const box=document.getElementById('messagesList');
         function scrollBottom(){ box.scrollTop=box.scrollHeight; }
         scrollBottom();
@@ -133,9 +139,9 @@
             .withUrl('/privateChatHub')
             .withAutomaticReconnect()
             .build();
-        connection.on('ReceivePrivateMessage',(senderId,senderName,message,time,avatar)=>{
+        connection.on('ReceivePrivateMessage',(senderId,senderName,message,time,avatar,messageId)=>{
             // If this message is not from the user of the current chat tab, just toast and skip rendering
-            if(senderId!==otherId){ if(window.showToast){ showToast(`${senderName||'مستخدم'}: ${message}`); } return; }
+            if(senderId!==otherId){ if(window.showPmToast){ showPmToast(senderName||'مستخدم', message, avatar, `/Chat/Private?userId=${encodeURIComponent(senderId)}`); } else if(window.showToast){ showToast(`${senderName||'مستخدم'}: ${message}`); } return; }
             const row=document.createElement('div');
             const me = senderId===myId;
             let shown = me ? myDisplayName : (senderName || otherName);
@@ -149,9 +155,12 @@
             const bubble=document.createElement('div'); bubble.className='bubble'; bubble.innerHTML=`<div class="name">${shown}</div><div class="text">${message}</div>`;
             const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(time).toLocaleString();
             body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
-            if(window.showToast && senderId!==myId){ showToast(`${shown}: ${message}`); }
+            if(senderId!==myId){
+                // already on this chat: don't toast, and mark as read
+            }
+            try { if(messageId) connection.invoke('MarkAsRead', messageId); } catch(e) {}
         });
-        connection.on('ReceivePrivateMessageEcho',(toUserId,message,time)=>{
+        connection.on('ReceivePrivateMessageEcho',(toUserId,message,time,messageId)=>{
             if(toUserId!==otherId) return;
             const row=document.createElement('div');
             row.className='msg me';

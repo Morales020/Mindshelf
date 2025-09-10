@@ -19,12 +19,12 @@
         <h2 class="mb-0"><i class="fas fa-inbox"></i> مراسلاتي</h2>
     </div>
 
-    <div class="list-group shadow-sm conv-list">
+    <div class="list-group shadow-sm conv-list" id="convList">
         @foreach (var c in Model)
         {
             var name = c.DisplayName ?? c.OtherUserId;
             var when = DateTime.SpecifyKind(c.LastMessageAt, DateTimeKind.Utc).ToLocalTime();
-            <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between conv-item" href="@Url.Action("Private","Chat", new { userId = c.OtherUserId })">
+            <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between conv-item" data-user="@c.OtherUserId" href="@Url.Action("Private","Chat", new { userId = c.OtherUserId })">
                 <div class="d-flex align-items-center">
                     @if (!string.IsNullOrWhiteSpace(c.AvatarUrl))
                     {
@@ -39,17 +39,42 @@
                         <div class="conv-time">@when</div>
                     </div>
                 </div>
-                @if (c.UnreadCount > 0)
-                {
-                    <span class="badge bg-danger rounded-pill">@c.UnreadCount</span>
-                }
+                <span class="badge bg-danger rounded-pill conv-unread" style="@(c.UnreadCount>0?"":"display:none")">@c.UnreadCount</span>
             </a>
         }
     </div>
 
     @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
-        // No total badge here to avoid confusion; per-item badges already shown.
+        const list = document.getElementById('convList');
+        function setUnread(userId, delta){
+            const item = list.querySelector(`[data-user="${userId}"]`);
+            if(!item) return;
+            const badge = item.querySelector('.conv-unread');
+            let n = parseInt(badge?.textContent||'0')||0;
+            n = Math.max(0, n + delta);
+            if(badge){
+                if(n>0){ badge.style.display='inline-block'; badge.textContent = String(n); }
+                else { badge.style.display='none'; badge.textContent='0'; }
+            }
+            // Move item to top on activity
+            list.prepend(item);
+            // Update time text to now
+            const timeEl = item.querySelector('.conv-time');
+            if(timeEl){ timeEl.textContent = new Date().toLocaleString(); }
+        }
+
+        const conn = new signalR.HubConnectionBuilder().withUrl('/privateChatHub').withAutomaticReconnect().build();
+        conn.on('ReceivePrivateMessage', (senderId, senderName, message, time, avatar, msgId) => {
+            // increment unread for that sender
+            setUnread(senderId, 1);
+        });
+        conn.on('ReceivePrivateMessageEcho', (toUserId, message, time, msgId) => {
+            // activity moves conversation to top but does not change unread
+            setUnread(toUserId, 0);
+        });
+        conn.start();
     </script>
     }
 </div>

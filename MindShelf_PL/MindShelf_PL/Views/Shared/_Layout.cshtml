@@ -473,10 +473,20 @@
                 .withAutomaticReconnect()
                 .build();
 
+            function getQueryParam(name){
+                const params = new URLSearchParams(window.location.search);
+                return params.get(name);
+            }
+
             pmToastConnection.on('ReceivePrivateMessage', (senderId, senderName, message, time, avatar) => {
-                // Only show toast if user is not currently on the private chat with that sender
-                if (typeof showToast === 'function') {
-                    const shown = senderName || 'مستخدم';
+                // If the user is on the chat page with this sender, or a page registered as active chat, skip toast
+                const onPrivateChat = window.location.pathname.toLowerCase() === '/chat/private';
+                const openWith = getQueryParam('userId');
+                if ((onPrivateChat && openWith === senderId) || (window.activeChatWith && window.activeChatWith === senderId)) return;
+                const shown = senderName || 'مستخدم';
+                if (typeof showPmToast === 'function') {
+                    showPmToast(shown, message, avatar, `/Chat/Private?userId=${encodeURIComponent(senderId)}`);
+                } else if (typeof showToast === 'function') {
                     showToast(`${shown}: ${message}`);
                 }
             });

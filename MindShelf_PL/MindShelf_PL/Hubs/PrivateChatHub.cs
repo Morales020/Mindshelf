@@ -55,8 +55,8 @@ namespace MindShelf_PL.Hubs
 			// Notify both participants in real-time using per-user groups for reliability
 			var recvGroup = $"user:{receiverUserId}";
 			var sendGroup = $"user:{senderId}";
-			await Clients.Group(recvGroup).SendAsync("ReceivePrivateMessage", senderId, displayName, message, entity.SentAt, avatar);
-			await Clients.Group(sendGroup).SendAsync("ReceivePrivateMessageEcho", receiverUserId, message, entity.SentAt);
+			await Clients.Group(recvGroup).SendAsync("ReceivePrivateMessage", senderId, displayName, message, entity.SentAt, avatar, entity.Id);
+			await Clients.Group(sendGroup).SendAsync("ReceivePrivateMessageEcho", receiverUserId, message, entity.SentAt, entity.Id);
 		}
 
 		public override async Task OnConnectedAsync()
