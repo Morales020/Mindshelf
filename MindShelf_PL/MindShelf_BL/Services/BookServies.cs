@@ -213,7 +213,7 @@ namespace MindShelf_BL.Services
         #endregion
 
         #region FilterBooks
-        public async Task<ResponseMVC<IEnumerable<BookResponseDto>>> FilterBooksAsync(int? categoryId, int? authorId)
+        public async Task<ResponseMVC<IEnumerable<BookResponseDto>>> FilterBooksAsync(int? categoryId, int? authorId, string searchTerm)
         {
             try
             {
@@ -221,6 +221,9 @@ namespace MindShelf_BL.Services
                     .Include(b => b.Author)
                     .Include(b => b.Category)
                     .AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                    query = query.Where(b => b.Title.Contains(searchTerm));
 
                 if (categoryId.HasValue)
                     query = query.Where(b => b.CategoryId == categoryId.Value);

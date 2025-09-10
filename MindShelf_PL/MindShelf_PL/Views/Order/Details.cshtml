@@ -466,7 +466,7 @@
     <div class="container">
         <div class="order-details-hero-content text-center">
             <div class="mb-4">
-                <i class="fas fa-receipt text-5xl mb-3 opacity-90"></i>
+                <h1><i class="fas fa-receipt text-5xl mb-3 opacity-90"></i></h1>
                 <h1 class="text-3xl md:text-4xl font-bold mb-3">تفاصيل الطلب</h1>
                 <p class="text-lg opacity-90">طلب رقم #@Model.Id.ToString().PadLeft(6, '0')</p>
             </div>
@@ -474,8 +474,8 @@
             <div class="d-flex justify-content-center">
                 <span class="status-badge @GetStatusBadgeClass(Model.OrderStatus)">
                     <i class="fas fa-info-circle ml-2"></i>
-		@GetStatusText(Model.OrderStatus)
-	</span>
+						@GetStatusText(Model.OrderStatus)
+				</span>
             </div>
         </div>
     </div>
