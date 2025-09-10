@@ -77,7 +77,7 @@
 						<div class="name">@shown</div>
 						<div class="text">@msg.Content</div>
 					</div>
-					<div class="meta">@msg.SentAt.ToLocalTime()</div>
+					<div class="meta">@DateTime.SpecifyKind(msg.SentAt, DateTimeKind.Utc).ToLocalTime()</div>
 				</div>
 			</div>
 		}

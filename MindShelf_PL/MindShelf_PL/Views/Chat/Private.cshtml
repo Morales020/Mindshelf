@@ -94,7 +94,7 @@
                         <div class="name">@shown</div>
                         <div class="text">@m.Content</div>
                     </div>
-                    <div class="meta">@m.SentAt.ToLocalTime()</div>
+                    <div class="meta">@DateTime.SpecifyKind(m.SentAt, DateTimeKind.Utc).ToLocalTime()</div>
                 </div>
             </div>
         }
@@ -129,21 +129,23 @@
             .withUrl('/privateChatHub')
             .withAutomaticReconnect()
             .build();
-        connection.on('ReceivePrivateMessage',(senderId,message,time)=>{
+        connection.on('ReceivePrivateMessage',(senderId,senderName,message,time,avatar)=>{
+            // If this message is not from the user of the current chat tab, just toast and skip rendering
+            if(senderId!==otherId){ if(window.showToast){ showToast(`${senderName||'مستخدم'}: ${message}`); } return; }
             const row=document.createElement('div');
             const me = senderId===myId;
-            let shown = me ? myDisplayName : otherName;
-            const avatar = me ? myAvatar : otherAvatar;
+            let shown = me ? myDisplayName : (senderName || otherName);
+            const chosenAvatar = me ? myAvatar : (avatar || otherAvatar);
             row.className='msg'+(me?' me':'');
             const av=document.createElement('a'); av.className='avatar text-decoration-none'; av.href=`/Account/Public?userId=${encodeURIComponent(me?myId:otherId)}`; av.title='عرض الملف';
             const atSign = '@@';
             if (shown && shown.includes(atSign)) shown = shown.split(atSign)[0];
-            if(avatar){ const img=document.createElement('img'); img.src=avatar; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(shown||'?')[0]; }; av.appendChild(img);} else { av.textContent=(shown||'?')[0]; }
+            if(chosenAvatar){ const img=document.createElement('img'); img.src=chosenAvatar; img.className='w-100 h-100 rounded-circle'; img.style.objectFit='cover'; img.onerror=()=>{ av.textContent=(shown||'?')[0]; }; av.appendChild(img);} else { av.textContent=(shown||'?')[0]; }
             const body=document.createElement('div'); body.className='body';
             const bubble=document.createElement('div'); bubble.className='bubble'; bubble.innerHTML=`<div class="name">${shown}</div><div class="text">${message}</div>`;
             const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(time).toLocaleString();
             body.appendChild(bubble); body.appendChild(meta); row.appendChild(av); row.appendChild(body); box.appendChild(row); scrollBottom();
-            if(window.showToast && senderId!==myId){ showToast('رسالة جديدة', message); }
+            if(window.showToast && senderId!==myId){ showToast(`${shown}: ${message}`); }
         });
         connection.on('ReceivePrivateMessageEcho',(toUserId,message,time)=>{
             if(toUserId!==otherId) return;

@@ -16,11 +16,20 @@ using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.HttpOverrides;
 using MindShelf_PL.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MindShelf_PL
 {
     public class Program
     {
+        // Use NameIdentifier claim as SignalR user id for Clients.User(userId)
+        private sealed class NameIdUserIdProvider : IUserIdProvider
+        {
+            public string? GetUserId(HubConnectionContext connection)
+            {
+                return connection?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +59,8 @@ namespace MindShelf_PL
             builder.Services.AddSignalR(o => { 
                 o.EnableDetailedErrors = true; 
             });
+            // Ensure SignalR knows how to map a user to connections for Clients.User()
+            builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, NameIdUserIdProvider>();
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
