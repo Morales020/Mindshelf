@@ -15,11 +15,21 @@ using System;
 using System.Threading.Tasks;
 using File = System.IO.File;
 using Microsoft.AspNetCore.HttpOverrides;
+using MindShelf_PL.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MindShelf_PL
 {
     public class Program
     {
+        // Use NameIdentifier claim as SignalR user id for Clients.User(userId)
+        private sealed class NameIdUserIdProvider : IUserIdProvider
+        {
+            public string? GetUserId(HubConnectionContext connection)
+            {
+                return connection?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -46,7 +56,11 @@ namespace MindShelf_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR(o => { o.EnableDetailedErrors = true; });
+            builder.Services.AddSignalR(o => { 
+                o.EnableDetailedErrors = true; 
+            });
+            // Ensure SignalR knows how to map a user to connections for Clients.User()
+            builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, NameIdUserIdProvider>();
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
@@ -169,7 +183,21 @@ namespace MindShelf_PL
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub");
+            app.MapHub<MindShelf_PL.Hubs.CommunityHub>("/communityHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
+            app.MapHub<MindShelf_PL.Hubs.BookNotificationHub>("/bookNotificationHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
+            app.MapHub<MindShelf_PL.Hubs.PrivateChatHub>("/privateChatHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
 
             app.MapControllerRoute(
                 name: "default",

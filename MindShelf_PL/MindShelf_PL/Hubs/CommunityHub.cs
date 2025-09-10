@@ -18,12 +18,37 @@ namespace MindShelf_PL.Hubs
 			_dbContext = dbContext;
 		}
 
-		public async Task SendMessage(string message)
+		public override async Task OnConnectedAsync()
 		{
 			var userId = Context?.UserIdentifier;
-			var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+			System.Diagnostics.Debug.WriteLine($"User {userId} connected to CommunityHub");
+			await base.OnConnectedAsync();
+		}
+
+		public override async Task OnDisconnectedAsync(Exception? exception)
+		{
+			var userId = Context?.UserIdentifier;
+			System.Diagnostics.Debug.WriteLine($"User {userId} disconnected from CommunityHub: {exception?.Message}");
+			await base.OnDisconnectedAsync(exception);
+		}
+
+		public async Task SendMessage(string message)
+		{
+			try
+			{
+				var userId = Context?.UserIdentifier;
+				System.Diagnostics.Debug.WriteLine($"SendMessage called by user: {userId}, message: {message}");
+				
+				if (string.IsNullOrEmpty(userId))
+				{
+					System.Diagnostics.Debug.WriteLine("UserIdentifier is null or empty");
+					return;
+				}
+				
+				var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
 			// Prefer display_name claim → then UserName → then identity name; if email, use local-part
-			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value
+					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
 			var baseName = claimDisplay
 					   ?? userEntity?.UserName
 					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value
@@ -69,6 +94,13 @@ namespace MindShelf_PL.Hubs
 			}
 
 			await Clients.All.SendAsync("ReceiveMessage", msg.SenderId, msg.SenderName, msg.Content, msg.SentAt, avatar);
+			System.Diagnostics.Debug.WriteLine($"Message broadcasted successfully");
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"Error in SendMessage: {ex.Message}");
+				throw;
+			}
 		}
 	}
 }

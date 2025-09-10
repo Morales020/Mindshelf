@@ -202,149 +202,35 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-feather-alt"></i>
+            @if (ViewBag.Categories != null && ((IEnumerable<MindShelf_BL.Dtos.CategoryDto.CategoryResponseDto>)ViewBag.Categories).Any())
+            {
+                foreach (var category in (IEnumerable<MindShelf_BL.Dtos.CategoryDto.CategoryResponseDto>)ViewBag.Categories)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <h5 class="category-title">@category.Name</h5>
+                            <div class="category-count">
+                                <strong>@(category.Books?.Count ?? 0)</strong> كتاب متاح
+                            </div>
+                            <div class="category-actions mt-3">
+                                <a href="@Url.Action("Details", "Category", new { id = category.CategoryId })"
+                                   class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-info-circle"></i> عرض التفاصيل
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <h5 class="category-title">الأدب العربي</h5>
-                    <div class="category-count">
-                        <strong>245</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 1 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info text-center">لا توجد تصنيفات متاحة حالياً</div>
                 </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <h5 class="category-title">العلوم</h5>
-                    <div class="category-count">
-                        <strong>180</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 2 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-landmark"></i>
-                    </div>
-                    <h5 class="category-title">التاريخ</h5>
-                    <div class="category-count">
-                        <strong>156</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 3 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h5 class="category-title">الفلسفة</h5>
-                    <div class="category-count">
-                        <strong>95</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 4 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <h5 class="category-title">التكنولوجيا</h5>
-                    <div class="category-count">
-                        <strong>132</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 5 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-stethoscope"></i>
-                    </div>
-                    <h5 class="category-title">الطب</h5>
-                    <div class="category-count">
-                        <strong>89</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 6 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-child"></i>
-                    </div>
-                    <h5 class="category-title">الأطفال</h5>
-                    <div class="category-count">
-                        <strong>167</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 7 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-mosque"></i>
-                    </div>
-                    <h5 class="category-title">الكتب الدينية</h5>
-                    <div class="category-count">
-                        <strong>201</strong> كتاب متاح
-                    </div>
-                    <div class="category-actions mt-3">
-                        <a href="@Url.Action("ByCategory", "Books", new { categoryId = 8 })"
-                           class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye"></i> تصفح الكتب
-                        </a>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
 
         <div class="text-center mt-4">

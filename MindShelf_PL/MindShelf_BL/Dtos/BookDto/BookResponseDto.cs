@@ -22,7 +22,7 @@ namespace MindShelf_BL.Dtos.BookDto
 
         public int ReviewCount { get; set; }
         public double Rating { get; set; }
-
+        public int Stock { get; set; }
 
         public DateTime PublishedDate { get; set; }
         public BookState State { get; set; }

@@ -27,6 +27,7 @@ namespace MindShelf_DAL.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PrivateMessage> PrivateMessages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

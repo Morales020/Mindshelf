@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using MindShelf_BL.Dtos.AuthorDto;
 using MindShelf_BL.Dtos.BookDto;
 using MindShelf_BL.Dtos.CategoryDto;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
 using MindShelf_DAL.Models;
+using MindShelf_PL.Hubs;
 using MindShelf_PL.Models;
+using MindShelf_PL.Hubs;
 using System.Diagnostics;
 
 namespace MindShelf_MVC.Controllers
@@ -18,24 +21,27 @@ namespace MindShelf_MVC.Controllers
         private readonly IAuthorServies _authorService;
         private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _env;
+        private readonly IHubContext<BookNotificationHub> _hubContext;
 
         public BooksController(
             IBookServies bookService
             , IWebHostEnvironment env
             , IAuthorServies authorService
             , ICategoryService categoryService
+            , IHubContext<BookNotificationHub> hubContext
             )
         {
             _bookService = bookService;
             _env = env;
             _authorService = authorService;
             _categoryService = categoryService;
+            _hubContext = hubContext;
         }
 
         private async Task<string?> SaveImageAsync(IFormFile? imageFile)
         {
             if (imageFile == null || imageFile.Length == 0)
-                return null;
+                return "/Images/books/default-book.jpg"; // Default image path
 
             var uploadPath = Path.Combine(_env.WebRootPath, "Images/books");
             Directory.CreateDirectory(uploadPath);
@@ -60,7 +66,7 @@ namespace MindShelf_MVC.Controllers
             });
         }
 
-        public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchTerm, int? categoryId, int? authorId, int page = 1, int pageSize = 12)
         {
 
             var response = await _bookService.GetAllBook(page, pageSize);
@@ -203,7 +209,7 @@ namespace MindShelf_MVC.Controllers
             }
 
             // حفظ الصورة
-            dto.ImageUrl = await SaveImageAsync(imageFile);
+            dto.ImageUrl = await SaveImageAsync(dto.ImageFile ?? imageFile);
 
             // إنشاء الكتاب
             var response = await _bookService.CreateBookAsync(dto);
@@ -211,6 +217,28 @@ namespace MindShelf_MVC.Controllers
             {
                 ModelState.AddModelError("", response.Message);
                 return View(dto);
+            }
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"كتاب جديد: {dto.Title}");
+
+            // إرسال إشعار لجميع المستخدمين عن الكتاب الجديد
+            try
+            {
+                await _hubContext.Clients.Group("BookNotifications").SendAsync("NewBookAdded", new
+                {
+                    BookId = response.Data.BookId,
+                    Title = response.Data.Title,
+                    AuthorName = response.Data.AuthorName,
+                    CategoryName = response.Data.CategoryName,
+                    Price = response.Data.Price,
+                    ImageUrl = response.Data.ImageUrl,
+                    AddedAt = DateTime.UtcNow
+                });
+                System.Diagnostics.Debug.WriteLine($"Book notification sent for: {response.Data.Title}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error sending book notification: {ex.Message}");
+                // Don't fail the book creation if notification fails
             }
 
             TempData["Success"] = "تمت إضافة الكتاب بنجاح ✅";

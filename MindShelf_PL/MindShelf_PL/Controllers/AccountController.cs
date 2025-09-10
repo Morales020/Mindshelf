@@ -123,8 +123,12 @@ namespace MindShelf_PL.Controllers
 
 			// Pass display name and privacy settings from claims to the view
 			var claims = await _userManager.GetClaimsAsync(user);
-			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
-			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value
+							?? claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+			var displayName = displayNameClaim ?? user.UserName ?? user.Email ?? user.Id;
+			if (!string.IsNullOrWhiteSpace(displayName) && displayName.Contains('@'))
+				displayName = displayName.Split('@')[0];
+			ViewBag.DisplayName = displayName;
 			
 			// Load privacy settings
 			var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
@@ -165,8 +169,12 @@ namespace MindShelf_PL.Controllers
 			
 			// Debug: Log what privacy values we're loading
 			System.Diagnostics.Debug.WriteLine($"Privacy flags loaded - ShareAvatar: {shareAvatarClaim} -> {ViewBag.ShareAvatar}, ShareAddress: {shareAddressClaim} -> {ViewBag.ShareAddress}, SharePhone: {sharePhoneClaim} -> {ViewBag.SharePhone}");
-			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
-			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value
+							?? claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+			var displayName = displayNameClaim ?? user.UserName ?? user.Email ?? user.Id;
+			if (!string.IsNullOrWhiteSpace(displayName) && displayName.Contains('@'))
+				displayName = displayName.Split('@')[0];
+			ViewBag.DisplayName = displayName;
 			// Debug: Log what we're loading
 			System.Diagnostics.Debug.WriteLine($"Loading display_name claim: {displayNameClaim}, fallback: {user.UserName}");
 
@@ -501,12 +509,16 @@ namespace MindShelf_PL.Controllers
 
 			// Load privacy settings for the target user
 			var claims = await _userManager.GetClaimsAsync(user);
-			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var displayNameClaim = claims.FirstOrDefault(c => c.Type == "display_name")?.Value
+							?? claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
 			var shareAvatarClaim = claims.FirstOrDefault(c => c.Type == "share_avatar")?.Value;
 			var shareAddressClaim = claims.FirstOrDefault(c => c.Type == "share_address")?.Value;
 			var sharePhoneClaim = claims.FirstOrDefault(c => c.Type == "share_phone")?.Value;
 			
-			ViewBag.DisplayName = displayNameClaim ?? user.UserName;
+			var displayName = displayNameClaim ?? user.UserName ?? user.Email ?? user.Id;
+			if (!string.IsNullOrWhiteSpace(displayName) && displayName.Contains('@'))
+				displayName = displayName.Split('@')[0];
+			ViewBag.DisplayName = displayName;
 			ViewBag.ShareAvatar = shareAvatarClaim == null ? true : shareAvatarClaim == "true";
 			ViewBag.ShareAddress = shareAddressClaim == "true";
 			ViewBag.SharePhone = sharePhoneClaim == "true";
