@@ -238,7 +238,7 @@ We are a passionate team of .NET developers from the Information Technology Inst
 - **Contribution**: Implemented authentication and authorization with Identity framework and order management across all layers
 
 #### **Osama Ayman** - Backend Engineer
-<img src="Team_members/OsamaAyman.png" alt="Osama Aymen" width="200" height="200" >
+<img src="Team_members/OsamaAyman2.png" alt="Osama Ayman" width="200" height="200" >
 
 - **Role**: Favourite Book Service Development
 - **Expertise**: ASP.NET Core, Entity Framework, Service Layer
