@@ -35,6 +35,10 @@ namespace MindShelf_PL.Controllers
 			ViewBag.OtherDisplayName = other.UserName;
 			ViewBag.OtherAvatar = other.ProfileImageUrl;
 
+			// My display name and avatar
+			ViewBag.MyDisplayName = me.UserName;
+			ViewBag.MyAvatar = me.ProfileImageUrl;
+
 			var history = await _dbContext.PrivateMessages
 				.Where(m => (m.SenderId == me.Id && m.ReceiverId == other.Id) || (m.SenderId == other.Id && m.ReceiverId == me.Id))
 				.OrderBy(m => m.SentAt)
