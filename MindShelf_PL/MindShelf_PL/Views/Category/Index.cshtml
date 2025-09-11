@@ -3,10 +3,10 @@
 	ViewData["Title"] = "الفئات";
 }
 <div class="d-flex justify-content-between align-items-center mb-4">
-	<h2 class="page-title"><i class="fas fa-list me-2"></i>إدارة الفئات</h2>
+	<h2 class="page-title algin-right"><i class="fas fa-list me-2"></i>إدارة الفئات</h2>
 	@if (User.IsInRole("Admin"))
 	{
-		<a class="btn-custom btn-primary-custom" href="@Url.Action("Create")">
+		<a class="btn-custom btn-primary algin-left" href="@Url.Action("Create")">
 			<i class="fas fa-plus me-1"></i>إضافة فئة جديدة
 		</a>
 	}
@@ -18,7 +18,7 @@
 		@foreach (var category in Model)
 		{
 			<div class="col-lg-4 col-md-6 mb-4">
-				<div class="card category-card h-100 shadow-sm">
+				<div class="card category-card h-100  shadow-sm">
 					<div class="card-body text-center d-flex flex-column align-items-center">
 						<i class="fas fa-tag fa-3x mb-3 category-icon"></i>
 						<h5 class="card-title">@category.Name</h5>
@@ -87,6 +87,19 @@
 		--dark-button-border: #6F4E37; /* A lighter brown for border */
 		--dark-button-text: white;
 		--dark-button-hover-bg: #6F4E37; /* Lighter brown on hover */
+	}
+	.row {
+		margin-left: calc(.5 * var(--bs-gutter-x));
+		margin-right: calc(.5 * var(--bs-gutter-x));
+	}
+	.algin-left {
+		position: relative;
+		left: 30px;
+	}
+	.algin-right {
+		position: relative;
+		right: 30px;
+		top: 10px;
 	}
 
 	body.dark-mode {
