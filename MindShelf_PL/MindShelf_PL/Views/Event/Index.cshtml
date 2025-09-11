@@ -16,6 +16,11 @@
     .btn-outline-danger, .btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:visited, .btn-outline-danger:active {
         text-decoration: none !important;
     }
+
+    .fas {
+	    position: relative;
+	    right: -5px;
+    }
     
     /* Maximum specificity for create event button */
     a.create-event-btn, a.create-event-btn:hover, a.create-event-btn:focus, a.create-event-btn:visited, a.create-event-btn:active,
@@ -557,7 +562,7 @@
     <div class="container">
         <div class="events-hero-content text-center">
             <div class="mb-6">
-                <i class="fas fa-calendar-check text-6xl mb-4 opacity-90"></i>
+                <h1><i class="fas fa-calendar-check text-6xl mb-4 opacity-90"></i></h1>
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">الفعاليات القادمة</h1>
                 <p class="text-xl opacity-90">انضم إلينا في فعالياتنا الثقافية والأدبية</p>
             </div>
@@ -576,10 +581,10 @@
             <div class="d-flex justify-content-center mt-4">
                 <div class="filter-buttons">
                     <button class="filter-btn active" data-filter="all">
-                        <i class="fas fa-th-large ml-2"></i>الكل
+	                    <i class="fas fa-th-large ml-2"></i>الكل
                     </button>
                     <button class="filter-btn" data-filter="upcoming">
-                        <i class="fas fa-clock ml-2"></i>القادمة
+	                    <i class="fas fa-clock ml-2"></i>القادمة
                     </button>
                     <button class="filter-btn" data-filter="registered">
                         <i class="fas fa-user-check ml-2"></i>مسجل
