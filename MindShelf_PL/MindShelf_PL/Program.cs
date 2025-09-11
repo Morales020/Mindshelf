@@ -126,6 +126,7 @@ namespace MindShelf_PL
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
     })
     .AddGoogle(options =>
     {
