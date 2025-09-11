@@ -95,6 +95,7 @@ namespace MindShelf_PL
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IFavouriteBookService, FavouriteBookService>();
+            builder.Services.AddScoped<IEmailServies,EmailServices>();
 
 
             //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
