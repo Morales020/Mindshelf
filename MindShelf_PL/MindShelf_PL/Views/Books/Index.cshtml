@@ -1,4 +1,6 @@
-﻿@model List<BookResponseDto>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MindShelf_BL.Dtos.AuthorDto
+@model List<MindShelf_BL.Dtos.BookDto.BookResponseDto>
     @Html.AntiForgeryToken()
 
     @{
@@ -79,7 +81,7 @@
                             </button>
                         </div>
                         <!-- Reset Button -->
-                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-secondary w-100">
+                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-outline-secondary w-100">
                             <i class="fas fa-undo me-1"></i> إعادة تعيين
                         </a>
                     </form>
