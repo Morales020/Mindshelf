@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using MindShelf_BL.Extensions;
 using MindShelf_BL.Helper.SeedData;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
@@ -10,13 +11,13 @@ using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 using MindShelf_DAL.Models.Stripe;
+using MindShelf_PL.Hubs;
 using Stripe;
 using System;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using File = System.IO.File;
-using Microsoft.AspNetCore.HttpOverrides;
-using MindShelf_PL.Hubs;
-using Microsoft.AspNetCore.SignalR;
 
 namespace MindShelf_PL
 {
@@ -85,18 +86,8 @@ namespace MindShelf_PL
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddScoped<UnitOfWork>();
-            // add services here
-            builder.Services.AddScoped<IBookServies,BookServies>();
-            builder.Services.AddScoped<ICartServices,CartServices>();
-            builder.Services.AddScoped<IAuthorServies, AuthorServies>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IOrderServices, OrderServices>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddScoped<IReviewServices, ReviewServices>();
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
-            builder.Services.AddScoped<IFavouriteBookService, FavouriteBookService>();
-            builder.Services.AddScoped<IEmailServies,EmailServices>();
-
+            
+            builder.Services.AddBusinessLogicServices();
 
             //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             //StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
