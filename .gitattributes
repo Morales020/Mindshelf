@@ -1,10 +1,5 @@
-# Treat Razor views as C#
+# Razor views should count as C#
 *.cshtml linguist-language=C#
 
-# Keep C# files as C#
-*.cs linguist-language=C#
-
-# Keep HTML/CSS/JS detectable but don’t let them dominate
-*.html linguist-detectable=false
-*.css linguist-detectable=false
-*.js linguist-detectable=false
+# Don’t exclude HTML, CSS, JS – let them be counted normally
+# (remove linguist-detectable=false from before)
