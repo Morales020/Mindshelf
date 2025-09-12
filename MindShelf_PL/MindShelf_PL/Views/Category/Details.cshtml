@@ -50,16 +50,16 @@
 	                <p>@Model.Description</p>
                 </div>
 
-                <div class="text-center mt-4">
-                    <a href="@Url.Action("Index")" class="btn-back">
+                <div class=" d-flex gap-1 text-center btn-group-sm mt-4 justify-content-center">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left me-1"></i> رجوع
                     </a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a href="@Url.Action("Edit", new { id = Model.CategoryId })" class="btn btn-primary">
+                        <a href="@Url.Action("Edit", new { id = Model.CategoryId })" class="btn btn-warning btn-sm">
                             <i class="fas fa-edit me-1"></i> تعديل
                         </a>
-                        <a href="@Url.Action("Delete", new { id = Model.CategoryId })" class="btn btn-danger">
+                        <a href="@Url.Action("Delete", new { id = Model.CategoryId })" class="btn btn-danger btn-sm">
                             <i class="fas fa-trash me-1"></i> حذف
                         </a>
                     }
@@ -180,49 +180,4 @@
             color: var(--text-color-light);
         }
 
-    /* --- Button Styling --- */
-    .btn-common, .btn-primary, .btn-danger, .btn-back {
-        font-family: 'Tajawal', sans-serif;
-        font-weight: 700;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        transition: transform 0.2s ease-in-out, background-color var(--transition-duration);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-        .btn-common:hover, .btn-primary:hover, .btn-danger:hover, .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-    /* Specific button colors */
-    .btn-back {
-        background: var(--secondary-color);
-        color: white !important;
-    }
-
-        .btn-back:hover {
-            background: #5a6268;
-        }
-
-    .btn-primary {
-        background: var(--primary-color);
-        color: white;
-    }
-
-        
-
-    .btn-danger {
-        background: #dc3545;
-        color: white;
-    }
-
-        .btn-danger:hover {
-            background: #c82333;
-        }
 </style>

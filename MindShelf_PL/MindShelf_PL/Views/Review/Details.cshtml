@@ -10,7 +10,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <!-- Header Section -->
-            <div class="page-header mb-5">
+            <div class="mb-5">
                 <div class="text-center">
                     <h1 class="page-title">
                         <i class="fas fa-eye text-primary me-3"></i>
@@ -122,25 +122,31 @@
 
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <div class="row">
-                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || string.Equals(Model.UserName, User.Identity?.Name, System.StringComparison.OrdinalIgnoreCase)))
+                            <div class="row justify-content-center">
+                                @if (User.Identity?.IsAuthenticated == true
+                                                                && string.Equals(Model.UserName, User.Identity?.Name, System.StringComparison.OrdinalIgnoreCase))
                                 {
                                     <div class="col-md-4">
-                                        <a asp-controller="Review" asp-action="Edit" asp-route-id="@Model.ReviewId" 
+                                        <a asp-controller="Review" asp-action="Edit" asp-route-id="@Model.ReviewId"
                                            class="btn btn-warning btn-lg w-100">
                                             <i class="fas fa-edit me-2"></i>
                                             تعديل المراجعة
                                         </a>
                                     </div>
+                                }
+                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") 
+                                    || string.Equals(Model.UserName, User.Identity?.Name, System.StringComparison.OrdinalIgnoreCase)))
+                                {
                                     <div class="col-md-4">
-                                        <a asp-controller="Review" asp-action="Delete" asp-route-id="@Model.ReviewId" 
+                                        <a asp-controller="Review" asp-action="Delete" asp-route-id="@Model.ReviewId"
                                            class="btn btn-danger btn-lg w-100">
                                             <i class="fas fa-trash me-2"></i>
                                             حذف المراجعة
                                         </a>
                                     </div>
-                                }
-                                <div class="col-md-4 @(User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || string.Equals(Model.UserName, User.Identity?.Name, System.StringComparison.OrdinalIgnoreCase)) ? string.Empty : "offset-md-8")">
+                                }   
+                                
+                                <div class="col-md-4">
                                     <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
                                        class="btn btn-outline-secondary btn-lg w-100">
                                         <i class="fas fa-arrow-right me-2"></i>
@@ -158,6 +164,15 @@
 
 <style>
     /* Review Details Page Styles */
+    h3{
+        color:white;
+    }
+
+    .dark-mode .review-details-page .page-header {
+        background: transparent !important;
+        border: none !important;
+    }
+
     .review-details-page {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         min-height: 100vh;
@@ -191,6 +206,16 @@
         transition: all 0.3s ease;
     }
 
+    .dark-mode .info-card {
+        display: flex;
+        align-items: center;
+        background: #262626;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #6e6e6e;
+        transition: all 0.3s ease;
+    }
+
     .info-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -204,6 +229,18 @@
         align-items: center;
         justify-content: center;
         background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .dark-mode .info-icon {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #5b5757;
         border-radius: 50%;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
@@ -228,6 +265,13 @@
         margin-bottom: 0;
     }
 
+    .dark-mode .info-value {
+        font-weight: 600;
+        color: #c5c5c5;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
     /* Rating Section */
     .rating-section {
         text-align: center;
@@ -235,6 +279,14 @@
         border-radius: 20px;
         padding: 2rem;
         border: 2px solid #e9ecef;
+    }
+
+    .dark-mode .rating-section {
+        text-align: center;
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 2rem;
+        border: 2px solid #464646;
     }
 
     .rating-display {
@@ -280,10 +332,25 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
+    .dark-mode .comment-content {
+        background: #272727;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #808080;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
     .comment-content p {
         font-size: 1.1rem;
         line-height: 1.6;
         color: #495057;
+        margin-bottom: 0;
+    }
+
+    .dark-mode .comment-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #c5c5c5;
         margin-bottom: 0;
     }
 
@@ -292,6 +359,13 @@
         border-radius: 15px;
         padding: 2rem;
         border: 2px dashed #dee2e6;
+    }
+
+    .dark-mode .no-comment-section {
+        background: #262626;
+        border-radius: 15px;
+        padding: 2rem;
+        border: 2px solid #797979;
     }
 
     /* Button Styles */

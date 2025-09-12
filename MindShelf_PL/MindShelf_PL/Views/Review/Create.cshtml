@@ -10,7 +10,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <!-- Header Section -->
-            <div class="page-header mb-5">
+            <div class="mb-5">
                 <div class="text-center">
                     <h1 class="page-title">
                         <i class="fas fa-star text-warning me-3"></i>
@@ -124,7 +124,7 @@
                                         </button>
                                     </div>
                                     <div class="col-md-6">
-                                        <a asp-controller="Review" asp-action="GetBookReviews" asp-route-bookId="@Model.BookId" 
+                                        <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId"
                                            class="btn btn-outline-secondary btn-lg w-100">
                                             <i class="fas fa-times me-2"></i>
                                             إلغاء
@@ -221,6 +221,14 @@
         border-radius: 15px;
         padding: 1.5rem;
         border: 2px solid #e9ecef;
+    }
+
+    .dark-mode .rating-container {
+        text-align: center;
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 2rem;
+        border: 2px solid #464646;
     }
 
     .rating-stars {

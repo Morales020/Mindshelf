@@ -212,7 +212,7 @@
                                 </a>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn btn-edit btn-sm">
+                                    <a asp-action="Edit" asp-route-id="@author.AuthorId" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
@@ -220,7 +220,7 @@
                                 @if (User.IsInRole("Admin"))
                                 {
 
-                                    <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn btn-delete btn-sm">
+                                    <a asp-action="Delete" asp-route-id="@author.AuthorId" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 }
