@@ -1,4 +1,6 @@
-﻿@model List<BookResponseDto>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MindShelf_BL.Dtos.AuthorDto
+@model List<MindShelf_BL.Dtos.BookDto.BookResponseDto>
     @Html.AntiForgeryToken()
 
     @{
@@ -79,7 +81,7 @@
                             </button>
                         </div>
                         <!-- Reset Button -->
-                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-secondary w-100">
+                        <a style="position: absolute;max-width: 31%;right: 67%;top: 47%;" asp-action="Index" asp-controller="Books" class="btn btn-outline-secondary w-100">
                             <i class="fas fa-undo me-1"></i> إعادة تعيين
                         </a>
                     </form>
@@ -197,9 +199,9 @@
                                     </p>
                                 }
 
-                                <div class="mt-auto">
+                            <div class="mt-auto btn-group-sm">
                                     <div class="row g-2">
-                                        <div class="col-6">
+                                    <div class="col-6">
                                             @if (book.State == MindShelf_DAL.Models.BookState.Available)
                                             {
                                                 <form asp-action="AddToCart" asp-controller="Cart" method="post">
@@ -226,7 +228,7 @@
 
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <div class="row g-2 mt-2">
+                                    <div class="row g-2 mt-2">
                                             <div class="col-6">
                                                 <a asp-action="Edit" asp-route-id="@(book.BookId )" class="btn btn-warning btn-sm w-100">
                                                     <i class="fas fa-edit me-1"></i> تعديل

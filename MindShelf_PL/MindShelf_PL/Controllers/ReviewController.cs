@@ -56,7 +56,6 @@ namespace MindShelf_PL.Controllers
         #endregion
 
         #region CreateReview
-        [Authorize(Roles = "User")]
         [HttpGet]
         public IActionResult Create(int bookId)
         {
@@ -66,7 +65,6 @@ namespace MindShelf_PL.Controllers
             };
             return View(model);
         }
-        [Authorize(Roles = "User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         

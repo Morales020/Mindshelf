@@ -47,7 +47,8 @@ namespace MindShelf_PL.Hubs
 				
 				var userEntity = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
 			// Prefer display_name claim → then UserName → then identity name; if email, use local-part
-			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value;
+			var claimDisplay = Context?.User?.Claims.FirstOrDefault(c => c.Type == "display_name")?.Value
+					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
 			var baseName = claimDisplay
 					   ?? userEntity?.UserName
 					   ?? Context?.User?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value

@@ -46,6 +46,14 @@
                     </div>
                 }
             </dl>
+            @if (User?.Identity?.IsAuthenticated == true && Model?.Id != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+            {
+                <div class="mt-3">
+                    <a class="btn btn-outline-primary" href="@Url.Action("Private","Chat", new { userId = Model.Id })">
+                        <i class="fas fa-paper-plane"></i> مراسلة خاصة
+                    </a>
+                </div>
+            }
         </div>
     </div>
 </div>

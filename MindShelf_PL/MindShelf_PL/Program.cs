@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using MindShelf_BL.Extensions;
 using MindShelf_BL.Helper.SeedData;
 using MindShelf_BL.Interfaces.IServices;
 using MindShelf_BL.Services;
@@ -10,17 +11,26 @@ using MindShelf_BL.UnitWork;
 using MindShelf_DAL.Data;
 using MindShelf_DAL.Models;
 using MindShelf_DAL.Models.Stripe;
+using MindShelf_PL.Hubs;
 using Stripe;
 using System;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using File = System.IO.File;
-using Microsoft.AspNetCore.HttpOverrides;
-using MindShelf_PL.Hubs;
 
 namespace MindShelf_PL
 {
     public class Program
     {
+        // Use NameIdentifier claim as SignalR user id for Clients.User(userId)
+        private sealed class NameIdUserIdProvider : IUserIdProvider
+        {
+            public string? GetUserId(HubConnectionContext connection)
+            {
+                return connection?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +60,8 @@ namespace MindShelf_PL
             builder.Services.AddSignalR(o => { 
                 o.EnableDetailedErrors = true; 
             });
+            // Ensure SignalR knows how to map a user to connections for Clients.User()
+            builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, NameIdUserIdProvider>();
             builder.Services.AddDbContext<MindShelfDbContext>(options =>
             options.UseSqlServer(
              builder.Configuration.GetConnectionString("Cs"),
@@ -74,17 +86,8 @@ namespace MindShelf_PL
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddScoped<UnitOfWork>();
-            // add services here
-            builder.Services.AddScoped<IBookServies,BookServies>();
-            builder.Services.AddScoped<ICartServices,CartServices>();
-            builder.Services.AddScoped<IAuthorServies, AuthorServies>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IOrderServices, OrderServices>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddScoped<IReviewServices, ReviewServices>();
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
-            builder.Services.AddScoped<IFavouriteBookService, FavouriteBookService>();
-
+            
+            builder.Services.AddBusinessLogicServices();
 
             //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             //StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
@@ -115,6 +118,7 @@ namespace MindShelf_PL
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
     })
     .AddGoogle(options =>
     {
@@ -178,6 +182,11 @@ namespace MindShelf_PL
             });
 
             app.MapHub<MindShelf_PL.Hubs.BookNotificationHub>("/bookNotificationHub", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+            });
+
+            app.MapHub<MindShelf_PL.Hubs.PrivateChatHub>("/privateChatHub", options =>
             {
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
             });
