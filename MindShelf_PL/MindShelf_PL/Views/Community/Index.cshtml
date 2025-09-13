@@ -18,6 +18,10 @@
 	.msg .text{white-space:pre-wrap}
 	.msg .meta{font-size:.73rem;color:#8a94a6;margin:.25rem .2rem 0}
 
+	.badge {
+		line-height: 0.7;
+	}
+
 	/* Outgoing (me) */
 	.msg.me{flex-direction:row-reverse}
 	.msg.me .body{align-items:flex-end;text-align:right}
@@ -57,7 +61,7 @@
 		<h2 class="mb-0"><i class="fas fa-comments"></i> دردشة المجتمع</h2>
 		<a class="btn btn-outline-primary position-relative" href="@Url.Action("Conversations","Chat")">
 			<i class="fas fa-inbox"></i> مراسلاتي
-			<span id="pmBadge" class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" style="display:none">0</span>
+			<span id="pmBadge" class="position-absolute top-0 start-0 badge rounded-pill bg-danger" style="display:none">0</span>
 		</a>
 	</div>
 
