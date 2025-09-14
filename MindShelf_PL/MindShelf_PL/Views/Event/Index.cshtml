@@ -609,7 +609,7 @@
             var userId = ViewBag.CurrentUserId as string;
             var isRegistered = userId != null && ev.Registrations.Any(r => r.UserId == userId);
             <div class="col-lg-4 col-md-6">
-                <div class="event-card" data-type="@(ev.IsActive ? "upcoming" : "past") @(ev.IsOnline ? "online" : "offline") @(isRegistered ? "registered" : "not-registered")">
+                <div class="event-card" data-event-id="@ev.EventId" data-type="@(ev.IsActive ? "upcoming" : "past") @(ev.IsOnline ? "online" : "offline") @(isRegistered ? "registered" : "not-registered")">
                     <!-- Event Header -->
                     <div class="event-card-header">
                         <i class="fas fa-calendar-alt event-icon"></i>
@@ -850,6 +850,67 @@
                 }
             }
         });
+
+        // Poll for event status updates
+        let lastActiveEventsCount = 0;
+        
+        function checkEventStatusUpdates() {
+            fetch('/Event/CheckEventStatusUpdates')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Check if any events have been closed
+                        if (data.activeEventsCount < lastActiveEventsCount) {
+                            console.log('Some events have been closed, updating UI...');
+                            updateEventStatuses(data.activeEvents);
+                        }
+                        lastActiveEventsCount = data.activeEventsCount;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking event status:', error);
+                });
+        }
+        
+        function updateEventStatuses(activeEvents) {
+            const activeEventIds = activeEvents.map(e => e.eventId);
+            const allEventCards = document.querySelectorAll('.event-card');
+            
+            allEventCards.forEach(card => {
+                const eventId = parseInt(card.dataset.eventId);
+                const isStillActive = activeEventIds.includes(eventId);
+                
+                if (!isStillActive) {
+                    // Update the event card's data-type attribute
+                    const currentType = card.dataset.type;
+                    const newType = currentType.replace('upcoming', 'past');
+                    card.dataset.type = newType;
+                    
+                    // Update the status badge
+                    const statusBadge = card.querySelector('.event-status-badge');
+                    if (statusBadge) {
+                        statusBadge.textContent = 'منتهي';
+                        statusBadge.className = 'event-status-badge badge-secondary';
+                    }
+                    
+                    // Hide registration button
+                    const registerBtn = card.querySelector('.register-btn');
+                    if (registerBtn) {
+                        registerBtn.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Update filter buttons count
+            updateFilterCounts();
+        }
+        
+        // Check for updates every 15 seconds for faster response
+        setInterval(checkEventStatusUpdates, 15000);
+        
+        // Initial check
+        checkEventStatusUpdates();
+
     </script>
 }
 
