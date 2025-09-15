@@ -251,6 +251,18 @@ namespace MindShelf_BL.Services
         {
             try
             {
+                // Check if the event exists and is still active
+                var eventItem = await _unitofwork.EventRepo.GetById(RegistrationDto.EventId);
+                if (eventItem == null)
+                    return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse("Event not found", 404);
+
+                // Check if event is active
+                if (!eventItem.IsActive)
+                    return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse("This event is closed and registration is no longer available", 400);
+
+                // Check if event has ended
+                if (eventItem.EndingDate <= DateTime.UtcNow)
+                    return ResponseMVC<EventRegistrationResponseDto>.ErrorResponse("This event has ended and registration is no longer available", 400);
                 
                 var exists = await _unitofwork.EventRegistrationRepo.Query()
                     .AnyAsync(r => r.EventId == RegistrationDto.EventId && r.UserId == RegistrationDto.UserId);

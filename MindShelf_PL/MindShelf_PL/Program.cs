@@ -88,6 +88,10 @@ namespace MindShelf_PL
             builder.Services.AddScoped<UnitOfWork>();
             
             builder.Services.AddBusinessLogicServices();
+            
+// Register background service for automatic event closing
+builder.Services.AddHostedService<MindShelf_BL.Services.EventStatusBackgroundService>();
+            
 
             //builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             //StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
@@ -192,9 +196,10 @@ namespace MindShelf_PL
             });
 
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
             using (var scop = app.Services.CreateScope())
             {

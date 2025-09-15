@@ -119,11 +119,11 @@ namespace MindShelf_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            // جلب المؤلفين
+           
             var authorsResponse = await _authorService.GetAllAuthor(1, 100);
             var authorsList = authorsResponse.Data ?? new List<AuthorResponseDto>();
 
-            // تحويل المؤلفين إلى SelectListItem وإضافة عنصر افتراضي
+            
             var authorsListItems = new List<SelectListItem>
     {
         new SelectListItem { Text = "-- اختر المؤلف --", Value = "" }
@@ -135,11 +135,11 @@ namespace MindShelf_MVC.Controllers
             }));
             ViewBag.Authors = authorsListItems;
 
-            // جلب الفئات
+            
             var categoriesResponse = await _categoryService.GetAllCategories();
             var categoriesList = categoriesResponse.Data ?? new List<CategoryResponseDto>();
 
-            // تحويل الفئات إلى SelectListItem وإضافة عنصر افتراضي
+            
             var categoriesListItems = new List<SelectListItem>
     {
         new SelectListItem { Text = "-- اختر الفئة --", Value = "" }
@@ -151,7 +151,7 @@ namespace MindShelf_MVC.Controllers
             }));
             ViewBag.Categories = categoriesListItems;
 
-            // تهيئة DTO مع تاريخ النشر الافتراضي
+            
             var dto = new CreateBookDto
             {
                 PublishedDate = DateTime.Today
@@ -164,7 +164,7 @@ namespace MindShelf_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateBookDto dto, IFormFile? imageFile)
         {
-            // إعادة تحميل الـ ViewBag في حال وجود خطأ في الـ ModelState
+            
             var authorsResponse = await _authorService.GetAllAuthor(1, 10);
             var authorsList = authorsResponse.Data ?? new List<AuthorResponseDto>();
             var authorsListItems = new List<SelectListItem>
@@ -191,27 +191,27 @@ namespace MindShelf_MVC.Controllers
             }));
             ViewBag.Categories = categoriesListItems;
 
-            // التحقق من صلاحية البيانات
+            
             if (!ModelState.IsValid) return View(dto);
 
-            // التحقق من وجود المؤلف
+            
             if (!authorsList.Any(a => a.AuthorId == dto.AuthorId))
             {
                 ModelState.AddModelError("", "المؤلف المحدد غير موجود");
                 return View(dto);
             }
 
-            // التحقق من وجود الفئة
+            
             if (!categoriesList.Any(c => c.CategoryId == dto.CategoryId))
             {
                 ModelState.AddModelError("", "الفئة المحددة غير موجودة");
                 return View(dto);
             }
 
-            // حفظ الصورة
+            
             dto.ImageUrl = await SaveImageAsync(dto.ImageFile ?? imageFile);
 
-            // إنشاء الكتاب
+            
             var response = await _bookService.CreateBookAsync(dto);
             if (response.StatusCode != 201 || response.Data == null)
             {
@@ -220,7 +220,7 @@ namespace MindShelf_MVC.Controllers
             }
             await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"كتاب جديد: {dto.Title}");
 
-            // إرسال إشعار لجميع المستخدمين عن الكتاب الجديد
+            
             try
             {
                 await _hubContext.Clients.Group("BookNotifications").SendAsync("NewBookAdded", new
@@ -385,4 +385,5 @@ namespace MindShelf_MVC.Controllers
             return View("Index", response.Data);
         }
     }
+
 }

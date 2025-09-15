@@ -292,6 +292,31 @@ namespace MindShelf_PL.Controllers
             return RedirectToAction("Details", new { id = eventId });
         }
 
+        // API endpoint to check for event status updates
+        [HttpGet]
+        public async Task<IActionResult> CheckEventStatusUpdates()
+        {
+            try
+            {
+                var allEvents = await _eventService.GetAllEvents();
+                var activeEvents = allEvents.Data?.Where(e => e.IsActive).ToList() ?? new List<MindShelf_BL.Dtos.EventDtos.EventResponseDto>();
+                
+                return Json(new { 
+                    success = true, 
+                    activeEventsCount = activeEvents.Count,
+                    activeEvents = activeEvents.Select(e => new { 
+                        eventId = e.EventId, 
+                        title = e.Title, 
+                        isActive = e.IsActive,
+                        endingDate = e.EndingDate
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
     }
 }
