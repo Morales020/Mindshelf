@@ -34,7 +34,13 @@ namespace MindShelf_PL.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = new User
+                var Email = await _userManager.FindByEmailAsync(model.Email);
+				if (Email != null)
+				{
+					ModelState.AddModelError("Email", "This email is already registered");
+					return RedirectToAction("Login", "Account");
+				}
+                var user = new User
 				{
 					UserName = model.UserName,
 					Email = model.Email,
@@ -43,8 +49,8 @@ namespace MindShelf_PL.Controllers
 					Address = model.Address,
 					EmailConfirmed = true
 				};
-
-				var result = await _userManager.CreateAsync(user, model.Password);
+              
+                var result = await _userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
 					if (await _roleManager.RoleExistsAsync("User"))
