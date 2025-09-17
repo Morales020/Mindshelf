@@ -58,6 +58,7 @@ This project was developed for the **ITI .NET Training Hackathon**, showcasing a
 
 ### ✉️ Private Messaging
 - **Direct Messages**: Send and receive private one-to-one messages between users.  
+- **Simple Chat Interface**: Easy-to-use interface for direct communication.    
 
 ### ❤️ **Personalization Features**
 - **Favorites**: Save favorite books for quick access
