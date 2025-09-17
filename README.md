@@ -85,7 +85,7 @@ This project was developed for the **ITI .NET Training Hackathon**, showcasing a
 - **Deployment**: Docker + Render.com
 
 ### **Architecture Pattern**
-- **Clean Architecture**: Separation of concerns with distinct layers
+- **N-Tier Architecture**: Clear separation of concerns with Presentation, Business Logic, and Data Access layers.
 - **Repository Pattern**: Data access abstraction
 - **Unit of Work**: Transaction management
 - **Dependency Injection**: Loose coupling and testability
