@@ -52,6 +52,14 @@ This project was developed for the **ITI .NET Training Hackathon**, showcasing a
 - **Online/Offline Events**: Support for both virtual and physical events
 - **Event Calendar**: View upcoming events and schedules
 
+### 💬 Community Features
+- **Global Chat Room**: A single shared space where all users can chat together in real-time.  
+- **Live Conversations**: Engage in instant discussions with the entire community.
+
+### ✉️ Private Messaging
+- **Direct Messages**: Send and receive private one-to-one messages between users.  
+- **Simple Chat Interface**: Easy-to-use interface for direct communication.    
+
 ### ❤️ **Personalization Features**
 - **Favorites**: Save favorite books for quick access
 - **Recommendations**: Personalized book suggestions based on user preferences
@@ -77,7 +85,7 @@ This project was developed for the **ITI .NET Training Hackathon**, showcasing a
 - **Deployment**: Docker + Render.com
 
 ### **Architecture Pattern**
-- **Clean Architecture**: Separation of concerns with distinct layers
+- **N-Tier Architecture**: Clear separation of concerns with Presentation, Business Logic, and Data Access layers.
 - **Repository Pattern**: Data access abstraction
 - **Unit of Work**: Transaction management
 - **Dependency Injection**: Loose coupling and testability
